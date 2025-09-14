@@ -237,7 +237,6 @@ READDIR
           LDX "C"
           JMP MLIERROR
 :OK3
-          MLI_CALL CLOSE ;CLOSEP
           LDA BUFF+VD_ENTLGH
           STA ENTLGH
           LDA BUFF+VD_ENTBLK
@@ -310,6 +309,10 @@ READDIR
           JMP MLIERROR
 :EXIT     JMP QUITPRG
 :FOUND
+          BIT MYFLAG
+          BPL :NEXTFE
+
+          MLI_CALL CLOSE ;CLOSEP
           LDX PATHNAME
           INX
           LDA #'/'
