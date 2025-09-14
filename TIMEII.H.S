@@ -1,0 +1,23 @@
+* TimeII read register address
+SECUNI    EQU 32
+SECTEN    EQU 33
+MINUNI    EQU 34
+MINTEN    EQU 35
+HOUUNI    EQU 36
+HOUTEN    EQU 37
+DATUNI    EQU 39
+DATTEN    EQU 40
+MONUNI    EQU 41
+MONTEN    EQU 42
+YEAUNI    EQU 43
+YEATEN    EQU 44
+DAYWEE    EQU 38
+
+* TimeII address
+BASE_A    EQU $C082
+BASE_B    EQU $C081
+
+INITII    MAC
+          LDA ]1
+          STA IISLOT
+          <<<
