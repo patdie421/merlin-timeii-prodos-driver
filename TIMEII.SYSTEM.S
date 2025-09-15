@@ -53,6 +53,7 @@ STAR
 CONTINUE
           JSR CHKSLOTS
           CMP #$FF       ; FF => not slot found
+          BEQ NEXTSYS
           STA SLOT
 * load driver
           JSR INSTDRV
