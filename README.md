@@ -11,11 +11,11 @@ A bad copy of the documentation (see resources), an image of the DOS 3.3 disk (b
 # How to use it?
 On a fresh initialized drive (hard drive or floppy), copy the timeii.system program on the disk.  
 On a existing drive you have to put de program at the begining of the catalog list. For that you can use ...
-To build the program I used the PRODOS8HD disk image (https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg).
+To build the program I used the PRODOS8HD disk image (https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg).  
 # Next steps?
 - code optimization and documentation (this code really lacks comments)  
 - improve autodetection of the card  
-- slot selection based on program name (nameSz.system => selects slot z instead of auto-detection) - work in progress
-- update leap year flag of the card at startup (base on year stored in the card). Because PRODOS doesn't store the century value, this will work only up to 2400/02/28 (February 29, 2400 users, send me an email, I will help you work around the bug) - work in progress  
-- setup program to set date/time (with automatic leap year and day of week calculation) and install the driver on boot disk - working progress
+- slot selection based on program name (nameSz.system => selects slot z instead of auto-detection) - work in progress  
+- update leap year flag of the card at startup (base on year stored in the card). Because PRODOS doesn't store the century value, this will work only up to 2400/02/28 (February 29, 2400 users, send me an email, I will help you work around the bug) - work in progress
+- setup program to set date/time (with automatic leap year and day of week calculation) and install the driver on boot disk - working progress  
 - add the driver in PRODOS DRIVER project (or a fork)  
