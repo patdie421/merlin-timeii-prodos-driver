@@ -105,26 +105,23 @@ CHKSLOTS
           STA :SLOT
 :LOOP
           LDA :SLOT
-          JSR KNWNCARD
-          CMP #0
+          JSR KNWNCARD   ; known kind of card in this slot ?
+          CMP #0         ; yes, next slot
           BNE :NEXT
-* add get timeii data and check is date
           LDA :SLOT
-          JSR GETIIDATE1 ; try to read a date
-          JSR ISIIDATE   ; check if date is ok
-          BCS :NEXT
-          LDA :SLOT      ; yes return slot
-          CLC
+          JSR GETIIDATE1 ; no, try to read a timeii date
+          JSR ISIIDATE   ; check if data read is ok
+          BCS :NEXT      ; no, not a timeii card or time not set
+          LDA :SLOT      ; yes, return slot
+          CLC            ; carry clear => slot found
           RTS
 :NEXT     DEC :SLOT
           BNE :LOOP
           LDA #$FF
-          SEC
+          SEC            ; carry set => no slot found
           RTS
 
 :SLOT     HEX 00
-:STORAGE  HEX 01,20,03,00,05,03,FF
-:PASCAL   HEX 05,38,07,18,0B,01,FF
 
 
 CHECKSIG0                ; identify card signature
