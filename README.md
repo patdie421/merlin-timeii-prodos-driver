@@ -15,3 +15,4 @@ On a existing drive you have to put de program at the begining of the catalog li
 - better autodetection of the card
 - slot selection based on program name (nameSz.system => selects slot z instead of auto-detection)
 - setup program to set date/time and install the driver on boot disk
+- add the driver in PRODOS DRIVER project (or a fork)  
