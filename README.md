@@ -7,10 +7,10 @@ Because I never found a driver I decided to develop it myself.
 Merlin.8 was the in 80s and 90s the defacto Macro Assembler for Apple II computer. To understand how programming was done at that time, I decided to do everything from a real Apple IIe, and this is all the more necessary since no emulator simulates this card!  
 # my inspiration?
 A bad copy of the documentation (see resources), an image of the DOS 3.3 disk (basic programs to use the card) and the PRODOS DRIVER project (https://github.com/a2stuff/prodos-drivers). I took several portions of code directly from this project, in particular the system program chaining code (.system).  
+# how to use it?
+On a fresh initialized drive (hard drive or floppy), copy the timeii.system program on the disk.  
+On a existing drive you have to put de program at the begining of the catalog list. For that you can use ...
 # Next steps
 - better autodetection of the card
-- slot selection based on program name (nameSx.system => selects location x instead of auto-detection)
-Setup
-Auto detect card slot  
-Chain the next system (.system) program  
-Fully build on Apple IIe with Merlin.8  
+- slot selection based on program name (nameSz.system => selects slot z instead of auto-detection)
+- setup program to set date/time and install the driver on boot disk
