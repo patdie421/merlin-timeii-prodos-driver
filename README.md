@@ -9,7 +9,7 @@ Merlin.8 was the in 80s and 90s the defacto Macro Assembler for Apple II compute
 A bad copy of the documentation (see resources), an image of the DOS 3.3 disk (basic programs to use the card) and the PRODOS DRIVER project (https://github.com/a2stuff/prodos-drivers). I took several portions of code directly from this project, in particular the system program chaining code (.system).  
 # Next steps
 - better autodetection of the card
-- slot selection based on program name (<name>S<s>.system => selects location s instead of auto-detection)
+- slot selection based on program name (nameSx.system => selects location x instead of auto-detection)
 Setup
 Auto detect card slot  
 Chain the next system (.system) program  
