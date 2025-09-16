@@ -16,6 +16,6 @@ To build the program I used the PRODOS8HD disk image (https://mirrors.apple2.org
 - code optimization and documentation (this code really lacks comments)  
 - improve autodetection of the card  
 - slot selection based on program name (nameSz.system => selects slot z instead of auto-detection) - work in progress  
-- update leap year flag of the card at startup (base on year stored in the card). Since the clock chip on the card and PRODOS do not store the value of hundreds of centuries, this will only work until 2400/02/28 (February 29, 2400 users, email me, I will help you work around the bug) - work in progress
+- update leap year flag of the card at startup (base on year stored by the card). Since the clock chip on the card and PRODOS do not store the value of hundreds of centuries, this will only work until 2399. (year 2400 users, email me, I will help you work around the bug ...) - work in progress
 - setup program to set date/time (with automatic leap year and day of week calculation) and install the driver on boot disk - working progress  
 - add the driver in PRODOS DRIVER project (or a fork)  
