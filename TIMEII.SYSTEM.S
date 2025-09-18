@@ -294,7 +294,7 @@ READDIR
           BCC :ENTRY
 :RDBLK
           MLI_CALL READ  ;READP
-          BCS :NOTFOUND
+          BCS :ERROREOF
           LDA #0
           STA NUM
           LDA #<BUFF4
@@ -302,7 +302,9 @@ READDIR
           LDA #>BUFF4
           STA PTR+1
           RJMP :ENTRY
-:NOTFOUND                ; no .system found to execute
+:ERROREOF                ; no .system found to execute
+          CMP #$4C
+          BEQ :EXIT
           LDX #"E"
           CMP #0
           BEQ :EXIT
