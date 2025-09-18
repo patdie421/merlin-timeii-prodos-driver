@@ -12,7 +12,7 @@ A bad copy of the documentation (see resources), an image of the DOS 3.3 disk (b
 - For a fresh initialized disk (hard or floppy) bootable with PRODOS (prodos file on the disk), copy the timeii.system program on the root directory.  
 - For a existing disk, copy timeii.system to the root directory and then you have to move the program at the begining of the catalog list. For that you can use CAT.DOCTOR (available in PRODOS 2.4.3: https://releases.prodos8.com/ProDOS_2_4_3.po)
 - Put an issue if you need some help  
-To build the program I used the PRODOS8HD disk image (https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg).  
+- To build the program I used the PRODOS8HD disk image (https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg).  
 # Next steps?
 - code optimization and documentation (this code really lacks comments)  
 - improve autodetection of the card  
