@@ -235,7 +235,7 @@ READDIR
           MLI_CALL READ  ;READP
           BCC :OK3
           LDX "C"
-          JMP MLIERROR
+          JMP :ERROREOF1
 :OK3
           LDA BUFF+VD_ENTLGH
           STA ENTLGH
@@ -302,11 +302,13 @@ READDIR
           LDA #>BUFF4
           STA PTR+1
           RJMP :ENTRY
+
 :ERROREOF                ; no .system found to execute
-          CMP #$4C
-          BEQ :EXIT
           LDX #"E"
-          CMP #0
+:ERROREOF1
+          CMP #$4C       ; eof test
+          BEQ :EXIT
+          CMP #0         ; no error
           BEQ :EXIT
           JMP MLIERROR
 :EXIT     JMP QUITPRG
