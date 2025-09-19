@@ -16,7 +16,7 @@ A bad copy of the documentation (see resources), an image of the DOS 3.3 disk (b
 # Next steps?
 - code optimization and documentation (this code really lacks comments) - work in progress  
 - improve autodetection of the card  
-- slot selection based on program name (nameSz.system => selects slot z instead of auto-detection) - work in progress  
+- slot selection based on program name (nameSz.system => selects slot z instead of auto-detection) - ~~work in progress~~ test  
 - update leap year flag of the card at startup (base on year stored by the card). Since the clock chip on the card and PRODOS do not store the value of hundreds of centuries, this will only work until 2399. (year 2400 users, email me, I will help you work around the issue ...) - work in progress  
 - setup program to set date/time (with automatic leap year and day of week calculation) and install the driver on boot disk - work in progress  
 - add the driver in PRODOS DRIVER project (or a fork)  
