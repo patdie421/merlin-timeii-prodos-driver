@@ -179,6 +179,9 @@ GETIIDATE1
           CPY #YEATEN
           BMI :LOOP      ; next unit register
 
+:EXIT     LDA #%00000000
+          STA BASE_B,X   ; Hold line low
+
           RTS
 :COUNTER  DFB $0
 :AVAL     HEX 00
