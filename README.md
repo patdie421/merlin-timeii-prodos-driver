@@ -14,7 +14,7 @@ A bad copy of the documentation (see resources), an image of the DOS 3.3 disk (b
 - Put an issue if you need some help  
 - To build the program I used the PRODOS8HD disk image (https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg).  
 # Next steps?
-- code optimization and documentation (this code really lacks comments)  
+- code optimization and documentation (this code really lacks comments) - work in progress  
 - improve autodetection of the card  
 - slot selection based on program name (nameSz.system => selects slot z instead of auto-detection) - work in progress  
 - update leap year flag of the card at startup (base on year stored by the card). Since the clock chip on the card and PRODOS do not store the value of hundreds of centuries, this will only work until 2399. (year 2400 users, email me, I will help you work around the issue ...) - work in progress  
