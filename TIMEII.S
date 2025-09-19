@@ -4,6 +4,7 @@ E_ISIIDATE EQU 1
 E_PRNIIDATE EQU 0
 E_FINDSLOT EQU 0
 E_GETIILEAP EQU 1
+E_TGLIILEAP EQU 1
 
 *
 * TIMEII CARD
@@ -157,7 +158,6 @@ SETIIDATE
 * release line
           RLSLINE
           RTS
-
 
 * set TIMEII date and time
 * in: A = date to put in register
