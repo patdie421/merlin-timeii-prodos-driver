@@ -3,6 +3,7 @@ E_GETIIDATE EQU 1
 E_ISIIDATE EQU 1
 E_PRNIIDATE EQU 0
 E_FINDSLOT EQU 0
+E_GETIILEAP EQU 1
 
 *
 * TIMEII CARD
@@ -13,6 +14,39 @@ E_FINDSLOT EQU 0
 * POKE BASE_B, VAL+16
 * POKE BASE_A, REG+16
 * POKE BASE_A, REG
+
+
+* hold line
+* in: X = SLOT * 16
+* A is modified
+HLDLINE   MAC
+          LDA #%00001000 ; 16 ($10)
+          STA BASE_B,X   ; Hold line high
+          <<<
+
+* release line
+* in:  = SLOT * 16
+* A is modified
+RLSLINE   MAC
+          LDA #%00000000
+          STA BASE_B,X
+          <<<
+
+* read register
+* in: X = SLOT * 16
+* in: Y = TIMEII register to read
+* out: A = value retrieved
+RDREG     MAC
+          TYA
+          STA BASE_A,X
+          LDA BASE_A,X
+          <<<
+
+* write register
+* in: X = SLOT * 16
+* in: Y = TIMEII register number
+* in: A = value to write
+* A is modified
 WRREG     MAC
           LDA :REGS,Y
           AND #%00001111 ; reg num is < 16
@@ -28,6 +62,71 @@ WRREG     MAC
           STA BASE_A,X
           <<<
 
+* set leap flag
+* in: X = SLOT * 16
+* in: Y = TIMEII register
+* A is modified
+SETLEAP  MAC
+         JSR GETIILEAP
+         BCS ]EXIT
+         JSR TGLIILEAP
+]EXIT
+         <<<
+
+* clear leap flag
+* in: X = SLOT * 16
+* in: Y = TIMEII register
+* A is modified
+CLRLEAP MAC
+         JSR GETIILEAP
+         BCC ]EXIT
+         JSR TGLIILEAP
+]EXIT
+         <<<
+
+
+* toggle leap bit of DATTEN register
+* in: X = SLOT * 16
+* in: Y = TIMEII register
+* A is modified
+         DO E_TGLIILEAP
+TGLIILEAP
+         HLDLINE
+         LDY #DATTEN-32
+         RDREG
+         EOR #%00000100 ; tc bit
+         WRREG
+:EXIT    RLSLINE
+         RTS
+         FIN
+
+
+* get leap bit from DATTEN register
+* in: X = SLOT * 16
+* in: Y = TIMEII register
+* out: Carry = 1 : leap, Carry = 0 not leap
+* A is modified
+        DO E_TGLIILEAP
+GETIILEAP
+         HLDLINE
+         LDY #DATTEN-32
+         RDREG
+         ORA #%00000100 ; tc bit
+         BEQ :NO
+:YES     SEC
+         BCS :EXIT
+:NO
+         CLC
+         BCC :EXIT
+:EXIT    RLSLINE
+         RTS
+         FIN
+
+
+* set TIMEII date and time
+* in: IISLOT = slot number
+* in: DATE = "DATI" data structure cf TIMEII.SETUP
+* A,X,Y modified
           DO E_SETIIDATE
 SETIIDATE
           LDA IISLOT     ; slot * 16 -> X
@@ -37,9 +136,7 @@ SETIIDATE
           ASL
           TAX
 
-          LDA #%00001000 ; 16 ($10)
-          STA BASE_B,X   ; Hold line high
-
+          HLDLINE
           LDY #0
 :LOOP
           CPY #6
@@ -58,16 +155,21 @@ SETIIDATE
           STA :UNI
           WRREG :UNI
 * release line
-          LDA #%00000000
-          STA BASE_B,X   ; Hold line low
+          RLSLINE
           RTS
 
-:SETII2REG               ; local procedure for updating 2
-                         ; registers from 1 data from
-                         ; GETDATI DATE table
+
+* set TIMEII date and time
+* in: A = date to put in register
+
+* local procedure for updating 2 registers from 1 byte from DATI date structure
+* in: Y = DATI structure index to push to timeii registers
+* in: DATE = "DATI" data structure cf TIMEII.SETUP
+* out: DATE = "DATI" data structure cf TIMEII.SETUP
+:SETII2REG
           STY :SAVY
           STX :SAVX
-          JSR HEXTODIGI
+          JSR HEXTODIGI  ; A to X (uni) and Y (tens)
           STY :TEN
           STX :UNI
           LDX :SAVX
@@ -79,19 +181,18 @@ SETIIDATE
           INY
 * write Tens, but ...
 * we have to update some tens before writing data
-          CPY #5         ; hour tens => 24H format flag
+          CPY #5         ; is hour tens register => force 24H format flag
           BNE :IINEXT
           LDA :VAL
           ORA #%00001000 ; set 24H flag
           STA :VAL
-:IINEXT   CPY #7         ; date tens => leap flag
+:IINEXT   CPY #7         ; date tens => set leap flag
           BNE :WRTEN
           LDA :VAL
           ORA DATE+_LEA  ; set leap flag (cf GETDATI)
           STA :VAL
 :WRTEN    WRREG :TEN
-
-          LDX :SAVX
+:EXIT     LDX :SAVX
           LDY :SAVY
           RTS
 :REGS
@@ -122,8 +223,7 @@ GETIIDATE1
           STA :COUNTER
 
 * hold line high
-          LDA #$10
-          STA BASE_B,X
+          HLDLINE
 
 * Read all timeII card registers
           LDY #SECUNI    ; first  register (second unit)
@@ -179,9 +279,7 @@ GETIIDATE1
           CPY #YEATEN
           BMI :LOOP      ; next unit register
 
-:EXIT     LDA #%00000000
-          STA BASE_B,X   ; Hold line low
-
+:EXIT     RLSLINE
           RTS
 :COUNTER  DFB $0
 :AVAL     HEX 00
@@ -276,7 +374,7 @@ LOOP
 :SLOTS    HEX 07,06,05,04,02,01,00 ; possible slot
           FIN
 
-IISLOT    HEX 00
+IISLOT    HEX FF
 TIMEII
 DECSEC    HEX 00
 DECMIN    HEX 00
