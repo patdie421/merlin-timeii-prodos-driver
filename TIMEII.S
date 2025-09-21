@@ -181,12 +181,12 @@ SETIIDATE
           INY
 * write Tens, but ...
 * we have to update some tens before writing data
-          CPY #HOUTEN-32 ; is hour tens register => force 24H format flag
+          CPY #5 ; is hour tens register => force 24H format flag
           BNE :IINEXT
           LDA :VAL
           ORA #%00001000 ; set 24H flag
           STA :VAL
-:IINEXT   CPY #DATTEN-32 ; date tens => set leap flag
+:IINEXT   CPY #7 ; date tens => set leap flag
           BNE :WRTEN
           LDA :VAL
           ORA DATE+_LEA  ; set leap flag (cf GETDATI)
@@ -198,8 +198,10 @@ SETIIDATE
 :REGS
 * TIMEII regs to update : must be in the same order than
 * DATE table from GETDATI and match 1 for 2
-          DFB YEAUNI,YEATEN,MONUNI,MONTEN,DATUNI,DATTEN
-          DFB HOUUNI,HOUTEN,MINUNI,MINTEN,SECUNI,SECTEN
+*              0        2             4             6  
+          DFB 0,0,YEAUNI,YEATEN,MONUNI,MONTEN,DATUNI,DATTEN
+                        8             10            12
+          DFB     HOUUNI,HOUTEN,MINUNI,MINTEN,SECUNI,SECTEN
 :REG      HEX 00
 :VAL      HEX 00
 :UNI      HEX 00
