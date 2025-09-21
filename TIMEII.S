@@ -38,22 +38,23 @@ RLSLINE   MAC
 * in: Y = TIMEII register to read
 * out: A = value retrieved
 RDREG     MAC
-          TYA
+          LDA :REGS,Y
           STA BASE_A,X
           LDA BASE_A,X
           <<<
 
 * write register
 * in: X = SLOT * 16
-* in: Y = TIMEII register number
+* in: Y = index in REGS of timeii reg
 * in: A = value to write
 * A is modified
-WRREG     MAC
+FWRREG
+          PHA
           LDA :REGS,Y
           AND #%00001111 ; reg num is < 16
           STA :REG
           STA BASE_A,X   ; select register
-          LDA ]1
+          PLA
           ORA #%00010000 ; store data and raise flag
           STA BASE_B,X
           LDA :REG
@@ -61,7 +62,7 @@ WRREG     MAC
           STA BASE_A,X
           LDA :REG       ; register and flag falled
           STA BASE_A,X
-          <<<
+          RTS
 
 * set leap flag
 * in: X = SLOT * 16
@@ -93,10 +94,10 @@ CLRLEAP MAC
          DO E_TGLIILEAP
 TGLIILEAP
          HLDLINE
-         LDY #DATTEN-32
+         LDY #7
          RDREG
          EOR #%00000100 ; tc bit
-         WRREG
+         JSR FWRREG
 :EXIT    RLSLINE
          RTS
          FIN
@@ -110,7 +111,7 @@ TGLIILEAP
         DO E_TGLIILEAP
 GETIILEAP
          HLDLINE
-         LDY #DATTEN-32
+         LDY #7
          RDREG
          ORA #%00000100 ; tc bit
          BEQ :NO
@@ -138,22 +139,21 @@ SETIIDATE
           TAX
 
           HLDLINE
+* uni/ten value
           LDY #1
 :LOOP
-          CPY #7
-          BEQ :EXIT
-
           LDA DATE,Y
           STA :VAL
           JSR :SETII2REG
           INY
-          RJMP :LOOP
-:EXIT
+          CPY #7
+          BNE :LOOP
+
 * finaly write Day of Week
           LDY #0
           LDA DATE+_DOW
           STA :UNI
-          JSR FRRE
+          JSR FWRREG
 * release line
           RLSLINE
           RTS
@@ -192,7 +192,7 @@ SETIIDATE
           ORA DATE+_LEA  ; set leap flag (cf GETDATI)
 :WRTEN
           JSR FRREG
-:EXIT     LDX :SAVX
+          LDX :SAVX
           LDY :SAVY
           RTS
 :REGS
