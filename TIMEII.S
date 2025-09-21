@@ -181,12 +181,12 @@ SETIIDATE
           INY
 * write Tens, but ...
 * we have to update some tens before writing data
-          CPY #5         ; is hour tens register => force 24H format flag
+          CPY #HOUTEN-32 ; is hour tens register => force 24H format flag
           BNE :IINEXT
           LDA :VAL
           ORA #%00001000 ; set 24H flag
           STA :VAL
-:IINEXT   CPY #7         ; date tens => set leap flag
+:IINEXT   CPY #DATTEN-32 ; date tens => set leap flag
           BNE :WRTEN
           LDA :VAL
           ORA DATE+_LEA  ; set leap flag (cf GETDATI)
