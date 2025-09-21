@@ -138,9 +138,9 @@ SETIIDATE
           TAX
 
           HLDLINE
-          LDY #0
+          LDY #1
 :LOOP
-          CPY #6
+          CPY #7
           BEQ :EXIT
 
           LDA DATE,Y
