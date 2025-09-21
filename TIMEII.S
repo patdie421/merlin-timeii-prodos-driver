@@ -150,11 +150,10 @@ SETIIDATE
           RJMP :LOOP
 :EXIT
 * finaly write Day of Week
-          LDA #DAYWEE
-          STA :REG
+          LDY #0
           LDA DATE+_DOW
           STA :UNI
-          WRREG :UNI
+          JSR FRRE
 * release line
           RLSLINE
           RTS
@@ -177,33 +176,35 @@ SETIIDATE
           ASL            ; y=y*2
           TAY
 * write Units
-          WRREG :UNI
+          LDA :UNI
+          JSR FWRREG 
           INY
+
+          LDA :TEN
 * write Tens, but ...
 * we have to update some tens before writing data
           CPY #5 ; is hour tens register => force 24H format flag
           BNE :IINEXT
-          LDA :VAL
           ORA #%00001000 ; set 24H flag
-          STA :VAL
+          RJMP :WRTEN
 :IINEXT   CPY #7 ; date tens => set leap flag
           BNE :WRTEN
-          LDA :VAL
           ORA DATE+_LEA  ; set leap flag (cf GETDATI)
-          STA :VAL
-:WRTEN    WRREG :TEN
+:WRTEN
+          JSR FRREG
 :EXIT     LDX :SAVX
           LDY :SAVY
           RTS
 :REGS
 * TIMEII regs to update : must be in the same order than
 * DATE table from GETDATI and match 1 for 2
-*              0        2             4             6  
-          DFB 0,0,YEAUNI,YEATEN,MONUNI,MONTEN,DATUNI,DATTEN
-*                       8             10            12
-          DFB     HOUUNI,HOUTEN,MINUNI,MINTEN,SECUNI,SECTEN
-:REG      HEX 00
-:VAL      HEX 00
+          DFB DAYWEE,0  ; 0: 0,1
+          DFB YEAUNI,YEATEN ; 1: 2,3
+          DFB MONUNI,MONTEN ; 2: 4,5
+:DAT      DFB DATUNI,DATTEN ; 3: 6,7
+:HOU      DFB HOUUNI,HOUTEN ; 4: 8,9
+          DFB MINUNI,MINTEN ; 5: 10,11
+          DFB SECUNI,SECTEN ; 6: 12,13
 :UNI      HEX 00
 :TEN      HEX 00
 :SAVX     HEX 00
