@@ -200,7 +200,7 @@ SETIIDATE
 * DATE table from GETDATI and match 1 for 2
 *              0        2             4             6  
           DFB 0,0,YEAUNI,YEATEN,MONUNI,MONTEN,DATUNI,DATTEN
-                        8             10            12
+*                       8             10            12
           DFB     HOUUNI,HOUTEN,MINUNI,MINTEN,SECUNI,SECTEN
 :REG      HEX 00
 :VAL      HEX 00
