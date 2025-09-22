@@ -18,27 +18,29 @@ E_TGLIILEAP EQU 1
 * POKE BASE_A, REG
 
 
+HLDLINE   MAC
 * hold line
 * in: X = SLOT * 16
 * A is modified
-HLDLINE   MAC
           LDA #%00001000 ; 16 ($10)
           STA BASE_B,X   ; Hold line high
           <<<
 
+
+RLSLINE   MAC
 * release line
 * in:  = SLOT * 16
 * A is modified
-RLSLINE   MAC
           LDA #%00000000
           STA BASE_B,X
           <<<
 
+
+RDREG     MAC
 * read register
 * in: X = SLOT * 16
 * in: Y = TIMEII register to read
 * out: A = value retrieved
-RDREG     MAC
           TYA
           AND #%00001111
           ORA #%00100000
@@ -46,9 +48,12 @@ RDREG     MAC
           LDA BASE_A,X
           <<<
 
-* write register
+
+FWRREG1
+*
+* write to TIMEII register by TIMEII index
 * in: X = SLOT * 16
-* in: Y = timeii reg
+* in: Y = timeii reg num
 * in: A = value to write
 * A is modified
 * BASIC is done like this :
@@ -56,7 +61,7 @@ RDREG     MAC
 * POKE BASE_B, VAL+16
 * POKE BASE_A, REG+16
 * POKE BASE_A, REG
-FWRREG1
+*
           PHA            ; save value to stack because
           TYA            ; we need A for bit manipulation
           AND #%00001111 ; reg num must be < 16
@@ -74,13 +79,15 @@ FWRREG1
           RTS
 
 
-* write register
+          DO E_SETIIDATE
+FWRREG2
+*
+* write TIMEII register from REGS index
 * in: X = SLOT * 16
 * in: Y = index in REGS of timeii reg
 * in: A = value to write
 * A is modified
-          DO E_SETIIDATE
-FWRREG2
+*
           STY :SAVY     ; save Y
           PHA           ; save A
           LDA REGS,Y   ; get timeii register from REGS table
@@ -93,22 +100,27 @@ FWRREG2
           FIN
 
 
+SETLEAP  MAC
+*
 * set leap flag
 * in: X = SLOT * 16
 * in: Y = TIMEII register
 * A is modified
-SETLEAP  MAC
+*
          JSR GETIILEAP
          BCS ]EXIT
          JSR TGLIILEAP
 ]EXIT
          <<<
 
-* clear leap flag
+
+CLRLEAP  MAC
+*
+* clear leap flag if set
 * in: X = SLOT * 16
 * in: Y = TIMEII register
 * A is modified
-CLRLEAP MAC
+*
          JSR GETIILEAP
          BCC ]EXIT
          JSR TGLIILEAP
@@ -116,12 +128,14 @@ CLRLEAP MAC
          <<<
 
 
+         DO E_TGLIILEAP
+TGLIILEAP
+*
 * toggle leap bit of DATTEN register
 * in: X = SLOT * 16
 * in: Y = TIMEII register
 * A is modified
-         DO E_TGLIILEAP
-TGLIILEAP
+*
          HLDLINE
          LDY #7
          RDREG
@@ -132,13 +146,15 @@ TGLIILEAP
          FIN
 
 
+        DO E_TGLIILEAP
+GETIILEAP
+*
 * get leap bit from DATTEN register
 * in: X = SLOT * 16
 * in: Y = TIMEII register
 * out: Carry = 1 : leap, Carry = 0 not leap
 * A is modified
-        DO E_TGLIILEAP
-GETIILEAP
+*
          HLDLINE
          LDY #7
          RDREG
@@ -187,12 +203,15 @@ SETIIDATE
 * set TIMEII date and time
 * in: A = date to put in register
 
+
+:SETII2REG
+*
 * local procedure for updating 2 registers from 1 byte from DATI date structure
 * in: Y = DATI structure index to push to timeii registers
 * in: DATE = "DATI" data structure cf TIMEII.SETUP
 * unmodified : X,Y
 * modified : A
-:SETII2REG
+*
           STY :SAVY
           STX :SAVX
           JSR HEXTODIGI  ; A to X (uni) and Y (tens)
@@ -240,12 +259,14 @@ REGS
           FIN
 
 
+          DO E_GETIIDATE
+GETIIDATE
+*
 * get TIMEII date and time
 * in: IISLOT = slot number
 * out: TIMEII = TIMEII data structure
 * A,X,Y modified
-          DO E_GETIIDATE
-GETIIDATE
+*
           LDA IISLOT     ; slot * 16 -> X
 GETIIDATE1
           ASL
@@ -324,9 +345,11 @@ GETIIDATE1
 
           DO E_ISIIDATE
 ISIIDATE
+*
 * check if data from card are valid
 * TIMEII : data read by GETIIDATE
 * A,X,Y modified
+*
           LDY #0
           LDX #0
 :LOOP
