@@ -79,38 +79,19 @@ FWRREG1
 * in: Y = index in REGS of timeii reg
 * in: A = value to write
 * A is modified
+          DO E_SETIIDATE
 FWRREG2
           STY :SAVY     ; save Y
           PHA           ; save A
-          LDA :REGS,Y   ; get timeii register from REGS table
+          LDA REGS,Y   ; get timeii register from REGS table
           TAY           ; transfert in Y for FWRREG1
           PLA           ; retrieve value
           JSR FWRREG1   ; write data
           LDY :SAVY     ; restore Y
           RTS
 :SAVY     HEX 00
+          FIN
 
-
-* write register
-* in: X = SLOT * 16
-* in: Y = index in REGS of timeii reg
-* in: A = value to write
-* A is modified
-FWRREG
-          PHA
-          LDA :REGS,Y
-          AND #%00001111 ; reg num is < 16
-          STA :REG
-          STA BASE_A,X   ; select register
-          PLA
-          ORA #%00010000 ; store data and raise flag
-          STA BASE_B,X
-          LDA :REG
-          ORA #%00010000 ; +16 register and flag raised
-          STA BASE_A,X
-          LDA :REG       ; register and flag falled
-          STA BASE_A,X
-          RTS
 
 * set leap flag
 * in: X = SLOT * 16
@@ -145,7 +126,7 @@ TGLIILEAP
          LDY #7
          RDREG
          EOR #%00000100 ; tc bit
-         JSR FWRREG
+         JSR FWRREG2
 :EXIT    RLSLINE
          RTS
          FIN
@@ -187,11 +168,9 @@ SETIIDATE
           TAX
 
           HLDLINE
-* uni/ten value
           LDY #1
 :LOOP
           LDA DATE,Y
-          STA :VAL
           JSR :SETII2REG
           INY
           CPY #7
@@ -200,8 +179,7 @@ SETIIDATE
 * finaly write Day of Week
           LDY #0
           LDA DATE+_DOW
-          STA :UNI
-          JSR FWRREG
+          JSR FWRREG2
 * release line
           RLSLINE
           RTS
@@ -212,7 +190,8 @@ SETIIDATE
 * local procedure for updating 2 registers from 1 byte from DATI date structure
 * in: Y = DATI structure index to push to timeii registers
 * in: DATE = "DATI" data structure cf TIMEII.SETUP
-* out: DATE = "DATI" data structure cf TIMEII.SETUP
+* unmodified : X,Y
+* modified : A
 :SETII2REG
           STY :SAVY
           STX :SAVX
@@ -225,7 +204,7 @@ SETIIDATE
           TAY
 * write Units
           LDA :UNI
-          JSR FWRREG 
+          JSR FWRREG2
           INY
 
           LDA :TEN
@@ -239,27 +218,32 @@ SETIIDATE
           BNE :WRTEN
           ORA DATE+_LEA  ; set leap flag (cf GETDATI)
 :WRTEN
-          JSR FRREG
+          JSR FRREG2
           LDX :SAVX
           LDY :SAVY
           RTS
-:REGS
+
+:UNI      HEX 00
+:TEN      HEX 00
+:SAVX     HEX 00
+:SAVY     HEX 00
+REGS
 * TIMEII regs to update : must be in the same order than
 * DATE table from GETDATI and match 1 for 2
-          DFB DAYWEE,0  ; 0: 0,1
+          DFB DAYWEE,0      ; 0: 0,1
           DFB YEAUNI,YEATEN ; 1: 2,3
           DFB MONUNI,MONTEN ; 2: 4,5
 :DAT      DFB DATUNI,DATTEN ; 3: 6,7
 :HOU      DFB HOUUNI,HOUTEN ; 4: 8,9
           DFB MINUNI,MINTEN ; 5: 10,11
           DFB SECUNI,SECTEN ; 6: 12,13
-:UNI      HEX 00
-:TEN      HEX 00
-:SAVX     HEX 00
-:SAVY     HEX 00
           FIN
 
 
+* get TIMEII date and time
+* in: IISLOT = slot number
+* in: DATE = "DATI" data structure cf TIMEII.SETUP
+* A,X,Y modified
           DO E_GETIIDATE
 GETIIDATE
           LDA IISLOT     ; slot * 16 -> X
