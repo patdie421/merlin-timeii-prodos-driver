@@ -1,3 +1,4 @@
+* to disable/enable function just set 0/1
 E_SETIIDATE EQU 0
 E_GETIIDATE EQU 1
 E_ISIIDATE EQU 1
@@ -38,10 +39,57 @@ RLSLINE   MAC
 * in: Y = TIMEII register to read
 * out: A = value retrieved
 RDREG     MAC
-          LDA :REGS,Y
+          TYA
+          AND #%00001111
+          ORA #%00100000
           STA BASE_A,X
           LDA BASE_A,X
           <<<
+
+* write register
+* in: X = SLOT * 16
+* in: Y = timeii reg
+* in: A = value to write
+* A is modified
+* BASIC is done like this :
+* POKE BASE_A, REG
+* POKE BASE_B, VAL+16
+* POKE BASE_A, REG+16
+* POKE BASE_A, REG
+FWRREG1
+          PHA            ; save value to stack because
+          TYA            ; we need A for bit manipulation
+          AND #%00001111 ; reg num must be < 16
+          STA BASE_A,X   ; select register ~ POKE BASE_A, REG
+          PLA            ; now we need value
+          AND #%00001111 ; value has only 4 bits
+          ORA #%00010000 ; bit 5 up to store data
+          STA BASE_B,X   ; store data ~ POKE BASE_B, VAL+16
+          TYA            ; Y (reg num) in A for bit manipulation
+          AND #%00001111 ; reg num is < 16
+          ORA #%00010000 ; +16 register and flag raised
+          STA BASE_A,X   ; and store ~ POKE BASE_A, REG+16
+          AND #%00001111 ; 
+          STA BASE_A,X   ; ~ POKE BASE_A, REG
+          RTS
+
+
+* write register
+* in: X = SLOT * 16
+* in: Y = index in REGS of timeii reg
+* in: A = value to write
+* A is modified
+FWRREG2
+          STY :SAVY     ; save Y
+          PHA           ; save A
+          LDA :REGS,Y   ; get timeii register from REGS table
+          TAY           ; transfert in Y for FWRREG1
+          PLA           ; retrieve value
+          JSR FWRREG1   ; write data
+          LDY :SAVY     ; restore Y
+          RTS
+:SAVY     HEX 00
+
 
 * write register
 * in: X = SLOT * 16
