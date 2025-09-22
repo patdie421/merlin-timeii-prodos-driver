@@ -242,7 +242,7 @@ REGS
 
 * get TIMEII date and time
 * in: IISLOT = slot number
-* in: DATE = "DATI" data structure cf TIMEII.SETUP
+* out: TIMEII = TIMEII data structure
 * A,X,Y modified
           DO E_GETIIDATE
 GETIIDATE
@@ -323,8 +323,10 @@ GETIIDATE1
 
 
           DO E_ISIIDATE
-ISIIDATE                 ; check if data from card are
-                         ; valid
+ISIIDATE
+* check if data from card are valid
+* TIMEII : data read by GETIIDATE
+* A,X,Y modified
           LDY #0
           LDX #0
 :LOOP
