@@ -1,4 +1,5 @@
-          DO ]E_SETIIDATE+]E_TGLIILEAP
+
+         DO ]E_SETIIDATE+]E_TGLIILEAP
 E_FWRREG EQU 1
 E_REGS EQU 1
           ELSE
@@ -138,7 +139,7 @@ FWRREG2
           FIN
 
 
-         DO E_TGLIILEAP
+         DO ]E_TGLIILEAP
 ********************************
 TGLIILEAP
 *
@@ -158,7 +159,7 @@ TGLIILEAP
          FIN
 
 
-        DO E_GETIILEAP
+        DO ]E_GETIILEAP
 ********************************
 GETIILEAP
 *
@@ -184,33 +185,7 @@ GETIILEAP
          FIN
 
 
-         DO E_SETII24H
-SETII24H
-         HLDLINE 
-         LDY #5
-         RDREG
-         AND #%00001000 ; allready 24H
-         BNE :EXIT
-         JSR :H12TOH24
-:EXIT    RLSLINE
-         FIN
-:H12TOH24
-          TXA
-          PHA
-          TYA
-          PHA
-          LDA DECHOU
-          CLC
-          
-          JSR HEXTODIGI  ; A to X (uni) and Y (tens)
-          
-          PLA
-          TAY
-          PLA
-          TAX
-          DO E_SETIIDATE
-:SAVA     HEX 00
-
+          DO ]E_SETIIDATE
 ********************************
 SETIIDATE
 *
@@ -311,7 +286,7 @@ REGS
           FIN
 
 
-          DO E_GETIIDATE
+          DO ]E_GETIIDATE
 ********************************
 GETIIDATE
 *
@@ -397,7 +372,7 @@ GETIIDATE2               ; third entry (X = SLOT * 16)
           FIN
 
 
-          DO E_ISIIDATE
+          DO ]E_ISIIDATE
 ********************************
 ISIIDATE
 *
@@ -432,7 +407,7 @@ ISIIDATE
           FIN
 
 
-          DO E_PRNIIDATE
+          DO ]E_PRNIIDATE
 ********************************
 PRNIIDATE
 *
@@ -476,7 +451,7 @@ PRNIIDATE
           FIN
 
 
-          DO E_FINDSLOT
+          DO ]E_FINDSLOT
 ********************************
 *
 FINDSLOT
