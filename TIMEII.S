@@ -1,5 +1,5 @@
 * to disable/enable function just set 0/1
-E_SETIIDATE EQU 0
+E_SETIIDATE EQU 1
 E_GETIIDATE EQU 1
 E_ISIIDATE EQU 1
 E_PRNIIDATE EQU 0
