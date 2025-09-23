@@ -11,36 +11,43 @@ E_TGLIILEAP EQU 1
 * TIMEII CARD
 *
 * BASIC program used this lines to set one reg
-* R=<num reg>:REM 0 (sec unit) to 12 (year tens)
-* POKE BASE_A, REG
-* POKE BASE_B, VAL+16
-* POKE BASE_A, REG+16
-* POKE BASE_A, REG
-
+* R=<num reg>: REM 0 (sec unit) to 12 (year tens)
+* V=<val> [0-9]
+* POKE BASE_A, R
+* POKE BASE_B, V+16
+* POKE BASE_A, R+16
+* POKE BASE_A, R
+*
 
 HLDLINE   MAC
-* hold line
+*
+* hold cmd line
 * in: X = SLOT * 16
 * A is modified
+*
           LDA #%00001000 ; 16 ($10)
           STA BASE_B,X   ; Hold line high
           <<<
 
 
 RLSLINE   MAC
-* release line
-* in:  = SLOT * 16
+*
+* release cmd line
+* in:  X = SLOT * 16
 * A is modified
+*
           LDA #%00000000
           STA BASE_B,X
           <<<
 
 
 RDREG     MAC
+*
 * read register
 * in: X = SLOT * 16
-* in: Y = TIMEII register to read
+* in: Y = TIMEII register to read (TIMEII index)
 * out: A = value retrieved
+*
           TYA
           AND #%00001111
           ORA #%00100000
@@ -84,7 +91,7 @@ FWRREG2
 *
 * write TIMEII register from REGS index
 * in: X = SLOT * 16
-* in: Y = index in REGS of timeii reg
+* in: Y = index in REGS
 * in: A = value to write
 * A is modified
 *
@@ -170,19 +177,22 @@ GETIILEAP
          FIN
 
 
+          DO E_SETIIDATE
+SETIIDATE
+*
 * set TIMEII date and time
 * in: IISLOT = slot number
 * in: DATE = "DATI" data structure cf TIMEII.SETUP
 * A,X,Y modified
-          DO E_SETIIDATE
-SETIIDATE
+*
           LDA IISLOT     ; slot * 16 -> X
+SETIIDATE1               ; second entry (X = SLOT)
           ASL
           ASL
           ASL
           ASL
           TAX
-
+SETIIDATE2               ; third entry (X = SLOT * 16)
           HLDLINE
           LDY #1
 :LOOP
@@ -199,9 +209,6 @@ SETIIDATE
 * release line
           RLSLINE
           RTS
-
-* set TIMEII date and time
-* in: A = date to put in register
 
 
 :SETII2REG
@@ -268,13 +275,13 @@ GETIIDATE
 * A,X,Y modified
 *
           LDA IISLOT     ; slot * 16 -> X
-GETIIDATE1
+GETIIDATE1               ; second entry (X = SLOT)
           ASL
           ASL
           ASL
           ASL
           TAX
-
+GETIIDATE2               ; third entry (X = SLOT * 16)
           LDA #0         ; #read counter
           STA :COUNTER
 
@@ -378,6 +385,11 @@ ISIIDATE
 
           DO E_PRNIIDATE
 PRNIIDATE
+*
+* print data from TIMEII
+* TIMEII : data read by GETIIDATE
+* A,X,Y modified
+*
           PRINT DATESTR
           LDY #6
           LDA TIMEII,Y
