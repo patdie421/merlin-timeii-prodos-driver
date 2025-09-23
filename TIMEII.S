@@ -93,6 +93,7 @@ RDREG     MAC
 
 
           DO E_FWRREG
+********************************
 FWRREG1
 *
 * write to TIMEII register by TIMEII index
@@ -106,6 +107,7 @@ FWRREG1
 * POKE BASE_A, REG+16
 * POKE BASE_A, REG
 *
+********************************
           PHA            ; save value to stack because
           TYA            ; we need A for bit manipulation
           AND #%00001111 ; reg num must be < 16
@@ -123,6 +125,7 @@ FWRREG1
           RTS
 
 
+********************************
 FWRREG2
 *
 * write TIMEII register from REGS index
@@ -131,6 +134,7 @@ FWRREG2
 * in: A = value to write
 * A is modified
 *
+********************************
           STY :SAVY     ; save Y
           PHA           ; save A
           LDA REGS,Y   ; get timeii register from REGS table
@@ -144,6 +148,7 @@ FWRREG2
 
 
          DO E_TGLIILEAP
+********************************
 TGLIILEAP
 *
 * toggle leap bit of DATTEN register
@@ -151,6 +156,7 @@ TGLIILEAP
 * in: Y = TIMEII register
 * A is modified
 *
+********************************
          HLDLINE
          LDY #7
          RDREG
