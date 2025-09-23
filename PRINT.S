@@ -3,12 +3,14 @@ E_PRINT1 EQU 1
 
 
          DO E_PRINTPAS1
+********************************
 PRINTPAS1
 *
 * print pascal string
 * in: PASSTR = address of string (L/H) to print
 * modified : A,Y
 *
+********************************
           RJMP PRINTS
 PASSTR    DW $0
 PRINTS
@@ -35,12 +37,14 @@ PRINTS
 
 
           DO E_PRINT1
+********************************
 PRINT1
 *
 * print zero ended string
 * in: ZEROSTR = address of string (L/H) to print
 * modified : A,Y
 *
+********************************
           RJMP PRINTA
 ZEROSTR  DW $0
 PRINTA
