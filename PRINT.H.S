@@ -1,8 +1,8 @@
 PRINT     MAC
           LDA #<]1
-          STA PRINTSTR
+          STA ZEROSTR
           LDA #>]1
-          STA PRINTSTR+1
+          STA ZEROSTR+1
           JSR PRINT1
           <<<
 
