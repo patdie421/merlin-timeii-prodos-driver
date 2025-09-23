@@ -2,10 +2,11 @@
 E_SETIIDATE EQU 1
 E_GETIIDATE EQU 1
 E_ISIIDATE EQU 1
-E_PRNIIDATE EQU 0
+E_PRNIIDATE EQU 1
 E_FINDSLOT EQU 0
 E_GETIILEAP EQU 1
 E_TGLIILEAP EQU 1
+
           DO E_SETIIDATE+E_TGLIILEAP
 E_FWRREG EQU 1
 E_REGS EQU 1
@@ -56,9 +57,9 @@ SETLEAP  MAC
 * A is modified
 *
          JSR GETIILEAP
-         BCS ]EXIT
+         BCS ]CONTINUE
          JSR TGLIILEAP
-]EXIT
+]CONTINUE
          <<<
 
 
@@ -70,9 +71,9 @@ CLRLEAP  MAC
 * A is modified
 *
          JSR GETIILEAP
-         BCC ]EXIT
+         BCC ]CONTINUE
          JSR TGLIILEAP
-]EXIT
+]CONTINUE
          <<<
 
 
@@ -161,6 +162,7 @@ TGLIILEAP
 
 
         DO E_GETIILEAP
+********************************
 GETIILEAP
 *
 * get leap bit from DATTEN register
@@ -169,6 +171,7 @@ GETIILEAP
 * out: Carry = 1 : leap, Carry = 0 not leap
 * A is modified
 *
+********************************
          HLDLINE
          LDY #7
          RDREG
@@ -184,7 +187,34 @@ GETIILEAP
          FIN
 
 
+         DO E_SETII24H
+SETII24H
+         HLDLINE 
+         LDY #5
+         RDREG
+         AND #%00001000 ; allready 24H
+         BNE :EXIT
+         JSR :H12TOH24
+:EXIT    RLSLINE
+         FIN
+:H12TOH24
+          TXA
+          PHA
+          TYA
+          PHA
+          LDA DECHOU
+          CLC
+          
+          JSR HEXTODIGI  ; A to X (uni) and Y (tens)
+          
+          PLA
+          TAY
+          PLA
+          TAX
           DO E_SETIIDATE
+:SAVA     HEX 00
+
+********************************
 SETIIDATE
 *
 * set TIMEII date and time
@@ -192,6 +222,11 @@ SETIIDATE
 * in: DATE = "DATI" data structure cf TIMEII.SETUP
 * A,X,Y modified
 *
+* ep: SETIIDATE1
+*   in: A = slot
+* ep: SETIIDATE2
+*   in: X = solt x 16
+********************************
           LDA IISLOT     ; slot * 16 -> X
 SETIIDATE1               ; second entry (X = SLOT)
           ASL
@@ -218,6 +253,7 @@ SETIIDATE2               ; third entry (X = SLOT * 16)
           RTS
 
 
+********************************
 :SETII2REG
 *
 * local procedure for updating 2 registers from 1 byte from DATI date structure
@@ -226,6 +262,7 @@ SETIIDATE2               ; third entry (X = SLOT * 16)
 * unmodified : X,Y
 * modified : A
 *
+********************************
           STY :SAVY
           STX :SAVX
           JSR HEXTODIGI  ; A to X (uni) and Y (tens)
@@ -278,13 +315,15 @@ REGS
 
 
           DO E_GETIIDATE
+********************************
 GETIIDATE
 *
-* get TIMEII date and time
+* get TIMEII date and time from card
 * in: IISLOT = slot number
 * out: TIMEII = TIMEII data structure
 * A,X,Y modified
 *
+********************************
           LDA IISLOT     ; slot * 16 -> X
 GETIIDATE1               ; second entry (X = SLOT)
           ASL
@@ -362,12 +401,14 @@ GETIIDATE2               ; third entry (X = SLOT * 16)
 
 
           DO E_ISIIDATE
+********************************
 ISIIDATE
 *
 * check if data from card are valid
 * TIMEII : data read by GETIIDATE
 * A,X,Y modified
 *
+********************************
           LDY #0
           LDX #0
 :LOOP
@@ -395,12 +436,14 @@ ISIIDATE
 
 
           DO E_PRNIIDATE
+********************************
 PRNIIDATE
 *
 * print data from TIMEII
 * TIMEII : data read by GETIIDATE
 * A,X,Y modified
 *
+********************************
           PRINT DATESTR
           LDY #6
           LDA TIMEII,Y
@@ -437,7 +480,15 @@ PRNIIDATE
 
 
           DO E_FINDSLOT
+********************************
+*
 FINDSLOT
+*
+* Find first slot with TIMEII card
+* Card must have a correct date/time
+* stored
+*
+********************************
           LDY #0
 LOOP
           LDA :SLOTS,Y
@@ -459,12 +510,13 @@ LOOP
           FIN
 
 
-IISLOT    HEX FF
-TIMEII
-DECSEC    HEX 00
-DECMIN    HEX 00
-DECHOU    HEX 00
-DECDOW    HEX 00
-DECDAY    HEX 00
-DECMON    HEX 00
-DECYEA    HEX 00
+IISLOT    HEX FF         ; slot of TIMEII card
+TIMEII                   ; Copy of date/time from TIMEII 
+                         ; UNI + 10 x TENS
+DECSEC    HEX 00         ; secondes
+DECMIN    HEX 00         ; minutes
+DECHOU    HEX 00         ; hour
+DECDOW    HEX 00         ; day of week
+DECDAY    HEX 00         ; day
+DECMON    HEX 00         ; month
+DECYEA    HEX 00         ; year
