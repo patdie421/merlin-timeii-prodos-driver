@@ -49,9 +49,9 @@ PRINT1
 ZEROSTR  DW $0
 PRINTA
           LDY #0
-          LDA PRINTSTR
+          LDA ZEROSTR
           STA PTR
-          LDA PRINTSTR+1
+          LDA ZEROSTR+1
           STA PTR+1
 :LOOP     LDA (PTR),Y
           BEQ :EXIT
