@@ -6,6 +6,11 @@ E_PRNIIDATE EQU 0
 E_FINDSLOT EQU 0
 E_GETIILEAP EQU 1
 E_TGLIILEAP EQU 1
+          DO E_SETIIDATE+E_TGLIILEAP
+E_FWRREG EQU 1
+          ELSE
+E_FWRREG EQU 0
+          FIN
 
 *
 * TIMEII CARD
@@ -41,6 +46,34 @@ RLSLINE   MAC
           <<<
 
 
+SETLEAP  MAC
+*
+* set leap flag
+* in: X = SLOT * 16
+* in: Y = TIMEII register
+* A is modified
+*
+         JSR GETIILEAP
+         BCS ]EXIT
+         JSR TGLIILEAP
+]EXIT
+         <<<
+
+
+CLRLEAP  MAC
+*
+* clear leap flag if set
+* in: X = SLOT * 16
+* in: Y = TIMEII register
+* A is modified
+*
+         JSR GETIILEAP
+         BCC ]EXIT
+         JSR TGLIILEAP
+]EXIT
+         <<<
+
+
 RDREG     MAC
 *
 * read register
@@ -56,6 +89,7 @@ RDREG     MAC
           <<<
 
 
+          DO E_FWRREG
 FWRREG1
 *
 * write to TIMEII register by TIMEII index
@@ -86,7 +120,6 @@ FWRREG1
           RTS
 
 
-          DO E_SETIIDATE
 FWRREG2
 *
 * write TIMEII register from REGS index
@@ -107,34 +140,6 @@ FWRREG2
           FIN
 
 
-SETLEAP  MAC
-*
-* set leap flag
-* in: X = SLOT * 16
-* in: Y = TIMEII register
-* A is modified
-*
-         JSR GETIILEAP
-         BCS ]EXIT
-         JSR TGLIILEAP
-]EXIT
-         <<<
-
-
-CLRLEAP  MAC
-*
-* clear leap flag if set
-* in: X = SLOT * 16
-* in: Y = TIMEII register
-* A is modified
-*
-         JSR GETIILEAP
-         BCC ]EXIT
-         JSR TGLIILEAP
-]EXIT
-         <<<
-
-
          DO E_TGLIILEAP
 TGLIILEAP
 *
@@ -153,7 +158,7 @@ TGLIILEAP
          FIN
 
 
-        DO E_TGLIILEAP
+        DO E_GETIILEAP
 GETIILEAP
 *
 * get leap bit from DATTEN register
@@ -424,6 +429,7 @@ PRNIIDATE
           RTS
           FIN
 
+
           DO E_FINDSLOT
 FINDSLOT
           LDY #0
@@ -445,6 +451,7 @@ LOOP
 :SAVY     HEX 00
 :SLOTS    HEX 07,06,05,04,02,01,00 ; possible slot
           FIN
+
 
 IISLOT    HEX FF
 TIMEII
