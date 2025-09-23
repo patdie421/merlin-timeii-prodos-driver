@@ -8,8 +8,10 @@ E_GETIILEAP EQU 1
 E_TGLIILEAP EQU 1
           DO E_SETIIDATE+E_TGLIILEAP
 E_FWRREG EQU 1
+E_REGS EQU 1
           ELSE
 E_FWRREG EQU 0
+E_REGS EQU 0
           FIN
 
 *
@@ -258,6 +260,10 @@ SETIIDATE2               ; third entry (X = SLOT * 16)
 :TEN      HEX 00
 :SAVX     HEX 00
 :SAVY     HEX 00
+          FIN
+
+
+          DO E_REGS
 REGS
 * TIMEII regs to update : must be in the same order than
 * DATE table from GETDATI and match 1 for 2
