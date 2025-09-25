@@ -7,7 +7,7 @@ Because I never found a driver I decided to develop it myself.
 Merlin.8 was in 80s and 90s the defacto Macro Assembler for Apple II computer. To understand how programming was done at that time, I decided to do everything from a real Apple IIe, and this is all the more necessary since no emulator simulates this card!  
 But because I have no native debugger and because I haven't use assembler since a long time, I use an emulator (Virtual ][) to debug some part of code.  
 # My inspiration?
-A bad copy of the documentation (see resources), an image of the DOS 3.3 disk (basic programs to use the card) and the PRODOS DRIVER project (https://github.com/a2stuff/prodos-drivers). I took several portions of code directly from this project, in particular the system programs chaining code (.system).  
+A bad copy of the documentation (see resources), an image of the DOS 3.3 disk (basic programs to use the card) and the PRODOS DRIVERS project (https://github.com/a2stuff/prodos-drivers). I took several portions of code directly from this project, in particular the system programs chaining code (.system).  
 # How to use it?
 - For a fresh initialized disk (hard or floppy) bootable with PRODOS (prodos file on the disk), copy the timeii.system program on the root directory.  
 - For a existing disk, copy timeii.system to the root directory and then you have to move the program at the begining of the catalog list. For that you can use CAT.DOCTOR (available in PRODOS 2.4.3: https://releases.prodos8.com/ProDOS_2_4_3.po)
@@ -17,6 +17,6 @@ A bad copy of the documentation (see resources), an image of the DOS 3.3 disk (b
 - code optimization and documentation (this code really lacks comments) - work in progress  
 - improve autodetection of the card  
 - ~~slot selection based on program name (nameSz.system => selects slot z instead of auto-detection) - work in progress~~ done  
-- update leap year flag of the card at startup (base on year stored by the card and century calculation with "Day Of Week" number). This will work greate for date between 1900 and 2399. (year 2400+ users, email me, I will help you work around the issue ...)  
+- update leap year flag of the card at startup (base on year stored by the card and century calculation with "Day Of Week" number). This will work greate for date between 1900 and 2399 (year 2400+ users, email me, I will help you work around the issue ...)  
 - setup program to set date/time (with automatic leap year and day of week calculation) and install the driver on boot disk - work in progress (date/time setup in test phase)  
 - add the driver in PRODOS DRIVER project (or a fork)  
