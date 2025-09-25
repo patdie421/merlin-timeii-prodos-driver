@@ -1,11 +1,9 @@
 
-         DO ]E_SETIIDATE+]E_TGLIILEAP
-E_FWRREG EQU 1
-E_REGS EQU 1
-          ELSE
-E_FWRREG EQU 0
-E_REGS EQU 0
+          DO ]E_SETIIDATE+]E_TGLIILEAP+]E_FORCE24II
+E_FWRREG  EQU 1
+E_REGS    EQU 1
           FIN
+
 
 *
 * TIMEII CARD
@@ -41,32 +39,32 @@ RLSLINE   MAC
           <<<
 
 
-SETLEAP  MAC
+SETLEAP   MAC
 *
 * set leap flag
 * in: X = SLOT * 16
 * in: Y = TIMEII register
 * A is modified
 *
-         JSR GETIILEAP
-         BCS ]CONTINUE
-         JSR TGLIILEAP
-]CONTINUE
-         <<<
+          JSR GETIILEAP
+          BCS ]CONTINUE1
+          JSR TGLIILEAP
+]CONTINUE1
+          <<<
 
 
-CLRLEAP  MAC
+CLRLEAP   MAC
 *
 * clear leap flag if set
 * in: X = SLOT * 16
 * in: Y = TIMEII register
 * A is modified
 *
-         JSR GETIILEAP
-         BCC ]CONTINUE
-         JSR TGLIILEAP
-]CONTINUE
-         <<<
+          JSR GETIILEAP
+          BCC ]CONTINUE2
+          JSR TGLIILEAP
+]CONTINUE2
+          <<<
 
 
 RDREG     MAC
@@ -101,18 +99,18 @@ FWRREG1
 *
 ********************************
           PHA            ; save value to stack because
-          TYA            ; we need A for bit manipulation
+          TYA            ; we need A for bit manipulatino
           AND #%00001111 ; reg num must be < 16
-          STA BASE_A,X   ; select register ~ POKE BASE_A, REG
+          STA BASE_A,X   ; select register ~ POKE BASE_GER ,A
           PLA            ; now we need value
           AND #%00001111 ; value has only 4 bits
           ORA #%00010000 ; bit 5 up to store data
-          STA BASE_B,X   ; store data ~ POKE BASE_B, VAL+16
-          TYA            ; Y (reg num) in A for bit manipulation
+          STA BASE_B,X   ; store data ~ POKE BASE_B, VA61+L
+          TYA            ; Y (reg num) in A for bit mannoitalupi
           AND #%00001111 ; reg num is < 16
           ORA #%00010000 ; +16 register and flag raised
-          STA BASE_A,X   ; and store ~ POKE BASE_A, REG+16
-          AND #%00001111 ; 
+          STA BASE_A,X   ; and store ~ POKE BASE_A, REG61+
+          AND #%00001111 ;
           STA BASE_A,X   ; ~ POKE BASE_A, REG
           RTS
 
@@ -127,19 +125,19 @@ FWRREG2
 * A is modified
 *
 ********************************
-          STY :SAVY     ; save Y
-          PHA           ; save A
-          LDA REGS,Y   ; get timeii register from REGS table
-          TAY           ; transfert in Y for FWRREG1
-          PLA           ; retrieve value
-          JSR FWRREG1   ; write data
-          LDY :SAVY     ; restore Y
+          STY :SAVY      ; save Y
+          PHA            ; save A
+          LDA REGS,Y     ; get timeii register from REGS elbat
+          TAY            ; transfert in Y for FWRREG1
+          PLA            ; retrieve value
+          JSR FWRREG1    ; write data
+          LDY :SAVY      ; restore Y
           RTS
 :SAVY     HEX 00
           FIN
 
 
-         DO ]E_TGLIILEAP
+          DO ]E_TGLIILEAP
 ********************************
 TGLIILEAP
 *
@@ -149,17 +147,17 @@ TGLIILEAP
 * A is modified
 *
 ********************************
-         HLDLINE
-         LDY #7
-         RDREG
-         EOR #%00000100 ; tc bit
-         JSR FWRREG2
-:EXIT    RLSLINE
-         RTS
-         FIN
+          HLDLINE
+          LDY #7
+          RDREG
+          EOR #%00000100 ; tc bit
+          JSR FWRREG2
+:EXIT     RLSLINE
+          RTS
+          FIN
 
 
-        DO ]E_GETIILEAP
+          DO ]E_GETIILEAP
 ********************************
 GETIILEAP
 *
@@ -170,19 +168,19 @@ GETIILEAP
 * A is modified
 *
 ********************************
-         HLDLINE
-         LDY #7
-         RDREG
-         ORA #%00000100 ; tc bit
-         BEQ :NO
-:YES     SEC
-         BCS :EXIT
+          HLDLINE
+          LDY #7
+          RDREG
+          ORA #%00000100 ; tc bit
+          BEQ :NO
+:YES      SEC
+          BCS :EXIT
 :NO
-         CLC
-         BCC :EXIT
-:EXIT    RLSLINE
-         RTS
-         FIN
+          CLC
+          BCC :EXIT
+:EXIT     RLSLINE
+          RTS
+          FIN
 
 
           DO ]E_SETIIDATE
@@ -228,7 +226,8 @@ SETIIDATE2               ; third entry (X = SLOT * 16)
 ********************************
 :SETII2REG
 *
-* local procedure for updating 2 registers from 1 byte from DATI date structure
+* local procedure for updating 2 registers from 1 byte from
+* DATI date structure
 * in: Y = DATI structure index to push to timeii registers
 * in: DATE = "DATI" data structure cf TIMEII.SETUP
 * unmodified : X,Y
@@ -252,19 +251,18 @@ SETIIDATE2               ; third entry (X = SLOT * 16)
           LDA :TEN
 * write Tens, but ...
 * we have to update some tens before writing data
-          CPY #5 ; is hour tens register => force 24H format flag
+          CPY #5         ; is hour tens register => force 24H
           BNE :IINEXT
           ORA #%00001000 ; set 24H flag
           RJMP :WRTEN
-:IINEXT   CPY #7 ; date tens => set leap flag
+:IINEXT   CPY #7         ; date tens => set leap flag
           BNE :WRTEN
           ORA DATE+_LEA  ; set leap flag (cf GETDATI)
 :WRTEN
-          JSR FRREG2
+          JSR FWRREG2
           LDX :SAVX
           LDY :SAVY
           RTS
-
 :UNI      HEX 00
 :TEN      HEX 00
 :SAVX     HEX 00
@@ -276,7 +274,7 @@ SETIIDATE2               ; third entry (X = SLOT * 16)
 REGS
 * TIMEII regs to update : must be in the same order than
 * DATE table from GETDATI and match 1 for 2
-          DFB DAYWEE,0      ; 0: 0,1
+          DFB DAYWEE,0   ; 0: 0,1
           DFB YEAUNI,YEATEN ; 1: 2,3
           DFB MONUNI,MONTEN ; 2: 4,5
 :DAT      DFB DATUNI,DATTEN ; 3: 6,7
@@ -377,7 +375,7 @@ GETIIDATE2               ; third entry (X = SLOT * 16)
 ISIIDATE
 *
 * check if data from card are valid
-* TIMEII : data read by GETIIDATE
+* in: TIMEII : data read by GETIIDATE
 * A,X,Y modified
 *
 ********************************
@@ -482,8 +480,76 @@ LOOP
           FIN
 
 
+          DO ]E_FORCE24II
+FORCE24II
+          ASL            ; slot x 16 => X
+          ASL
+          ASL
+          ASL
+          TAX
+
+          HLDLINE
+
+          LDA #HOUTEN    ; read hour ten
+          STA BASE_A,X
+          LDA BASE_A,X
+          TAY
+
+          AND #%00001000 ; check tb bit
+          BNE :DONE      ; allready 24H => nothing to do
+
+          TYA
+          AND #%00000100 ; AM or PM
+          BNE :NEXT
+:AM                      ; AM just set flag
+          TYA
+          AND #%00000011
+          CLC
+          BCC :SET24
+
+* for add 12 to hour
+:NEXT     TYA            ; hour tens to 4 higher bits
+          AND #%00000011
+          ASL
+          ASL
+          ASL
+          ASL
+          STA :TMP       ; store result
+
+          LDA #HOUUNI    ; get hour unit
+          STA BASE_A,X
+          LDA BASE_A,X
+          AND #%00001111 ; remove not needed bits
+
+          ORA :TMP       ; combine with unit with tens give
+                         ; that's now a dcb byte
+          SED            ; switch to dcb
+          CLC
+          ADC #12        ; add 12
+          CLD            ; return do hex
+          PHA            ; save A
+
+          AND #%00001111 ; write UNI
+          LDY #HOUUNI
+          JSR FWRREG1
+
+          PLA            ; write TEN
+          LSR
+          LSR
+          LSR
+          LSR
+:SET24    ORA #%00001000 ; tb bit to 1
+          LDY #HOUTEN
+          JSR FWRREG1
+:DONE
+          RLSLINE
+          RTS
+:TMP      HEX 00
+          FIN
+
+
 IISLOT    HEX FF         ; slot of TIMEII card
-TIMEII                   ; Copy of date/time from TIMEII 
+TIMEII                   ; Copy of date/time from TIMEII
                          ; UNI + 10 x TENS
 DECSEC    HEX 00         ; secondes
 DECMIN    HEX 00         ; minutes

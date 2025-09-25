@@ -10,7 +10,6 @@ ROMIN2    EQU $C082      ; Rom no write
 
 OPCJMPA   EQU $4C        ; JMP ABSOLUTE instruction
 
-* NUMSLOT EQU 7
 MM        EQU 0
 
 * zero page temporary data
@@ -20,15 +19,16 @@ TMP2      EQU $EC
 PTR       EQU $EB
 PTR2      EQU $ED
 
-OPNBUFF   EQU $4000
-BUFF      EQU $4800
+* buffers for MLI
+OPNBUFF   EQU $4000      ; 1KB
+BUFF      EQU $4800      ; 8kB
 
 * System Calls
 GET_TIME  EQU $82
 
-RELOCORG  EQU $1000
-SYSORG    EQU $2000
-SYSSIZE   EQU $BF00-SYSORG
+RELOCORG  EQU $1000      ; address for code relocated
+SYSORG    EQU $2000      ; sys program start address
+SYSSIZE   EQU $BF00-SYSORG ; max prg size
 
 
           USE MONITOR.H
@@ -37,13 +37,14 @@ SYSSIZE   EQU $BF00-SYSORG
           DO DEBUG
           USE PRINT.H
           FIN
+          USE DATETIME.H
           USE TIMEII.H
 
 
           ORG SYSORG
 
-STAR
-          JSR RELOC
+START
+          JSR RELOC      ; reloc some code and data
 
 * Check clock driver installed
           LDA MACHID
@@ -51,24 +52,38 @@ STAR
           BEQ CONTINUE
           JMP NEXTSYS
 CONTINUE
-          JSR CHKSLOTS
+          JSR GETSFN     ; get slot from name
+          BCS FINDSLOT   ; no slot in filename go autodetect
+          STA SLOT
+          JSR FORCE24II  ; card must in 24H mode
+          JSR GETIIDATE1 ; try to read a date (time ii)
+          JSR ISIIDATE   ; check if date is ok
+          BCC INSTALL    ; OK, install driver
+          BCS NEXTSYS    ; KO, run next .system
+FINDSLOT
+          JSR GETTIISLT  ; search for timeii card slot
           CMP #$FF       ; FF => not slot found
           BEQ NEXTSYS
           STA SLOT
 * load driver
-          JSR INSTDRV
+INSTALL
+          LDA SLOT
+          JSR UPDTLEAP
+          JSR INSTDRV    ; install the driver
 NEXTSYS
-          JSR GETMYNAME
-          BCC EXEC
-          JMP QUITPRG1
-EXEC      JMP EXENXTSYS
+          JSR GETMYNAME  ; who am i
+          JMP EXENXTSYS  ; execute next .system file
 
 
+*
+* retrive program name
+* needed to find the next .system file in root directory
+*
 GETMYNAME
 * get my name
           LDX PATHNAME
-          BEQ :ERREXIT
-          LDY #0         ; Y = length
+          BEQ :ERREXIT   ; pathname is empty
+          LDY #0
 :LOOP1
           LDA PATHNAME,X
           AND #%01111111 ; ignore high bit
@@ -91,41 +106,102 @@ GETMYNAME
           DEX
           DEY
           BNE :LOOP2
+:OKEXIT
           CLC
           RTS
 :ERREXIT
           SEC
           RTS
 *
-MYNAME    DS 18
+MYNAME    DS 17 MAX 15 chars + 1 start + 1 zero
 
 
+*
+* Update leap flag for current date
+* in: A slot
+* modified : A
+*
+UPDTLEAP
+          STX :SAVX
+          STY :SAVY
+
+:DONE
+          LDY :SAVY
+          LDX :SAVX
+          RTS
+:SAVX     HEX 00
+:SAVY     HEX 00
+
+
+GETSFN                   ; get slot from name
+          LDA PATHNAME
+          BEQ :ERR       ; empty string
+          CMP #8         ; len(systemstr)+len("Sx") - 1
+          BCC :ERR       ; A <= 8 -> impossible ...
+          LDX SYSTEMSTR
+          LDY PATHNAME
+:LOOP1    LDA PATHNAME,Y ; loop ".system"
+          CMP SYSTEMSTR,X
+          BNE :ERR       ; char does not match exit
+          DEY
+          DEX
+          BNE :LOOP1
+                         ; all chars matched
+          LDA PATHNAME,Y ; read possible slot number
+          TAX            ; backup A
+          DEY            ; next char
+          LDA PATHNAME,Y ; must be
+          CMP #'S'       ; an "S"
+          BNE :ERR       ; no exit
+          TXA            ; check if A is in range
+          CMP #'1'       ; >= "1"
+          BCC :ERR       ; no exit
+          CMP #'8'       ; < "8"
+          BCS :ERR       ; no exit
+          SEC            ; yes
+          SBC #'0'       ; convert char to number
+          CLC            ; carry = 0 => ok
+          RTS
+:ERR
+          LDA #$FF
+          SEC            ; carry = 1 => ko
+          RTS
+
+
+*
 * before trying to get timeii data check known card
 * signature
-CHKSLOTS
-          LDA #7
+*
+GETTIISLT
+          LDA #7         ; form 7 to 1 loop
           STA :SLOT
 :LOOP
           LDA :SLOT
-          JSR KNWNCARD   ; known kind of card in this slot ?
-          CMP #0         ; yes, next slot
-          BNE :NEXT
-          LDA :SLOT
-          JSR GETIIDATE1 ; no, try to read a timeii date
-          JSR ISIIDATE   ; check if data read is ok
-          BCS :NEXT      ; no, not a timeii card or time not set
-          LDA :SLOT      ; yes, return slot
-          CLC            ; carry clear => slot found
+          JSR KNWNCARD   ; check known cards
+          CMP #0
+          BNE :NEXT      ; card knowned => not TIMEII
+:TIMEIITRY               ; unknown card
+          LDA :SLOT can be a time II
+          JSR FORCE24II  ; card must in 24H mode
+          JSR GETIIDATE1 ; try to read a date (time ii)
+          JSR ISIIDATE   ; check if date is ok
+          BCS :NEXT      ; no next slot
+          LDA :SLOT      ; yes return slot
+          CLC            ; carry = 0 => no error
           RTS
 :NEXT     DEC :SLOT
           BNE :LOOP
-          LDA #$FF
-          SEC            ; carry set => no slot found
+          LDA #$FF       ; error
+          SEC            ; carry = 1 => error
           RTS
-
 :SLOT     HEX 00
 
 
+*
+* check signature
+* A <= slot
+* X,Y <= signature table address
+*
 CHECKSIG0                ; identify card signature
 * get param
           CLC
@@ -173,6 +249,11 @@ CHECKSIG  MAC
           JSR CHECKSIG0
           <<<
 
+
+*
+* A <= SLOT : slot to check
+* A => discover code (0, F0 or F1)
+*
 KNWNCARD
           STA :SLOT
           STX :SAVX
@@ -187,7 +268,6 @@ KNWNCARD
           BCS :NEXT2
           LDA #$F1       ; Pascal protocol card
           RJMP :DONE
-* add get timeii data and check is date
 :NEXT2
           LDA #$00       ; no card identified
 :DONE
@@ -201,7 +281,7 @@ KNWNCARD
 :PASCAL   HEX 05,38,07,18,0B,01,FF
 
 
-EXENXTSYS
+EXENXTSYS                ; exec next sys prog
           LDA DEVNUM
           STA ONLINEP+OL_UNI
           MLI_CALL ONLINE;ONLINEP
@@ -222,6 +302,7 @@ EXENXTSYS
           BNE :LOOP1
           INY            ; update str size for "/" added
           STY PATHNAME
+
 OPENDIR
           MLI_CALL OPEN  ;OPENP
           BCC :OK2
@@ -235,7 +316,7 @@ READDIR
           MLI_CALL READ  ;READP
           BCC :OK3
           LDX "C"
-          JMP :ERROREOF1
+          JMP MLIERROR
 :OK3
           LDA BUFF+VD_ENTLGH
           STA ENTLGH
@@ -273,14 +354,14 @@ READDIR
 
           LDY MYNAME
           CPY LEN
-          BNE :FOUND     ; diff len => not me
+          BNE :FOUND     ; diff len => not me so we find it
 :LOOP2    LDA (PTR),Y
           CMP MYNAME,Y
-          BNE :FOUND
+          BNE :FOUND     ; diff char => not me so we find it
           DEY
           BNE :LOOP2
           SEC
-          ROR MYFLAG
+          ROR MYFLAG     ; found myself, now next one will be executed
 :NEXTFE
           LDA PTR
           CLC
@@ -294,7 +375,7 @@ READDIR
           BCC :ENTRY
 :RDBLK
           MLI_CALL READ  ;READP
-          BCS :ERROREOF
+          BCS :ERROREOF  ; nothing more to read or error
           LDA #0
           STA NUM
           LDA #<BUFF4
@@ -302,26 +383,23 @@ READDIR
           LDA #>BUFF4
           STA PTR+1
           RJMP :ENTRY
-
 :ERROREOF                ; no .system found to execute
-          LDX #"E"
-:ERROREOF1
-          CMP #$4C       ; eof test
-          BEQ :EXIT
-          CMP #0         ; no error
-          BEQ :EXIT
+          CMP #$4C       ; eof ?
+          BEQ :EXIT      ; goto close and quit
+          LDX #"E"       ; an error occured
           JMP MLIERROR
 :EXIT     JMP QUITPRG
 :FOUND
           BIT MYFLAG
           BPL :NEXTFE
 
-          MLI_CALL CLOSE ;CLOSEP
           LDX PATHNAME
           INX
           LDA #'/'
           LDY #0
           STA PATHNAME,X
+          STX PATHNAME
+
 :LOOP3    INY
           INX
           LDA (PTR),Y
@@ -329,7 +407,17 @@ READDIR
           CPY LEN
           BCC :LOOP3
           STX PATHNAME
-          JMP SYSEXEC
+
+          MLI_CALL CLOSE ;CLOSEP
+          BCC :EXEC
+          JSR PRBYTE
+          LDA #"-"
+          JSR COUT
+          LDA #"F"
+          JSR COUT
+          JSR CROUT
+          JMP QUITPRG1
+:EXEC     JMP SYSEXEC
 
 BUFF4     EQU BUFF+$4
 ENTLGH    HEX 00
@@ -339,6 +427,7 @@ LEN       HEX 00
 MYFLAG    HEX 00
 ONLINEP   D_ONLINE 00    ;BUFF
 SYSTEMSTR STR '.SYSTEM'
+
 
 INSTDRV
 * set slot * 16
@@ -366,7 +455,7 @@ INSTDRV
           DEY
           BPL :LOOP
 
-* inform time driver installed in prodos
+* declare time driver installed in prodos
           LDA MACHID
           ORA #$01
           STA MACHID
@@ -374,7 +463,6 @@ INSTDRV
 * updating time driver vector
           LDA #OPCJMPA   ; enable driver
           STA DATETIME
-
           JSR DATETIME   ; first run
 
 * disable write to bank 1
@@ -384,6 +472,7 @@ INSTDRV
           RTS
 
 
+* error and exit
 MLIERROR
           STX ERRCOMP
           JSR PRBYTE
@@ -392,7 +481,6 @@ MLIERROR
           LDA ERRCOMP
           JSR COUT
           JSR CROUT
-          JSR BELL
 QUITPRG   MLI_CALL CLOSE ;CLOSEP
 QUITPRG1  MLI_CALL QUIT  ;QUITP
           BRK
@@ -402,7 +490,21 @@ ERRCOMP   HEX 00
           DO DEBUG
           USE PRINT
           FIN
+
+]E_SETIIDATE  EQU 0
+]E_GETIIDATE  EQU 1
+]E_ISIIDATE  EQU 1
+]E_PRNIIDATE  EQU 0
+]E_FINDSLOT  EQU 0
+]E_GETIILEAP  EQU 0
+]E_TGLIILEAP  EQU 0
+]E_FORCE24II  EQU 1
           USE TIMEII
+
+]E_GETDAYOFW  EQU 1
+]E_ISBXTILE  EQU 1
+]E_GETCENT  EQU 1
+          USE DATETIME
 
 *
 *

@@ -1,0 +1,18 @@
+* ENABLE OR DISABLE FUNCTIONS
+]E_GET1NUM  EQU 0
+]E_GETNUMS  EQU 0
+]E_GETPATH  EQU 0
+]E_PRINT0  EQU 0
+]E_PRINTDEC  EQU 0
+
+
+PRINT     MAC
+]E_PRINT0  EQU 1
+          JSR PRINT0
+          DW ]1
+          <<<
+
+PRINTLN   MAC
+          PRINT ]1
+          JSR CROUT
+          <<<

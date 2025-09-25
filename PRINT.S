@@ -1,16 +1,4 @@
-E_PRINTPAS1 EQU 1
-E_PRINT1 EQU 1
-
-
-         DO E_PRINTPAS1
-********************************
 PRINTPAS1
-*
-* print pascal string
-* in: PASSTR = address of string (L/H) to print
-* modified : A,Y
-*
-********************************
           RJMP PRINTS
 PASSTR    DW $0
 PRINTS
@@ -33,25 +21,16 @@ PRINTS
           RJMP :LOOP
 :EXIT
           RTS
-          FIN
 
 
-          DO E_PRINT1
-********************************
 PRINT1
-*
-* print zero ended string
-* in: ZEROSTR = address of string (L/H) to print
-* modified : A,Y
-*
-********************************
           RJMP PRINTA
-ZEROSTR  DW $0
+PRINTSTR  DW $0
 PRINTA
           LDY #0
-          LDA ZEROSTR
+          LDA PRINTSTR
           STA PTR
-          LDA ZEROSTR+1
+          LDA PRINTSTR+1
           STA PTR+1
 :LOOP     LDA (PTR),Y
           BEQ :EXIT
@@ -60,4 +39,3 @@ PRINTA
           RJMP :LOOP
 :EXIT
           RTS
-          FIN
