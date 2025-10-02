@@ -118,7 +118,7 @@ FWRREG1
 ********************************
 FWRREG2
 *
-* write TIMEII register from REGS index
+* write TIMEII register by using REGS index
 * in: X = SLOT * 16
 * in: Y = index in REGS
 * in: A = value to write
