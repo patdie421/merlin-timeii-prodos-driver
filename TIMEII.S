@@ -1,7 +1,8 @@
-
+]E_FWRREG  EQU 0
+]E_REGS    EQU 0
           DO ]E_SETIIDATE+]E_TGLIILEAP+]E_FORCE24II
-E_FWRREG  EQU 1
-E_REGS    EQU 1
+]E_FWRREG  EQU 1
+]E_REGS    EQU 1
           FIN
 
 
@@ -82,7 +83,7 @@ RDREG     MAC
           <<<
 
 
-          DO E_FWRREG
+          DO ]E_FWRREG
 ********************************
 FWRREG1
 *
@@ -270,7 +271,7 @@ SETIIDATE2               ; third entry (X = SLOT * 16)
           FIN
 
 
-          DO E_REGS
+          DO ]E_REGS
 REGS
 * TIMEII regs to update : must be in the same order than
 * DATE table from GETDATI and match 1 for 2
