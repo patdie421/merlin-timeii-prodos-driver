@@ -46,6 +46,7 @@ SETUP
           LDA #$FF
           STA $BF5C
           STA $BF5D
+          LDA SBM48
           ORA #SBMMASK   ; set reservation
           STA SBM48
           LDA #0
