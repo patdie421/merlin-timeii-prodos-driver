@@ -1,7 +1,7 @@
 # What's that?
 This is a PRODOS driver for the AE Time II Clock card.  
 This card was build for Apple II/II+ computers with DOS 3.3 and has been replaced in the AE catalog by more efficient clock cards usable with PRODOS (like the TIMEMASTER II H.O. or clocks integrated in other cards like Serial Pro, Z-RAM ultra, ...).  
-So there is no official PRODOS support for this card.  
+So there was no official PRODOS support for this card.  
 Because I never found a driver I decided to develop it myself.  
 # Why Merlin?
 Merlin.8 was in 80s and 90s the defacto Macro Assembler for Apple II computer. To understand how programming was done at that time, I decided to do everything from a real Apple IIe, and this is all the more necessary since no emulator simulates this card!  
