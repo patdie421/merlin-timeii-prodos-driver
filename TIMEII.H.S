@@ -22,6 +22,15 @@ MONTEN    EQU 42         ; 10 A
 YEAUNI    EQU 43         ; 11 B
 YEATEN    EQU 44         ; 12 C
 
+* TimeII struct
+_IISEC    EQU 0          ; secondes
+_IIMIN    EQU 1          ; minutes
+_IIHOU    EQU 2          ; hour
+_IIDOW    EQU 3          ; day of week
+_IIDAY    EQU 4          ; day
+_IIMON    EQU 5          ; month
+_IIYEA    EQU 6          ; year
+
 * TimeII address
 BASE_A    EQU $C082
 BASE_B    EQU $C081
