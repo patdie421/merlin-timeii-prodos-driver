@@ -44,7 +44,7 @@ HEXTODIGI
           ASL
           CLC
           ADC BVAL
-          ADC  BVAL
+          ADC BVAL
           STA BVAL       ; BVAL = Tens x 10
 * org A - BVAL => unit
           LDA AVAL
