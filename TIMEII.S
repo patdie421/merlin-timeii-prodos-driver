@@ -416,32 +416,32 @@ PRNIIDATE
 *
 ********************************
           PRINT DATESTR
-          LDY #6
+          LDY #_IIYEA
           LDA TIMEII,Y
           JSR PRINTDEC
           LDA #"-"
           JSR COUT
-          DEY
+          DEY ; #_IIMON
           LDA TIMEII,Y
           JSR PRINTDEC
           LDA #"-"
           JSR COUT
-          DEY
+          DEY ; #_IIDAY
           LDA TIMEII,Y
           JSR PRINTDEC
           LDA #" "
           JSR COUT
-          LDY #2
+          LDY #_IIHOU
           LDA TIMEII,Y
           JSR PRINTDEC
           LDA #":"
           JSR COUT
-          DEY
+          DEY ; #_IIMIN
           LDA TIMEII,Y
           JSR PRINTDEC
           LDA #":"
           JSR COUT
-          DEY
+          DEY ; #_IISEC
           LDA TIMEII,Y
           JSR PRINTDEC
           JSR CROUT
