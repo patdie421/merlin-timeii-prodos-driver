@@ -591,14 +591,14 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
 *          ADC TMP1       ; (2) + TMP1
 *                         ; (=12)
 * S = (TMP2*2*2+TMP2)*2+TMP1
-          LDA TMP2       ; (2)
+*         LDA TMP2       ; (2)
           ASL            ; (1)
           ASL            ; (1)
           CLC            ; (1)
           ADC TMP2       ; (2)
           ASL            ; (1)
           ADC TMP1       ; (2)
-                         ; (=10 => -2)
+                         ; (=8 => -4)
 
           PHA            ; To stack
 
