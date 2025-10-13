@@ -529,14 +529,14 @@ RELOC                    ; relocate 255 bytes
 * DRIVER CODE TO RELOCATE
 *
 *
-TMP1      EQU $EB
-TMP2      EQU $EC
+_UNI      EQU $EB
+_TEN      EQU $EC
 DRIVER
           PHP
           SEI
-          LDA TMP1       ; (+2)
+          LDA _UNI       ; (+2)
           PHA            ; (+1)
-          LDA TMP2       ; (+2)
+          LDA _TEN       ; (+2)
           PHA            ; (+1)
 * Slot index
 SM01      LDX #MM        ; self modified MM <- SLOT * 16
@@ -554,6 +554,7 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           TYA            ; start reading units
           STA BASE_A,X
           LDA BASE_A,X
+          STA _UNI
           STA TMP1
 * is this register DAY OF WEEK (ie regiter #38) ?
 *          CPY #DAYWEE    ; (-1)
@@ -578,7 +579,8 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           AND #%0011
 *          STA TMP2      ; (-2)
 :NEXT3
-          STA TMP2       ; (+2)
+          STA _TEN       ; (+2)
+*          STA TMP2       ; (+2)
 * Combine units and tens in 1 byte
 * S =  TMP2 x 10 + TMP1 = TMP2 x 2x2x2 + TMP2 + TMP2 + TMP1
 *          LDA TMP2       ; (2)
@@ -594,9 +596,9 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           ASL            ; (1)
           ASL            ; (1)
           CLC            ; (1)
-          ADC TMP2       ; (2)
+          ADC _TEN       ; (2)
           ASL            ; (1)
-          ADC TMP1       ; (2)
+          ADC _UNI       ; (2)
                          ; (=8 => -4)
 
           PHA            ; To stack
@@ -639,9 +641,9 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
 *          PLA            ; (-1) we did not seconds - skip seconds
 :EXIT
           PLA            ; (+1)
-          STA TMP2       ; (+2)
+          STA _TEN       ; (+2)
           PLA            ; (+1)
-          STA TMP1       ; (+2)
+          STA _UNI       ; (+2)
           PLP
           RTS
 DRVEND    EQU *
