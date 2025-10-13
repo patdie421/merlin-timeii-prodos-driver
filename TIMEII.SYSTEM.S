@@ -546,8 +546,8 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           STA BASE_B,X
 
 * Read all timeII card registers
-          LDY #MINUNI    ; first  register (second unit), no need of seconds start with minutes
-*          LDY #SECUNI    ; first  register (second unit)
+          LDY #MINUNI    ; (+1) first register (minute unit), no need of seconds start with minutes
+*          LDY #SECUNI    ; (-1) first register (second unit)
 :LOOP
           CPY #DAYWEE    ; (+1)
           BEQ :NEXT      ; (+1) skip completly DAY of WEEK
@@ -591,7 +591,6 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
 *          ADC TMP1       ; (2) + TMP1
 *                         ; (=12)
 * S = (TMP2*2*2+TMP2)*2+TMP1
-*         LDA TMP2       ; (2)
           ASL            ; (1)
           ASL            ; (1)
           CLC            ; (1)
