@@ -4,8 +4,8 @@ This card was build for Apple II/II+ computers with DOS 3.3 and has been replace
 So there was no official PRODOS support for this card.  
 Because I never found a driver I decided to develop it myself.  
 # Why Merlin?
-To understand how programming was done at that time, I decided to do everything by using a real Apple IIe, and this is all the more necessary since no emulator simulates this card!  
-But because I have no native debugger and because I haven't use assembler since a long time, I use an emulator (Virtual ][) to debug some part of code.  
+I could use a modern tool chain but I'd to understand how programming was done in the 80s/90s, I decided to do everything by using a real Apple IIe (and now also on Apple IIc+), and this is all the more necessary since no emulator simulates this card!  
+But because I have no native debugger and because I haven't use assembler since a long time (since 30 years), I use an emulator (Virtual ][) to debug some part of code.  
 # My inspiration?
 A bad copy of the documentation (see resources), an image of the DOS 3.3 disk (basic programs to use the card) and the PRODOS DRIVERS project (https://github.com/a2stuff/prodos-drivers). I took several portions of code directly from this project, in particular the system programs chaining code (.system).  
 # How to use it?
