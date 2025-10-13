@@ -553,14 +553,15 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
 :NEXT3
 * Combine units and tens in 1 byte
 * S =  TMP2 x 10 + TMP1 = TMP2 x 2x2x2 + TMP2 + TMP2 + TMP1
-          LDA TMP2
-          ASL            ; TMP2 x 2
-          ASL            ; TMP2 x 2
-          ASL            ; TMP2 x 2
-          CLC
-          ADC TMP2       ; + TMP2
-          ADC TMP2       ; + TMP2
-          ADC TMP1       ; + TMP1
+          LDA TMP2       ; (2)
+          ASL            ; (1) TMP2 x 2
+          ASL            ; (1) TMP2 x 2
+          ASL            ; (1) TMP2 x 2
+          CLC            ; (1)
+          ADC TMP2       ; (2) + TMP2
+          ADC TMP2       ; (2) + TMP2
+          ADC TMP1       ; (2) + TMP1
+                         : (=12)
           PHA            ; To stack
 
 * an other register to read ?
