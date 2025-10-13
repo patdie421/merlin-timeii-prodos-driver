@@ -513,7 +513,10 @@ ERRCOMP   HEX 00
 DRIVER
           PHP
           SEI
-
+          LDA TMP1       ; (+2)
+          PHA            ; (+1)
+          LDA TMP2       ; (+2)
+          PHA            ; (+1)
 * Slot index
 SM01      LDX #MM        ; self modified MM <- SLOT * 16
 
@@ -530,38 +533,50 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           STA TMP1
 * is this register DAY OF WEEK (ie regiter #38) ?
           CPY #DAYWEE
-          BNE :NEXT1
-          LDA #0         ; this register has no tens
-                         ; replace by a 0
-          STA TMP2       ; in TMP2
-          BEQ :NEXT3     ; kind of "relative JMP" (Z=1 set by LDA #0)
-:NEXT1
+          BEQ :NEXT3     ; we'll have garbage in tmp2 but DAYWEE is not used
+*          BNE :NEXT1     ; (-2)
+*          LDA #0         ; (-2) this register has no tens
+*                         ; replace by a 0
+*          STA TMP2       ; (-2) in TMP2 (-2)
+*          BEQ :NEXT3     ; (-2) kind of "relative JMP" (Z=1 set by LDA #0)
+* :NEXT1
           INY            ; start reading tens
           TYA
           STA BASE_A,X
           LDA BASE_A,X
-          STA TMP2
+*          STA TMP2      ; (-2)
 * check register having flags
           CPY #HOUTEN
           BEQ :NEXT2
           CPY #DATTEN
           BNE :NEXT3
 :NEXT2                   ; remove HOUTEN and DATTEN flags
-          LDA TMP2
+*          LDA TMP2      ; (-2)
           AND #%0011
-          STA TMP2
+*          STA TMP2      ; (-2)
 :NEXT3
+          STA TMP2       ; (+2)
 * Combine units and tens in 1 byte
 * S =  TMP2 x 10 + TMP1 = TMP2 x 2x2x2 + TMP2 + TMP2 + TMP1
+*          LDA TMP2       ; (2)
+*          ASL            ; (1) TMP2 x 2
+*          ASL            ; (1) TMP2 x 2
+*          ASL            ; (1) TMP2 x 2
+*          CLC            ; (1)
+*          ADC TMP2       ; (2) + TMP2
+*          ADC TMP2       ; (2) + TMP2
+*          ADC TMP1       ; (2) + TMP1
+*                         ; (=12)
+* S = (TMP2*2*2+TMP2)*2+TMP1
           LDA TMP2       ; (2)
-          ASL            ; (1) TMP2 x 2
-          ASL            ; (1) TMP2 x 2
-          ASL            ; (1) TMP2 x 2
+          ASL            ; (1)
+          ASL            ; (1)
           CLC            ; (1)
-          ADC TMP2       ; (2) + TMP2
-          ADC TMP2       ; (2) + TMP2
-          ADC TMP1       ; (2) + TMP1
-                         : (=12)
+          ADC TMP2       ; (2)
+          ASL            ; (1)
+          ADC TMP1       ; (2)
+                         ; (=10)
+
           PHA            ; To stack
 
 * an other register to read ?
@@ -601,6 +616,10 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
 
           PLA            ; skip seconds
 :EXIT
+          PLA            ; (+1)
+          STA TMP2       ; (+2)
+          PLA            ; (+1)
+          STA TMP1       ; (+2)
           PLP
           RTS
 DRVEND    EQU *
