@@ -525,7 +525,8 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           STA BASE_B,X
 
 * Read all timeII card registers
-          LDY #SECUNI    ; first  register (second unit)
+          LDY #MINUNI    ; first  register (second unit)
+*          LDY #SECUNI    ; first  register (second unit)
 :LOOP
           TYA            ; start reading units
           STA BASE_A,X
@@ -614,7 +615,7 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           PLA            ; Minute
           STA TIMELO
 
-          PLA            ; skip seconds
+*          PLA            ; (-1) we did not seconds - skip seconds
 :EXIT
           PLA            ; (+1)
           STA TMP2       ; (+2)
