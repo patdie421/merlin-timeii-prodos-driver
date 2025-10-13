@@ -13,8 +13,6 @@ OPCJMPA   EQU $4C        ; JMP ABSOLUTE instruction
 MM        EQU 0
 
 * zero page temporary data
-TMP1      EQU $EB
-TMP2      EQU $EC
 PTR       EQU $EB        ; (+$EC)
 PTR2      EQU $ED        ; (+$ED)
 
@@ -486,6 +484,26 @@ QUITPRG1  MLI_CALL QUIT  ;QUITP
 ERRCOMP   HEX 00
 
 
+RELOC                    ; relocate 255 bytes
+          LDA #<_TORELOC_
+          STA PTR
+          LDA #>_TORELOC_
+          STA PTR+1
+          LDA #_ERELOC-_SRELOC+1
+          STA :LEN
+          LDX #0
+          LDY #0
+:LOOP     LDA (PTR),Y
+          STA RELOCORG,X
+          CPX :LEN
+          BEQ :EXIT
+          INX
+          INY
+          RJMP :LOOP
+:EXIT     RTS
+:LEN      HEX 00
+
+
           DO DEBUG
           USE PRINT
           FIN
@@ -505,11 +523,14 @@ ERRCOMP   HEX 00
 ]E_GETCENT  EQU 1
           USE DATETIME
 
+
 *
 *
 * DRIVER CODE TO RELOCATE
 *
 *
+TMP1      EQU $EB
+TMP2      EQU $EC
 DRIVER
           PHP
           SEI
@@ -528,18 +549,17 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           LDY #MINUNI    ; first  register (second unit), no need of seconds start with minutes
 *          LDY #SECUNI    ; first  register (second unit)
 :LOOP
-          CPY #DAYWEE
-          BEQ :NEXT      ; skip completly DAY of WEEK
+          CPY #DAYWEE    ; (+1)
+          BEQ :NEXT      ; (+1) skip completly DAY of WEEK
           TYA            ; start reading units
           STA BASE_A,X
           LDA BASE_A,X
           STA TMP1
 * is this register DAY OF WEEK (ie regiter #38) ?
-*          CPY #DAYWEE
-*          BEQ :NEXT3     ; we'll have garbage in tmp2 but DAYWEE is not used
+*          CPY #DAYWEE    ; (-1)
+*          BEQ :NEXT3     ; (-1) we'll have garbage in tmp2 but DAYWEE is not used
 *          BNE :NEXT1     ; (-2)
-*          LDA #0         ; (-2) this register has no tens
-*                         ; replace by a 0
+*          LDA #0         ; (-2) this register has no tens replace by a 0
 *          STA TMP2       ; (-2) in TMP2
 *          BEQ :NEXT3     ; (-2) kind of "relative JMP" (Z=1 set by LDA #0)
 * :NEXT1
@@ -628,29 +648,9 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
 DRVEND    EQU *
 
 
-RELOC                    ; relocate 255 bytes
-          LDA #<_TORELOC_
-          STA PTR
-          LDA #>_TORELOC_
-          STA PTR+1
-          LDA #_ERELOC-_SRELOC+1
-          STA :LEN
-          LDX #0
-          LDY #0
-:LOOP     LDA (PTR),Y
-          STA RELOCORG,X
-          CPX :LEN
-          BEQ :EXIT
-          INX
-          INY
-          RJMP :LOOP
-:EXIT     RTS
-:LEN      HEX 00
-
 _TORELOC_ EQU *
           ORG RELOCORG
-_SRELOC   EQU *
-
+_SRELOC   EQU *          ; start relocation (SYSEXEC must be in a safe place)
 SYSEXEC
           LDA #<SYSORG
           STA READP+RD_BUFF
@@ -690,6 +690,6 @@ SYSEXEC
 SLOT      HEX 00
 OPENP     D_OPEN PATHNAME;OPNBUFF
 CLOSEP    D_CLOSE 00
-READP     D_READ 00      ;BUFF;$2000
+READP     D_READ 00;BUFF;$2000
 QUITP     D_QUIT
-_ERELOC   EQU *
+_ERELOC   EQU *          ; end relocation
