@@ -15,8 +15,8 @@ MM        EQU 0
 * zero page temporary data
 TMP1      EQU $EB
 TMP2      EQU $EC
-PTR       EQU $EB
-PTR2      EQU $ED
+PTR       EQU $EB        ; (+$EC)
+PTR2      EQU $ED        ; (+$ED)
 
 * buffers for MLI
 OPNBUFF   EQU $4000      ; 1KB
@@ -112,7 +112,7 @@ GETMYNAME
           SEC
           RTS
 *
-MYNAME    DS 17 MAX 15 chars + 1 start + 1 zero
+MYNAME    DS 17          ; MAX 15 chars + 1 start + 1 zero
 
 
 *
@@ -180,7 +180,7 @@ GETTIISLT
           CMP #0
           BNE :NEXT      ; card knowned => not TIMEII
 :TIMEIITRY               ; unknown card
-          LDA :SLOT can be a time II
+          LDA :SLOT      ; can be a time II
           JSR FORCE24II  ; card must in 24H mode
           JSR GETIIDATE1 ; try to read a date (time ii)
           JSR ISIIDATE   ; check if date is ok
