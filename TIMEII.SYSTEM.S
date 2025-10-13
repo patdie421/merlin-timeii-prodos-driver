@@ -555,7 +555,7 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           STA BASE_A,X
           LDA BASE_A,X
           STA _UNI
-          STA TMP1
+*          STA TMP1
 * is this register DAY OF WEEK (ie regiter #38) ?
 *          CPY #DAYWEE    ; (-1)
 *          BEQ :NEXT3     ; (-1) we'll have garbage in tmp2 but DAYWEE is not used
