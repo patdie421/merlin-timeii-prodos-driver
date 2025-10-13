@@ -528,13 +528,15 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           LDY #MINUNI    ; first  register (second unit), no need of seconds start with minutes
 *          LDY #SECUNI    ; first  register (second unit)
 :LOOP
+          CPY #DAYWEE
+          BEQ :NEXT      ; skip completly DAY of WEEK
           TYA            ; start reading units
           STA BASE_A,X
           LDA BASE_A,X
           STA TMP1
 * is this register DAY OF WEEK (ie regiter #38) ?
-          CPY #DAYWEE
-          BEQ :NEXT3     ; we'll have garbage in tmp2 but DAYWEE is not used
+*          CPY #DAYWEE
+*          BEQ :NEXT3     ; we'll have garbage in tmp2 but DAYWEE is not used
 *          BNE :NEXT1     ; (-2)
 *          LDA #0         ; (-2) this register has no tens
 *                         ; replace by a 0
@@ -581,7 +583,7 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           PHA            ; To stack
 
 * an other register to read ?
-          INY
+:NEXT     INY
           CPY #YEATEN
           BMI :LOOP      ; next unit register
 
@@ -607,7 +609,7 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           ORA DATELO
           STA DATELO
 
-          PLA            ; skip day of week
+*          PLA            ; (-1) skip day of week
 
           PLA            ; Hour
           STA TIMEHI
