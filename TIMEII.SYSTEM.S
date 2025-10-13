@@ -534,7 +534,7 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           LDA #0         ; this register has no tens
                          ; replace by a 0
           STA TMP2       ; in TMP2
-          BEQ :NEXT3     ; kind of "relative JMP"
+          BEQ :NEXT3     ; kind of "relative JMP" (Z=1 set by LDA #0)
 :NEXT1
           INY            ; start reading tens
           TYA
