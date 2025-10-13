@@ -525,7 +525,7 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           STA BASE_B,X
 
 * Read all timeII card registers
-          LDY #MINUNI    ; first  register (second unit)
+          LDY #MINUNI    ; first  register (second unit), no need of seconds start with minutes
 *          LDY #SECUNI    ; first  register (second unit)
 :LOOP
           TYA            ; start reading units
