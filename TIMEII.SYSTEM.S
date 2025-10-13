@@ -13,7 +13,6 @@ OPCJMPA   EQU $4C        ; JMP ABSOLUTE instruction
 MM        EQU 0
 
 * zero page temporary data
-TMP       EQU $EB
 TMP1      EQU $EB
 TMP2      EQU $EC
 PTR       EQU $EB
