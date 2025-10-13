@@ -575,7 +575,7 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           ADC TMP2       ; (2)
           ASL            ; (1)
           ADC TMP1       ; (2)
-                         ; (=10)
+                         ; (=10 => -2)
 
           PHA            ; To stack
 
