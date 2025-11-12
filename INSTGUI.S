@@ -92,10 +92,10 @@ MENUINST  ENT
 CHPREF
 * JSR STATUSBAR
           STRCPY MYPATH  ;TMPSTR;#1
-          BOX #3         ;#7;#34;#5;:NEWPREFT
-          GETSTRW TMPSTR ;#63;LCHARS
+          BOX #3;#7;#34;#5;:NEWPREFT
+          GETSTRW TMPSTR;#63;LCHARS
           BCS :EXIT
-          STRCPY TMPSTR  ;MYPATH;#2
+          STRCPY TMPSTR;MYPATH;#2
 :EXIT
           PHA
           RWINDOW
@@ -114,7 +114,7 @@ DOINST    ENT
           BNE :KO1
           JMP :NEXT2
 :KO1
-          BOX #3         ;#7;#34;#7;:ARINSTT
+          BOX #3;#7;#34;#7;:ARINSTT
           STRCENTER :ARINST1;32
           STRPRNTL :ARINST1
           STRCENTER :ARINST2;32
@@ -126,7 +126,7 @@ DOINST    ENT
           SEC
           JMP :EXIT
 :NEXT2
-          BOX #4         ;#6;#32;#7;:GENORSLTT_S
+          BOX #4;#6;#32;#7;:GENORSLTT_S
           STRCENTER :GENORSLT1_S;30
           STRPRNTL :GENORSLT1_S
           STRCENTER :GENORSLT2_S;30
@@ -152,7 +152,7 @@ DOINST    ENT
           SEC
           RTS
 :SUCCESS
-          BOX #6         ;#7;#28;#6;SUCCES_S
+          BOX #6;#7;#28;#6;SUCCES_S
           STRCENTER :SUCCMSG;26
           STRPRNTLL :SUCCMSG
           STRCENTER KPRESS_S;26
@@ -181,7 +181,7 @@ DODEL
 :NEXT2    JSR CNTDRV     ; count driver files on volume
           LDA DELFOUND
           BNE :NEXT
-          BOX #6         ;#7;#28;#6;:NOTFNDT
+          BOX #6;#7;#28;#6;:NOTFNDT
           STRCENTER :NOTFND;26
           STRPRNTLL :NOTFND
           STRCENTER KPRESS_S;26
@@ -193,7 +193,7 @@ DODEL
           CLC
           ADC #7
           STA :HBOXSZ
-          BOX #4         ;#6;#32;:HBOXSZ;CONFIRM_S
+          BOX #4;#6;#32;:HBOXSZ;CONFIRM_S
           STRPRNTLL :WLBEDEL
           JSR LSTDRV
           JSR CROUT
@@ -218,7 +218,7 @@ DODEL
           SEC
           RTS
 :SUCCES
-          BOX #6         ;#7;#28;#6;SUCCES_S
+          BOX #6;#7;#28;#6;SUCCES_S
           STRCENTER :SUCCMSG;26
           STRPRNTLL :SUCCMSG
           STRCENTER KPRESS_S;26
@@ -236,7 +236,7 @@ DODEL
 
 
 ERROR
-          BOX #6         ;#7;#28;#6;ERROR_S
+          BOX #6;#7;#28;#6;ERROR_S
           STRCENTER :ERRMSG;22
           STRPRNT :ERRMSG
           LDA ERRNO
@@ -258,7 +258,7 @@ ERROR
 CHKVOL
           LDA PATHNAME
           BNE :NEXT1
-          BOX #4         ;#7;#32;#6;INFO_S
+          BOX #4;#7;#32;#6;INFO_S
           STRCENTER NOVOL;30
           STRPRNTL NOVOL
           STRCENTER KPRESS_S;30
@@ -273,7 +273,7 @@ CHKVOL
 
 
 BOXSEL
-          BOX #3         ;#2;#34;#20;:MENUSEL_S
+          BOX #3;#2;#34;#20;:MENUSEL_S
 :SCAN     JSR GETVOLS
           JSR HOME
           JSR PRINTVOLS  ; print volumes + char index
