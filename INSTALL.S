@@ -207,7 +207,7 @@ FILECPY   ENT
           STA OPENP1+OP_PATH
           LDA :SRCPTR+1
           STA OPENP1+OP_PATH+1
-          MLI_CALL OPEN  ;OPENP1
+          MLI_CALL OPEN;OPENP1
           BCC :OK1
           LDX "G"
           JMP :ERREXIT
@@ -249,7 +249,7 @@ FILECPY   ENT
           JMP :ERREXIT
 :OK2
 * open dest
-          MLI_CALL OPEN  ;OPENP2
+          MLI_CALL OPEN;OPENP2
           BCC :OK3
           LDX "I"
           JMP :ERREXIT
@@ -261,7 +261,7 @@ FILECPY   ENT
 * copy loop
           LDY #0
 :LOOP
-          MLI_CALL READ  ;READP
+          MLI_CALL READ;READP
           BCC :OK4
           LDX "J"
           JMP :EOFORERR
@@ -271,7 +271,7 @@ FILECPY   ENT
           LDA READP+RD_TCNT+1
           STA WRITEP+WR_RCNT+1
 
-          MLI_CALL WRITE ;WRITEP
+          MLI_CALL WRITE;WRITEP
           BCC :OK5
           LDX "C"
           JMP :ERREXIT
@@ -286,8 +286,8 @@ FILECPY   ENT
           JMP :ERREXIT
 :EXIT
 * close dest
-          MLI_CALL CLOSE ;CLOSEP1
-          MLI_CALL CLOSE ;CLOSEP2
+          MLI_CALL CLOSE;CLOSEP1
+          MLI_CALL CLOSE;CLOSEP2
           RTS
 * errors
 :ERREXIT
@@ -296,7 +296,7 @@ FILECPY   ENT
           PHA
           LDA #0         ; close all opened files
           STA CLOSEP2+CL_REF
-          MLI_CALL CLOSE ;CLOSEP2
+          MLI_CALL CLOSE;CLOSEP2
           PLA
           TAX
           PLA
@@ -383,12 +383,12 @@ INSTDRV   ENT
           STA TMPSTR     ; source
           STA TMPSTR2    ; dest
 
-          STRCPY MYPATH  ;TMPSTR;#2
+          STRCPY MYPATH;TMPSTR;#2
           INC TMPSTR
           LDA #'/'
           LDY TMPSTR
           STA TMPSTR,Y
-          STRCAT TMPSTR  ;INSTSRCSTR
+          STRCAT TMPSTR;INSTSRCSTR
 
           STRCPY PATHNAME;TMPSTR2;#2
           INC TMPSTR2
@@ -525,7 +525,7 @@ FINDMECB
           STA SYSFENTS+1,Y
           INC NBFOUND
 
-          STRCMP MESTR   ;FILENAME
+          STRCMP MESTR;FILENAME
           BCS :EXITKO
           JMP :EXITOK
 :EXITKO
@@ -661,7 +661,7 @@ LOADVOL   ENT
           LDA #>BLKSZ
           STA READP+RD_RCNT+1
 :RDBLK                   ; read loop
-          MLI_CALL READ  ;READP
+          MLI_CALL READ;READP
           BCC :OK3
           LDX "C"
           JMP :EOFORERR
@@ -699,7 +699,7 @@ LOADVOL   ENT
           JMP MLIERROR
 
 :EXIT
-          MLI_CALL CLOSE ;CLOSEP1
+          MLI_CALL CLOSE;CLOSEP1
           RTS
 ENTLGH    HEX 00         ; entry length
 ENTBLK    HEX 00         ; nb entry per block
