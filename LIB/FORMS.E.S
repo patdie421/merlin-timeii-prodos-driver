@@ -1,0 +1,3 @@
+BOX1      EXT
+BOX2      EXT
+STATUSBAR EXT
