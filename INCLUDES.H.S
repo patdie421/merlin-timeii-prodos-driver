@@ -1,4 +1,4 @@
-
+          DO 0
 * prodos entry points
 * MLI EQU $BF00
 GETBUFR   EQU $BEF5      ; Get buffer
@@ -19,6 +19,7 @@ SBM48     EQU $BF61      ; $48 to $4F
 SBMMASK   EQU %11000000  ; 512B for buffer and data
 SBMMASKI  EQU %00111111  ; SBMMASK XOR $FF for release
 * DEVNUM EQU $BF30
+          FIN
 
 * page zero tempory data
 PTR       EQU $EB        ; $EB and EC
@@ -26,6 +27,7 @@ STRPTR    EQU $ED        ; $ED and EE
 AVAL      EQU $CE        ; 2 tempory memory bytes
 BVAL      EQU $CF
 
+          DO 0
 * reset vector
 VRESETC   EQU $3D3
 VRESETH   EQU $3D0
@@ -42,6 +44,7 @@ MEMFLAG   EQU SLOT2+1
 HPOSSAV   EQU MEMFLAG+1
 VPOSSAV   EQU HPOSSAV+1
 DATE      EQU VPOSSAV    ; 8 bytes
+          FIN
 
 _SEC      EQU 6
 _MIN      EQU 5
