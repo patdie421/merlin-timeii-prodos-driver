@@ -1,25 +1,11 @@
           LST OFF
-          DSK INSTALL.L
+          DSK OBJ/INSTALL.L
           REL
 
 PTR       EQU $ED
 PTR2      EQU $EB
 
-RWBUFFSZ  EQU $3000
-* memory reservation
-RWBUFF    EQU $5000      ; 12kb
-FBUFF1    EQU $8000      ; 1kb for opened file
-FBUFF2    EQU $8400      ; 1kb for opened file
-TMPBUFF   EQU $8800      ; 512b
-SYSFENTS  EQU  $8A00     ; 51x2b
-SWPMMTMP  EQU $8B00      ; 128b
-PREFIX    EQU $8C00      ; 64b
-MYPATH    EQU $8C40      ; 64b
-TMPSTR    EQU $8C80      ; 256b (overlap TMPSTR2)
-TMPSTR2   EQU $8D00      ; 128b
-BUFFSTR   EQU $8D80      ; 128b
-_FREE1    EQU $8E00
-
+          USE MEMALLOC.H
           USE LIB/MONITOR.H
           USE LIB/PRODOS.H
           USE LIB/CMP.H
@@ -207,7 +193,7 @@ FILECPY   ENT
           STA OPENP1+OP_PATH
           LDA :SRCPTR+1
           STA OPENP1+OP_PATH+1
-          MLI_CALL OPEN;OPENP1
+          MLI_CALL OPEN  ;OPENP1
           BCC :OK1
           LDX "G"
           JMP :ERREXIT
@@ -223,12 +209,12 @@ FILECPY   ENT
           LDA #>RWBUFF
           STA READP+RD_BUFF+1
           STA WRITEP+WR_BUFF+1
-                         ; LDA #$00
+
           LDA #<RWBUFFSZ
           STA READP+RD_RCNT
-                         ; LDA #$40
           LDA #>RWBUFFSZ
           STA READP+RD_RCNT+1
+
 * prepare delete/create MLI data
           LDA :DSTPTR
           STA DESTROYP+DS_PATH
@@ -249,7 +235,7 @@ FILECPY   ENT
           JMP :ERREXIT
 :OK2
 * open dest
-          MLI_CALL OPEN;OPENP2
+          MLI_CALL OPEN  ;OPENP2
           BCC :OK3
           LDX "I"
           JMP :ERREXIT
@@ -261,7 +247,7 @@ FILECPY   ENT
 * copy loop
           LDY #0
 :LOOP
-          MLI_CALL READ;READP
+          MLI_CALL READ  ;READP
           BCC :OK4
           LDX "J"
           JMP :EOFORERR
@@ -270,8 +256,11 @@ FILECPY   ENT
           STA WRITEP+WR_RCNT
           LDA READP+RD_TCNT+1
           STA WRITEP+WR_RCNT+1
+          LDA #$0
+          STA WRITEP+WR_TCNT
+          STA WRITEP+WR_TCNT+1
 
-          MLI_CALL WRITE;WRITEP
+          MLI_CALL WRITE ;WRITEP
           BCC :OK5
           LDX "C"
           JMP :ERREXIT
@@ -286,8 +275,8 @@ FILECPY   ENT
           JMP :ERREXIT
 :EXIT
 * close dest
-          MLI_CALL CLOSE;CLOSEP1
-          MLI_CALL CLOSE;CLOSEP2
+          MLI_CALL CLOSE ;CLOSEP1
+          MLI_CALL CLOSE ;CLOSEP2
           RTS
 * errors
 :ERREXIT
@@ -296,7 +285,7 @@ FILECPY   ENT
           PHA
           LDA #0         ; close all opened files
           STA CLOSEP2+CL_REF
-          MLI_CALL CLOSE;CLOSEP2
+          MLI_CALL CLOSE ;CLOSEP2
           PLA
           TAX
           PLA
@@ -306,7 +295,7 @@ FILECPY   ENT
 * move file up in directory, like a bubble ...
 BUBBLEUP
           LDA ENTLGH
-          STA SWAPMEM+SWAPMEM_CNT
+          STA SWAPMEM1+SWAPMEM_CNT
           LDX NBFOUND
           BEQ :EXIT
 :LOOP
@@ -320,17 +309,17 @@ BUBBLEUP
           TAY
 
           LDA SYSFENTS,Y
-          STA SWAPMEM+SWAPMEM_A
+          STA SWAPMEM1+SWAPMEM_A
           LDA SYSFENTS+1,Y
-          STA SWAPMEM+SWAPMEM_A+1
+          STA SWAPMEM1+SWAPMEM_A+1
           DEY
           DEY
           LDA SYSFENTS,Y
-          STA SWAPMEM+SWAPMEM_B
+          STA SWAPMEM1+SWAPMEM_B
           LDA SYSFENTS+1,Y
-          STA SWAPMEM+SWAPMEM_B+1
+          STA SWAPMEM1+SWAPMEM_B+1
 
-          JSR SWAPMEM
+          JSR SWAPMEM1
 
           DEX
           JMP :LOOP
@@ -383,12 +372,12 @@ INSTDRV   ENT
           STA TMPSTR     ; source
           STA TMPSTR2    ; dest
 
-          STRCPY MYPATH;TMPSTR;#2
+          STRCPY MYPATH  ;TMPSTR;#2
           INC TMPSTR
           LDA #'/'
           LDY TMPSTR
           STA TMPSTR,Y
-          STRCAT TMPSTR;INSTSRCSTR
+          STRCAT TMPSTR  ;INSTSRCSTR
 
           STRCPY PATHNAME;TMPSTR2;#2
           INC TMPSTR2
@@ -525,7 +514,7 @@ FINDMECB
           STA SYSFENTS+1,Y
           INC NBFOUND
 
-          STRCMP MESTR;FILENAME
+          STRCMP MESTR   ;FILENAME
           BCS :EXITKO
           JMP :EXITOK
 :EXITKO
@@ -661,7 +650,7 @@ LOADVOL   ENT
           LDA #>BLKSZ
           STA READP+RD_RCNT+1
 :RDBLK                   ; read loop
-          MLI_CALL READ;READP
+          MLI_CALL READ  ;READP
           BCC :OK3
           LDX "C"
           JMP :EOFORERR
@@ -699,7 +688,7 @@ LOADVOL   ENT
           JMP MLIERROR
 
 :EXIT
-          MLI_CALL CLOSE;CLOSEP1
+          MLI_CALL CLOSE ;CLOSEP1
           RTS
 ENTLGH    HEX 00         ; entry length
 ENTBLK    HEX 00         ; nb entry per block

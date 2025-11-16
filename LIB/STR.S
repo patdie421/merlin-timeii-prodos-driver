@@ -4,16 +4,15 @@ STRPRINT  ENT
           HEX 00
           HEX 00
 STRPRINT1 ENT
-          STY SAV_Y
+          TYA
+          PHA
           LDY #0
-          LDA $ED
-          STA SAV_ED
-          LDA $EE
-          STA SAV_EE
+          PHZPP $ED
+
           LDA STRPRINT+3
           STA $ED
           LDA STRPRINT+4
-          STA $EE
+          STA $ED+1
           LDA ($ED),Y
           BEQ :EXIT
           TAX
@@ -26,15 +25,10 @@ STRPRINT1 ENT
           DEX
           BNE :LOOP
 :EXIT
-          LDA SAV_ED
-          STA $ED
-          LDA SAV_EE
-          STA $EE
-          LDY SAV_Y
+          PLZPP $ED
+          PLA
+          TAY
           RTS
-SAV_ED    HEX 00
-SAV_EE    HEX 00
-SAV_Y     HEX 00
           FIN
 
 
@@ -44,9 +38,7 @@ STRCMP1   ENT
 :STR1     HEX 00,00
 :STR2     HEX 00,00
 :STRCMP1
-          STA :SAVA
-          STX :SAVX
-          STY :SAVY
+          PHAXY
 * modifying code to set str addresses
           LDA :STR1
           STA :_STR11+1
@@ -72,14 +64,9 @@ STRCMP1   ENT
 :NOTEQU
           SEC            ; not equal
 :EXIT
-          LDA :SAVA
-          LDX :SAVX
-          LDY :SAVY
+          PLYXA
 
           RTS
-:SAVX     HEX 00
-:SAVY     HEX 00
-:SAVA     HEX 00
           FIN
 
 
@@ -89,14 +76,8 @@ STRSWITH1 ENT
 :STRING   HEX 00,00
 :START    HEX 00,00
 :STRSWITH1
-          LDA $EB
-          STA :SAV_EB
-          LDA $EC
-          STA :SAV_EC
-          LDA $ED
-          STA :SAV_ED
-          LDA $EE
-          STA :SAV_EE
+          PHZPP $EB
+          PHZPP $ED
 
           LDA :STRING
           STA $EB
@@ -123,19 +104,9 @@ STRSWITH1 ENT
           BNE :LOOP
           CLC
 :EXIT
-          LDA :SAV_EB
-          STA $EB
-          LDA :SAV_EC
-          STA $EC
-          LDA :SAV_ED
-          STA $ED
-          LDA :SAV_EE
-          STA $EE
+          PLZPP $ED
+          PLZPP $EB
           RTS
-:SAV_EB   HEX 00
-:SAV_EC   HEX 00
-:SAV_ED   HEX 00
-:SAV_EE   HEX 00
           FIN
 
 
@@ -145,14 +116,8 @@ STREWITH1 ENT
 :CMPES1   HEX 00,00
 :CMPES2   HEX 00,00
 :STREWITH1
-          LDA $EB
-          STA :SAV_EB
-          LDA $EC
-          STA :SAV_EC
-          LDA $ED
-          STA :SAV_ED
-          LDA $EE
-          STA :SAV_EE
+          PHZPP $EB
+          PHZPP $ED
 
           LDA :CMPES1
           STA $EB
@@ -185,21 +150,68 @@ STREWITH1 ENT
 :NOTEQU
           SEC
 :EXIT
-          LDA :SAV_EB
-          STA $EB
-          LDA :SAV_EC
-          STA $EC
-          LDA :SAV_ED
-          STA $ED
-          LDA :SAV_EE
-          STA $EE
+          PLZPP $ED
+          PLZPP $EB
           RTS
 :LSTR1    HEX 00
 :LSTR2    HEX 00
-:SAV_EB   HEX 00
-:SAV_EC   HEX 00
-:SAV_ED   HEX 00
-:SAV_EE   HEX 00
+          FIN
+
+
+          DO ]E_STRCPY2
+]E_STRCPY1 EQU 0
+STRCPY1   ENT
+          JMP :STRCPY1
+:S1       HEX 00,00
+:S2       HEX 00,00
+:OPT      HEX 00
+:STRCPY1
+          PHZPP $EB
+          PHZPP $ED
+
+          LDA :S1
+          STA $EB
+          LDA :S1+1
+          STA $ED+1
+
+          LDA :S2
+          STA $ED
+          LDA :S2+1
+          STA $ED+1
+          LDY #0
+:LOOP
+:C11      LDA ($EB),Y
+          CPY #0
+          BNE :NEXT
+          TAX
+          INX
+          JMP :C21
+:NEXT
+          PHA
+          LDA :OPT
+:O1
+          CMP #1
+          BNE :O2
+          PLA
+          ORA #%10000000
+          JMP :C21
+:O2
+          CMP #2
+          BNE :O3
+          PLA
+          AND #%01111111
+          JMP :C21
+:O3       PLA
+
+:C21      STA ($ED),Y
+          INY
+          DEX
+          BNE :LOOP
+
+          PLZPP $ED
+          PLZPP $EB
+
+          RTS
           FIN
 
 
@@ -229,21 +241,18 @@ STRCPY1   ENT
 :NEXT
           PHA
           LDA :OPT
-
 :O1
           CMP #1
           BNE :O2
           PLA
           ORA #%10000000
           JMP :C21
-
 :O2
           CMP #2
           BNE :O3
           PLA
           AND #%01111111
           JMP :C21
-
 :O3       PLA
 
 :C21      STA $FFFF,Y
@@ -251,6 +260,7 @@ STRCPY1   ENT
           DEX
           BNE :LOOP
           RTS
+          FIN
 
 
           DO ]E_STRCAT1
@@ -259,24 +269,18 @@ STRCAT1   ENT
 :DST      HEX 00,00
 :SRC      HEX 00,00
 :STRCAT
-          LDA $EB
-          PHA
-          LDA $EC
-          PHA
-          LDA $ED
-          PHA
-          LDA $EE
-          PHA
+          PHZPP $EB
+          PHZPP $ED
 
           LDA :DST
           STA $EB
           LDA :DST+1
-          STA $EC
+          STA $EB+1
 
           LDA :SRC
           STA $ED
           LDA :SRC+1
-          STA $EE
+          STA $ED+1
 
           LDY #$00
           LDA ($EB),Y
@@ -301,15 +305,8 @@ STRCAT1   ENT
           LDY #$00
           STA ($EB),Y
 :EXIT
-          PLA
-          STA $EE
-          PLA
-          STA $ED
-          PLA
-          STA $EC
-          PLA
-          STA $EB
-
+          PLZPP $ED
+          PLZPP $EB
           RTS
 :PTRSRC   HEX 00
 :PTRDST   HEX 00

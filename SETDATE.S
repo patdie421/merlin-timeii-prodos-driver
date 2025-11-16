@@ -1,6 +1,6 @@
           LST OFF
           REL
-          DSK SETDATE.L
+          DSK OBJ/SETDATE.L
 
           USE MAIN.E
 
@@ -19,6 +19,7 @@
           USE LIB/CNVANDCHCK.E
           USE LIB/FORMS.H
           USE LIB/FORMS.E
+          USE LIB/MEM.H
 
 
 SETDATE   ENT
@@ -223,8 +224,6 @@ GETDATI
           LDA :DMONTH,Y
           STA DAY+2
 * update format string for month
-* STX :SAVX1 ; save X
-* STY :SAVY1 ; save Y
           JSR HEXTODIGI
           TYA
           CLC
@@ -233,9 +232,6 @@ GETDATI
           TXA
           ADC #"0"
           STA SNUMDAY+1
-* LDY :SAVY1 ; restore Y
-* LDX :SAVX1 ; restore X
-
           JMP :OTHERS
 :DAY
                          ; get day of week
@@ -304,8 +300,9 @@ DISPDATI
           CPX #$1F
           BCS :CHAR
 :VAL
-          STX :SAVX
-          STY :SAVY
+          PHXY
+* STX :SAVX
+* STY :SAVY
           LDA DATE,X
           JSR HEXTODIGI
           CLC
@@ -315,8 +312,9 @@ DISPDATI
           TXA
           ADC #"0"
           JSR COUT
-          LDY :SAVY
-          LDX :SAVX
+          PLYX
+* LDY :SAVY
+* LDX :SAVX
           JMP :NEXT
 :CHAR
           TXA
@@ -326,8 +324,8 @@ DISPDATI
           JMP :LOOP
 :EXIT
           RTS
-:SAVX     HEX 00
-:SAVY     HEX 00
+*:SAVX HEX 00
+*:SAVY HEX 00
 :FDATE    DFB _CEN,_YEA,"-",_MON,"-",_DAY," ",_HOU,":",_MIN,":",_SEC
           DFB $8D,$8D,$FF
 

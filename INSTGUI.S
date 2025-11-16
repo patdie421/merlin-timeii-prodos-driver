@@ -1,7 +1,8 @@
           LST OFF
-          DSK INSTGUI.L
+          DSK OBJ/INSTGUI.L
           REL
 
+          USE MEMALLOC.H
           USE LIB/MONITOR.H
           USE LIB/PRODOS.H
           USE LIB/INOUTDATA.H
@@ -13,7 +14,7 @@
           USE LIB/ASC.E
           USE LIB/FORMS.H
           USE LIB/FORMS.E
-          USE INSTALL.H
+* USE INSTALL.H
           USE INSTALL.E
 
 
@@ -27,9 +28,42 @@ LOOP
           <<<
 
 
+CROUT2
+          JSR CROUT
+          JSR CROUT
+          RTS
+
+
+KPRESS
+          STRPRNT KPRESS_S
+          JSR GETKEY
+          JSR RWINDOW2
+          RTS
+
+
 INSTALLDRV ENT
           JSR INSTINIT
           JSR MENUINST
+          RTS
+
+
+RWINDOW2
+          PHA
+          RWINDOW
+          PLA
+          RTS
+
+
+PRNTWAIT
+          JSR RWINDOW2
+          JSR HOME
+          LDA #12
+          STA CV
+          STRCENTER WAIT_S;40
+          JSR VTAB
+          JSR SETINV
+          STRPRNTL WAIT_S
+          JSR SETNORM
           RTS
 
 
@@ -37,12 +71,10 @@ MENUINST  ENT
           JSR HOME
           STRCENTER :MENUINST_S;40
           STRPRNTL :MENUINST_S
-          JSR CROUT
-          JSR CROUT
+          JSR CROUT2
           STRPRNTL :SRCPTH_S
           STRPRNTL MYPATH
-          JSR CROUT
-          JSR CROUT
+          JSR CROUT2
           STRPRNTL :DESTVOL_S
           STRPRNTL PATHNAME
           ASCPRNT :INSTASC
@@ -90,16 +122,13 @@ MENUINST  ENT
 
 
 CHPREF
-* JSR STATUSBAR
           STRCPY MYPATH  ;TMPSTR;#1
-          BOX #3;#7;#34;#5;:NEWPREFT
-          GETSTRW TMPSTR;#63;LCHARS
+          BOX #3         ;#7;#34;#5;:NEWPREFT
+          GETSTRW TMPSTR ;#63;LCHARS
           BCS :EXIT
-          STRCPY TMPSTR;MYPATH;#2
+          STRCPY TMPSTR  ;MYPATH;#2
 :EXIT
-          PHA
-          RWINDOW
-          PLA
+          JSR RWINDOW2
           RTS
 :NEWPREFT STR " NEW PREFIX "
 
@@ -114,27 +143,28 @@ DOINST    ENT
           BNE :KO1
           JMP :NEXT2
 :KO1
-          BOX #3;#7;#34;#7;:ARINSTT
+          BOX #3         ;#7;#34;#7;:ARINSTT
           STRCENTER :ARINST1;32
           STRPRNTL :ARINST1
           STRCENTER :ARINST2;32
-          STRPRNTLL :ARINST2
+          STRPRNT :ARINST2
+          JSR CROUT2
           STRCENTER KPRESS_S;32
-          STRPRNT KPRESS_S
-          JSR GETKEY
-          RWINDOW
+          JSR KPRESS
           SEC
           JMP :EXIT
 :NEXT2
-          BOX #4;#6;#32;#7;:GENORSLTT_S
+          BOX #4         ;#6;#32;#7;:GENORSLTT_S
           STRCENTER :GENORSLT1_S;30
           STRPRNTL :GENORSLT1_S
           STRCENTER :GENORSLT2_S;30
-          STRPRNTLL :GENORSLT2_S
+          STRPRNT :GENORSLT2_S
+          JSR CROUT2
           STRCENTER CHOICE_S;30
           STRPRNT CHOICE_S
 :LOOP
           JSR GETKEY
+          AND #$DF
           CMP #"S"
           BEQ :NEXT3
           CMP #"G"
@@ -142,9 +172,7 @@ DOINST    ENT
           JMP :LOOP
 :NEXT3
           STA INSTTYPE
-          RWINDOW
-          JSR HOME
-          CLC
+          JSR PRNTWAIT
           JSR INSTDRV
           BCC :SUCCESS
 :ERROR
@@ -152,17 +180,16 @@ DOINST    ENT
           SEC
           RTS
 :SUCCESS
-          BOX #6;#7;#28;#6;SUCCES_S
+          BOX #6         ;#7;#28;#6;SUCCES_S
           STRCENTER :SUCCMSG;26
-          STRPRNTLL :SUCCMSG
+          STRPRNT :SUCCMSG
+          JSR CROUT2
           STRCENTER KPRESS_S;26
-          STRPRNT KPRESS_S
-          JSR GETKEY
-          RWINDOW
+          JSR KPRESS
           CLC
 :EXIT
           RTS
-:ARINSTT  STR "ALLREADY INSTALLED"
+:ARINSTT  STR " ALLREADY INSTALLED "
 :ARINST1  STR "DRIVER FILE FOUND ON VOLUME."
 :ARINST2  STR "REMOVE IT BEFORE INSTALLATION."
 :SUCCMSG  STR "DRIVER INSTALLED"
@@ -181,36 +208,36 @@ DODEL
 :NEXT2    JSR CNTDRV     ; count driver files on volume
           LDA DELFOUND
           BNE :NEXT
-          BOX #6;#7;#28;#6;:NOTFNDT
+          BOX #6         ;#7;#28;#6;:NOTFNDT
           STRCENTER :NOTFND;26
-          STRPRNTLL :NOTFND
+          STRPRNT :NOTFND
+          JSR CROUT2
           STRCENTER KPRESS_S;26
-          STRPRNT KPRESS_S
-          JSR GETKEY
-          RWINDOW
+          JSR KPRESS
           JMP :EXIT
 :NEXT
           CLC
           ADC #7
           STA :HBOXSZ
-          BOX #4;#6;#32;:HBOXSZ;CONFIRM_S
-          STRPRNTLL :WLBEDEL
+          BOX #4         ;#6;#32;:HBOXSZ;CONFIRM_S
+          STRPRNT :WLBEDEL
+          JSR CROUT2
           JSR LSTDRV
           JSR CROUT
           STRCENTER CONFYN_S;30
           STRPRNT CONFYN_S
 :LOOP
           JSR GETKEY
+          AND #$DF
           CMP #"Y"
           BEQ :DEL
           CMP #"N"
           BNE :LOOP
-          RWINDOW
+          JSR RWINDOW2
           SEC
           JMP :EXIT
 :DEL
-          RWINDOW
-          JSR HOME
+          JSR PRNTWAIT
           JSR DELDRV
           BCC :SUCCES
 :ERROR
@@ -218,13 +245,12 @@ DODEL
           SEC
           RTS
 :SUCCES
-          BOX #6;#7;#28;#6;SUCCES_S
+          BOX #6         ;#7;#28;#6;SUCCES_S
           STRCENTER :SUCCMSG;26
-          STRPRNTLL :SUCCMSG
+          STRPRNT :SUCCMSG
+          JSR CROUT2
           STRCENTER KPRESS_S;26
-          STRPRNT KPRESS_S
-          JSR GETKEY
-          RWINDOW
+          JSR KPRESS
           CLC
 :EXIT
           RTS
@@ -236,7 +262,7 @@ DODEL
 
 
 ERROR
-          BOX #6;#7;#28;#6;ERROR_S
+          BOX #6         ;#7;#28;#6;ERROR_S
           STRCENTER :ERRMSG;22
           STRPRNT :ERRMSG
           LDA ERRNO
@@ -245,12 +271,9 @@ ERROR
           JSR COUT
           LDA ERRCOMP
           JSR COUT
-          JSR CROUT
-          JSR CROUT
+          JSR CROUT2
           STRCENTER KPRESS_S;26
-          STRPRNT KPRESS_S
-          JSR GETKEY
-          RWINDOW
+          JSR KPRESS
           RTS
 :ERRMSG   STR "ERROR: "
 
@@ -258,13 +281,11 @@ ERROR
 CHKVOL
           LDA PATHNAME
           BNE :NEXT1
-          BOX #4;#7;#32;#6;INFO_S
+          BOX #4         ;#7;#32;#6;INFO_S
           STRCENTER NOVOL;30
           STRPRNTL NOVOL
           STRCENTER KPRESS_S;30
-          STRPRNT KPRESS_S
-          JSR GETKEY
-          RWINDOW
+          JSR KPRESS
           SEC
           RTS
 :NEXT1
@@ -273,7 +294,7 @@ CHKVOL
 
 
 BOXSEL
-          BOX #3;#2;#34;#20;:MENUSEL_S
+          BOX #3         ;#2;#34;#20;:MENUSEL_S
 :SCAN     JSR GETVOLS
           JSR HOME
           JSR PRINTVOLS  ; print volumes + char index
@@ -291,8 +312,8 @@ BOXSEL
           DEY
           BNE :LOOP
           STRPRNTL :RSCAN_S
-          STRPRNTL :QMENU_S
-          JSR CROUT
+          STRPRNT :QMENU_S
+          JSR CROUT2
           STRPRNT CHOICE_S
           JSR SELVOL     ; choose a volume
           BCC :NEXT
@@ -303,9 +324,9 @@ BOXSEL
 :NEXT
           JSR TOPTHNME   ; copy selection to PATHNAME
 :EXIT
-          RWINDOW
+          JSR RWINDOW2
           RTS
-:MENUSEL_S STR "VOLUME SELECTION"
+:MENUSEL_S STR " VOLUME SELECTION "
 :RSCAN_S  STR "(1) RESCAN VOLUMES"
 :QMENU_S  STR "(2) ABORT SELECTION"
 :TMP      HEX 00
@@ -324,6 +345,7 @@ SELVOL
           A_EQU #$83     ;:NCEXIT ; ctrl-c
           A_EQU #"1"     ;:RESCAN
           A_EQU #"2"     ;:NCEXIT
+          AND #$DF
           A_ULOW #"A"    ;:GETCHAR
           A_UGTR :MAXKEY ;:GETCHAR
           JMP :EXIT
@@ -347,6 +369,7 @@ CHOICE_S  STR "YOUR CHOICE:"
 KPRESS_S  STR "PRESS ANY KEY"
 CONFIRM_S STR "OK TO PROCESS ?"
 CONFYN_S  STR "CONFIRM (Y/N):"
+WAIT_S    STR "PLEASE WAIT"
 INFO_S    STR " ALERT "
 SUCCES_S  STR " SUCCESS "
 ERROR_S   STR " ERROR "

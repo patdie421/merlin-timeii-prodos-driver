@@ -36,11 +36,11 @@ CWINDOW   MAC            ; create window x,y,w,h
           <<<
 
 RWINDOW   MAC            ; reset window
-          LDY #0
-          STY WNDLFT
-          STY WNDTOP
-          LDY #40
-          STY WNDWDTH
-          LDY #24
-          STY WNDBTM
+          LDA #0
+          STA WNDLFT
+          STA WNDTOP
+          LDA #40
+          STA WNDWDTH
+          LDA #24
+          STA WNDBTM
           <<<

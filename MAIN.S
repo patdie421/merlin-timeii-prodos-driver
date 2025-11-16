@@ -1,10 +1,9 @@
           LST OFF
           REL
-          DSK MAIN.L
+          DSK OBJ/MAIN.L
 
 SETDATE    EXT
 
-          USE INCLUDES.H
           USE LIB/MONITOR.H ; monitor resources
           USE LIB/PRODOS.H
 
@@ -16,9 +15,8 @@ SETDATE    EXT
           USE LIB/TIMEII.E
           USE LIB/FORMS.H
           USE LIB/FORMS.E
-          USE INSTALL.H
+
           USE INSTALL.E
-          USE INSTGUI.H
           USE INSTGUI.E
 
 
@@ -32,12 +30,11 @@ INIT      ENT
           STA DATIDATE+1
 * init strings
           JSR _MENUSTR
-
 MAIN
           JSR HOME
           STRCENTER TITLESTR;40
-          STRPRNTL TITLESTR
-          JSR CROUT
+          STRPRNT TITLESTR
+          JSR CROUT2
           JSR GETSLOT
           INITII SLOT
 
@@ -51,9 +48,9 @@ MENU
           BCC :MENU1
           LDY #$7F
           JSR SETIFLG
-          STRPRNTL INVALSTR
+          STRPRNT INVALSTR
           JSR SETNORM
-          JSR CROUT
+          JSR CROUT2
 :MENU1
           STRPRNT MENUSTR
 :GETKEY
@@ -82,6 +79,12 @@ MENU
           JMP MENU
 
 
+CROUT2
+          JSR CROUT
+          JSR CROUT
+          RTS
+
+
 DISPSLOT  ENT
           STRCENTER  TITLESTR;40
           STRPRNTL  TITLESTR
@@ -92,14 +95,13 @@ DISPSLOT  ENT
           JSR COUT
           LDA SLOT
           JSR PRBYTE
-          JSR CROUT
-          JSR CROUT
+          JSR CROUT2
           RTS
 
 
 GETSLOT
           LDA #0
-          BOX #7;#6;#26;#6;GSLOTTTL
+          BOX #7         ;#6;#26;#6;GSLOTTTL
           JSR CROUT
           STRPRNT  GSLOTSTR
           LDA CH
@@ -116,8 +118,7 @@ GETSLOT
           CMP #8
           BCS :GETSLOT   ; < 8
           STA SLOT       ; we have a valid slot
-          JSR CROUT
-          JSR CROUT
+          JSR CROUT2
           RWINDOW
           RTS
 :GETSLOT
@@ -157,5 +158,4 @@ MENUSTRL  EQU *-MENUSTRS-1
 _MENUSTR  LDA #<MENUSTRL
           STA MENUSTR
           RTS
-
 END       EQU *
