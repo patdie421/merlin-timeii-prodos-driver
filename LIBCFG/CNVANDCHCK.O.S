@@ -1,0 +1,6 @@
+          LST OFF
+          REL
+          DSK OBJ/CNVANDCHCK.L
+]E_HEXTODIGI EQU 1
+]E_DIGITOHEX EQU 1
+          USE LIB/CNVANDCHCK
