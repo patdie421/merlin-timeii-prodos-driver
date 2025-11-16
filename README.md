@@ -15,7 +15,7 @@ For a manual install you can:
 - For a existing disk, copy TIMEII.INST to the root directory, rename it as TIMEII.SYSTEM and then move the program at the begining of the catalog list. For that you can use CAT.DOCTOR (available in PRODOS 2.4.3: https://releases.prodos8.com/ProDOS_2_4_3.po)  
 - Please create an issue if you need some help  
 - To build the program I used the PRODOS8HD disk image (https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg).
-# How to build ?
+# How to build?
 - a long process
 # Next steps?
 - code optimization and documentation (this code really lacks comments) - work in progress  
