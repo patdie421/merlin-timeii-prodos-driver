@@ -9,12 +9,14 @@ But because I have no native debugger and because I haven't use assembler since 
 # My inspiration?
 A bad copy of the documentation (see resources), an image of the DOS 3.3 disk (basic programs to use the card) and the PRODOS DRIVERS project (https://github.com/a2stuff/prodos-drivers). I took several portions of code directly from this project, in particular the system programs chaining code (.system).  
 # How to use it?
-- For a fresh initialized disk (hard or floppy) bootable with PRODOS (prodos file on the disk), copy the timeii.system program on the root directory.  
-- For a existing disk, copy timeii.system to the root directory and then move the program at the begining of the catalog list. For that you can use CAT.DOCTOR (available in PRODOS 2.4.3: https://releases.prodos8.com/ProDOS_2_4_3.po)
+Boot the TIMEII.EXE.X.X disk, choose the slot where the card is plugged in and select option 3.  
+For a manual install you can:
+- For a fresh initialized disk (hard or floppy) bootable with PRODOS (prodos file on the disk), copy the timeii.inst program from TIME.EXE.X.X disk on the root directory of the volume and rename it as timeii.system.  
+- For a existing disk, copy timeii.inst to the root directory, rename it as timeii.system and then move the program at the begining of the catalog list. For that you can use CAT.DOCTOR (available in PRODOS 2.4.3: https://releases.prodos8.com/ProDOS_2_4_3.po)  
 - Please create an issue if you need some help  
 - To build the program I used the PRODOS8HD disk image (https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg).
 # How to build ?
-- a long process  
+- a long process
 # Next steps?
 - code optimization and documentation (this code really lacks comments) - work in progress  
 - improve autodetection of the card  
