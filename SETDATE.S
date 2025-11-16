@@ -23,7 +23,7 @@
 
 
 SETDATE   ENT
-          BOX #1         ;#6;#38;#13;DATISTR
+          BOX #1;#6;#38;#13;DATISTR
           JSR CROUT
           JSR GETDATI
           BCS :EXIT      ; ctrl-c ?
