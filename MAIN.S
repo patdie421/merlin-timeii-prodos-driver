@@ -101,7 +101,7 @@ DISPSLOT  ENT
 
 GETSLOT
           LDA #0
-          BOX #7         ;#6;#26;#6;GSLOTTTL
+          BOX #7;#6;#26;#6;GSLOTTTL
           JSR CROUT
           STRPRNT  GSLOTSTR
           LDA CH
