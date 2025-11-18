@@ -172,7 +172,7 @@ STRCPY1   ENT
           LDA :S1
           STA $EB
           LDA :S1+1
-          STA $ED+1
+          STA $EB+1
 
           LDA :S2
           STA $ED
