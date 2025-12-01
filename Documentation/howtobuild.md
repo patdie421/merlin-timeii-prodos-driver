@@ -36,6 +36,7 @@ This files must be create only if is the linker is used. Following an exemple of
 ```
 
 # build process
+Because there's no scripting solution for Merlin, you'll have to follow all this step manually (sorry).
 ## before building
 To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive. That's the image I use:  
 [PRODOS8HD image](https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg)  
@@ -48,17 +49,17 @@ Follow this step to: build
 2. Change prefix to `/PRODOS8HD/TIMEIISRC` (at the menu, press `P` key, type `/PRODOS8HD/TIMEIISRC` followed by `Return` key 2 times)
 3. Load the file `TIMEII.SYSTEM.S` (at the menu, press `L`, type `TIMEII.SETUP` followed by `Return`)
 4. Go in edit/asm mode (press `E`)
-5. At the prompt (`:`) type `asm` followed by `Return`
-6. press `Q`
+5. At the prompt (`:`) type `ASM` followed by `Return`
+6. press `Q` followed by `<Return>`
 The `TIMEII.SYSTEM` file is now in the `/PRODOS8HD/TIMEIISRC` directory.
 ## build the TIMEII setup program
 1. Start Merlin (Prosel "Development" menu page)
 2. Change prefix to `/PRODOS8HD/TIMEIISRC` (at the menu, press `P` key, type `/PRODOS8HD/TIMEIISRC` followed by `Return` key 2 times)
 ### linker directives
-3. Load the file `TIMEIISETUP.S` (at the menu, press `L`, type `TIMEIISETUP` followed by `Return`)
-4. Go in edit/asm mode (press `E`)
-5. At the prompt (`:`) type `asm` followed by `Return`
-6. press `Q`
+3. Load the file `TIMEIISETUP.S` (at the menu, press `L`, type `TIMEIISETUP` followed by `<Return>` key)
+4. Go in edit/asm mode (press `E` key)
+5. At the prompt (`:`) type `asm` followed by `<Return>` key
+6. press `Q` followed by `<Return>` key
 A linker file 
 A `TIMEIISETUP` file containing linker directives is generated
 ### libraries
@@ -75,8 +76,8 @@ TIMEII.O.S
 ```
 7. Load the file (at the menu press `L` type `LIBCFG/<filename_without_dot_S>` (ex: `LIBCFG/MEM.O`)
 8. Go in edit/asm mode (press `E`)
-9. At the prompt (`:`) type `asm` followed by `Return`
-10. Press `Q`
+9. At the prompt (`:`) type `ASM` followed by `<Return>` key
+10. Press `Q` key followed by `<Return>`
 A relocatable file is now in `OBJ` directory.
 ### main program
 for all following file in root directory apply step 11 to 14:
@@ -87,16 +88,16 @@ MAIN.S
 SETDATE.S
 ```
 11. Load the file (at the menu press `L` type `<filename_without_dot_S>` (ex: `MAIN`)
-12. Go in edit/asm mode (press `E`)
-13. At the prompt (`:`) type `asm` followed by `Return`
+12. Go in edit/asm mode (press `E` key)
+13. At the prompt (`:`) type `asm` followed by `<Return>` key
 14. Press `Q`
 A relocatable file is now in `OBJ` directory.
 ### connect everything
-13. Go in edit/asm mode (press `E`)
-14. At the prompt (`:`) type `new` followed by `Return`
-15. type `link $2000 "TIMEIISETUP"` followed by `Return`
+13. Go in edit/asm mode (press `E` key)
+14. At the prompt (`:`) type `new` followed by `<Return>` key
+15. type `link $2000 "TIMEIISETUP"` followed by `<Return>` key
 16. Press `Q`
-17. At the main menu, save object file (press `O`) and type `TIMEII.SETUP` followed by `Return`
+17. At the main menu, save object file (press `O` key) and type `TIMEII.SETUP` followed by `<Return>` key
 
 
 
