@@ -38,3 +38,4 @@ This files must be create only if is the linker is used. Following an exemple of
 # build process
 To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive. That's the image I use:  
 [PRODOS8HD image](https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg)
+## build the driver file (timeii.inst)
