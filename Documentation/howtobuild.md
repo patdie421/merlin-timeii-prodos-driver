@@ -29,7 +29,7 @@ This files are to create only if is the link is used. Following and exemple of f
 ]E_STRCPY1  EQU 1  
 ]E_STRCPY2  EQU 0  
 ]E_STRCAT1  EQU 1  
-          USE LIB/STR```
+          USE LIB/STR
 
 # build process
 To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive.
