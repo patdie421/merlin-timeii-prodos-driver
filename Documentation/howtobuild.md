@@ -93,11 +93,11 @@ SETDATE.S
 14. Press `Q`
 A relocatable file is now in `OBJ` directory.
 ### connect everything
-13. Go in edit/asm mode (press `E` key)
-14. At the prompt (`:`) type `new` followed by `<Return>` key
-15. type `LINK $2000 "TIMEIISETUP"` followed by `<Return>` key
-16. Press `Q`
-17. At the main menu, save object file (press `O` key) and type `TIMEII.SETUP` followed by `<Return>` key
+15. Go in edit/asm mode (press `E` key)
+16. At the prompt (`:`) type `new` followed by `<Return>` key
+17. type `LINK $2000 "TIMEIISETUP"` followed by `<Return>` key
+18. Press `Q`
+19. At the main menu, save object file (press `O` key) and type `TIMEII.SETUP` followed by `<Return>` key
 A `TIMEII.SETUP` file is now available in root directory
 
 
