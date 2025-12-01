@@ -58,7 +58,7 @@ The `TIMEII.SYSTEM` file is now in the `/PRODOS8HD/TIMEIISRC` directory.
 ### linker directives
 3. Load the file `TIMEIISETUP.S` (at the menu, press `L`, type `TIMEIISETUP` followed by `<Return>` key)
 4. Go in edit/asm mode (press `E` key)
-5. At the prompt (`:`) type `asm` followed by `<Return>` key
+5. At the prompt (`:`) type `ASM` followed by `<Return>` key
 6. press `Q` followed by `<Return>` key
 A linker file 
 A `TIMEIISETUP` file containing linker directives is generated
@@ -89,15 +89,16 @@ SETDATE.S
 ```
 11. Load the file (at the menu press `L` type `<filename_without_dot_S>` (ex: `MAIN`)
 12. Go in edit/asm mode (press `E` key)
-13. At the prompt (`:`) type `asm` followed by `<Return>` key
+13. At the prompt (`:`) type `ASM` followed by `<Return>` key
 14. Press `Q`
 A relocatable file is now in `OBJ` directory.
 ### connect everything
 13. Go in edit/asm mode (press `E` key)
 14. At the prompt (`:`) type `new` followed by `<Return>` key
-15. type `link $2000 "TIMEIISETUP"` followed by `<Return>` key
+15. type `LINK $2000 "TIMEIISETUP"` followed by `<Return>` key
 16. Press `Q`
 17. At the main menu, save object file (press `O` key) and type `TIMEII.SETUP` followed by `<Return>` key
+A `TIMEII.SETUP` file is now available in root directory
 
 
 
