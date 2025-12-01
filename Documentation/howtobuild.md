@@ -40,6 +40,7 @@ This files must be create only if is the linker is used. Following an exemple of
 To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive. That's the image I use:  
 [PRODOS8HD image](https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg)  
 Start your Apple II with this image, create a src directory (`/PRODOS8HD/TIMEIISRC` for example).  
+Copy all file from into this directory.  
 ## build the driver file (timeii.system)
 The driver is not build by the linker.  
 Follow this step to: build
