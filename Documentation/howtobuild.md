@@ -62,7 +62,7 @@ The `TIMEII.SYSTEM` file is now in the `/PRODOS8HD/TIMEIISRC` directory.
 A linker file 
 A `TIMEIISETUP` file containing linker directives is generated
 ### libraries
-for all following files in `LIBCFG` apply step 7 to 9:
+for all following files in `LIBCFG` apply step 7 to 10:
 ```
 ASC.O.S
 CNVANDCHCK.O.S
@@ -74,17 +74,27 @@ STR.O.S
 TIMEII.O.S
 ```
 7. Load the file (at the menu press `L` type `LIBCFG/<filename_without_dot_S>` (ex: `LIBCFG/MEM.O`)
-8. At the prompt (`:`) type `asm` followed by `Return`
-9. Press `Q`
-A relocatable file is now in `OBJ` directory
+8. Go in edit/asm mode (press `E`)
+9. At the prompt (`:`) type `asm` followed by `Return`
+10. Press `Q`
+A relocatable file is now in `OBJ` directory.
 ### main program
-for all following file in root directory:
+for all following file in root directory apply step 11 to 14:
 INSTALL.S
 INSTGUI.S
 MAIN.S
 SETDATE.S
-7. Load the file (at the menu press `L` type `<filename_without_dot_S>` (ex: `MAIN`)
-8. At the prompt (`:`) type `asm` followed by `Return`
-9. Press `Q`
-A relocatable file is now in `OBJ` directory
+11. Load the file (at the menu press `L` type `<filename_without_dot_S>` (ex: `MAIN`)
+12. Go in edit/asm mode (press `E`)
+13. At the prompt (`:`) type `asm` followed by `Return`
+14. Press `Q`
+A relocatable file is now in `OBJ` directory.
+### connect everything
+13. Go in edit/asm mode (press `E`)
+14. At the prompt (`:`) type `new` followed by `Return`
+15. type `link $2000 "TIMEIISETUP"` followed by `Return`
+16. Press `Q`
+17. At the main menu, save object file (press `O`) and type `TIMEII.SETUP`
+
+
 
