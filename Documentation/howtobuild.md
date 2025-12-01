@@ -10,9 +10,11 @@ Furthermore, the approach also aims to provide code that can be largely used in 
 * LIBSRC directory contains the configured libraries. Each file includes one of the files from LIB. Only this file should be modified and build.  
 ## Libraries organisation (in LIB directory)
 Each library consists of 3 files:  
-* The source file (.S), contains the code of sub-routines
-* The definitions associated with the library (.H.S), contains constants and macro needed to use the libraries. This file must be include to use the library.
-* The library entry points (.E.S), 
-To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive.  
+* The source file (.S), contains the code of sub-routines. This files must be included (USE) to be used if the linker is not used. If the linker is used the file must not be included.
+* The definitions associated with the library (.H.S), contains constants and macro needed to use the libraries. This file must be include (use) before the .S inclusion to use the library.
+* The library entry points (.E.S) for the linker. Need to be include to use the library if you use the linker.
+A librarie is configured be setting macro variables after .H.S inclusion and before including the .S file.
+# build process
+To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive.
 
 https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg
