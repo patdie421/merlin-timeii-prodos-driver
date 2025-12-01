@@ -15,12 +15,14 @@ Each library consists of 3 files:
 * The library entry points (.E.S) for the linker. Need to be include to use the library if you use the linker.
 A librarie is configured by setting macro variables after .H.S inclusion and before including the .S file.
 ## Files in LIBCFG
-This files are to create only if is the link is used. Following and exemple of file :
-```          LST OFF  
-          REL  
-          DSK OBJ/STR.L  
-          USE LIB/MONITOR.H  
-          USE LIB/MEM.H  
+This files must be create only if is the linker is used. Following an exemple of file :
+```          LST OFF ; verbose off 
+          REL ; geneate relocatable code 
+          DSK OBJ/STR.L ; result output in OBJ directory 
+          USE LIB/MONITOR.H ; include needed aditional definitions
+          USE LIB/MEM.H
+* Enable/disable sub-routines to build. See associated .H.S file for switches available.
+* can help to reduce final binary footprint.
 ]E_STRPRINT  EQU 1  
 ]E_STRCMP1  EQU 1  
 ]E_STRCMPE1  EQU 0  
@@ -28,8 +30,10 @@ This files are to create only if is the link is used. Following and exemple of f
 ]E_STRSWITH1  EQU 1  
 ]E_STRCPY1  EQU 1  
 ]E_STRCPY2  EQU 0  
-]E_STRCAT1  EQU 1  
-          USE LIB/STR
+]E_STRCAT1  EQU 1
+* note: by default sub-routines are disabled in .H.S file
+          USE LIB/STR ; library to build
+
 
 # build process
 To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive.
