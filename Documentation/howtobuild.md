@@ -14,6 +14,9 @@ Each library consists of 3 files:
 * The definitions associated with the library (.H.S), contains constants and macro needed to use the libraries. This file must be included (USE) before the .S inclusion of the library.
 * The library entry points (.E.S) for the linker. Need to be include to use the library if you use the linker.
 A librarie is configured by setting macro variables after .H.S inclusion and before including the .S file.
+## Files in LIBCFG
+This files are used only is the link must be used
+
 # build process
 To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive.
 
