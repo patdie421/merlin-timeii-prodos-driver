@@ -54,10 +54,14 @@ The `TIMEII.SYSTEM` file is now in the `/PRODOS8HD/TIMEIISRC` directory.
 ## build the TIMEII setup program
 1. Start Merlin (Prosel "Development" menu page)
 2. Change prefix to `/PRODOS8HD/TIMEIISRC` (at the menu, press `P` key, type `/PRODOS8HD/TIMEIISRC` followed by `Return` key 2 times)
+### linker directives
 3. Load the file `TIMEIISETUP.S` (at the menu, press `L`, type `TIMEIISETUP` followed by return)
 4. Go in edit/asm mode (press `E`)
 5. At the prompt (`:`) type `asm` followed by return
 6. press `Q`
 A linker file 
+A `TIMEIISETUP` file containing linker directives is generated
+### libraries
+for all the following files apply step 7 to X:
 
-
+7. 
