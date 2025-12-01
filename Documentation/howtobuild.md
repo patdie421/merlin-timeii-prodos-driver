@@ -80,10 +80,12 @@ TIMEII.O.S
 A relocatable file is now in `OBJ` directory.
 ### main program
 for all following file in root directory apply step 11 to 14:
+```
 INSTALL.S
 INSTGUI.S
 MAIN.S
 SETDATE.S
+```
 11. Load the file (at the menu press `L` type `<filename_without_dot_S>` (ex: `MAIN`)
 12. Go in edit/asm mode (press `E`)
 13. At the prompt (`:`) type `asm` followed by `Return`
