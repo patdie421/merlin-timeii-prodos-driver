@@ -63,6 +63,7 @@ A linker file
 A `TIMEIISETUP` file containing linker directives is generated
 ### libraries
 for all following files in `LIBCFG` apply step 7 to 9:
+```
 ASC.O.S
 CNVANDCHCK.O.S
 DATETIME.O.S
@@ -71,6 +72,7 @@ INOUTDATA.O.S
 MEM.O.S
 STR.O.S
 TIMEII.O.S
+```
 7. Load the file (at the menu press `L` type `LIBCFG/<filename_without_dot_S>` (ex: `LIBCFG/MEM.O`)
 8. At the prompt (`:`) type asm followed by `Return`
 9. Press `Q`
