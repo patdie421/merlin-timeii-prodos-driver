@@ -15,8 +15,21 @@ Each library consists of 3 files:
 * The library entry points (.E.S) for the linker. Need to be include to use the library if you use the linker.
 A librarie is configured by setting macro variables after .H.S inclusion and before including the .S file.
 ## Files in LIBCFG
-This files are to create only if is the link is used.
-
+This files are to create only if is the link is used. Following and exemple of file :
+`          LST OFF
+          REL
+          DSK OBJ/STR.L
+          USE LIB/MONITOR.H
+          USE LIB/MEM.H
+]E_STRPRINT  EQU 1
+]E_STRCMP1  EQU 1
+]E_STRCMPE1  EQU 0
+]E_STREWITH1  EQU 1
+]E_STRSWITH1  EQU 1
+]E_STRCPY1  EQU 1
+]E_STRCPY2  EQU 0
+]E_STRCAT1  EQU 1
+          USE LIB/STR`
 
 # build process
 To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive.
