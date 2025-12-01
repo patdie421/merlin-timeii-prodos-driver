@@ -7,9 +7,13 @@ Furthermore, the approach also aims to provide code that can be largely used in 
 ## source code tree
 * The root directory of the source code contains the main files.  
 * LIB directory contains the source code for the "unconfigured" libraries.  
-* LIBSRC directory contains the configured libraries. Each file includes one of the files from LIB.  
-
-To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive.
+* LIBSRC directory contains the configured libraries. Each file includes one of the files from LIB. Only this file should be modified and build.  
+## Libraries organisation (in LIB directory)
+Each library consists of 3 files:  
+* The source file (.S), contain the code
+* The definitions associated with the library (.H.S), cotain
+* The library entry points (.E.S)
+To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive.  
 
 https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg
 
