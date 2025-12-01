@@ -16,7 +16,7 @@ For a manual install you can:
 - Please create an issue if you need some help  
 - To build the program I used the PRODOS8HD disk image (https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg).
 # How to build?
-- a long process
+- a long process : (Documentation/howtobuild.md)
 # Next steps?
 - code optimization and documentation (this code really lacks comments) - work in progress  
 - improve autodetection of the card  
