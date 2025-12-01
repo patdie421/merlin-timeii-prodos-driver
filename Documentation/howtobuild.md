@@ -11,7 +11,7 @@ Furthermore, the approach also aims to provide code that can be largely used in 
 ## Libraries organisation (in LIB directory)
 Each library consists of 3 files:  
 * The source file (.S), contains the code of sub-routines. This files must be included (USE) if you do not use the linker. If the linker is used the file must not be included.
-* The definitions associated with the library (.H.S), contains constants and macro needed to use the libraries. This file must be included (USE) before the .S inclusion of the library.
+* The definitions associated with the library (.H.S), contains constants and macro needed to use the libraries. This file must be included (USE) before the .S inclusion of the library. Note: some libraries have only .H.S definitions (macro and/or constants)  
 * The library entry points (.E.S) for the linker. Need to be include to use the library if you use the linker.
 A librarie is configured by setting macro variables after .H.S inclusion and before including the .S file.
 ## Files in LIBCFG
