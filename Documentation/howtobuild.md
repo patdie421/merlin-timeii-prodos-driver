@@ -76,7 +76,7 @@ TIMEII.O.S
 7. Load the file (at the menu press `L` type `LIBCFG/<filename_without_dot_S>` (ex: `LIBCFG/MEM.O`)
 8. At the prompt (`:`) type `asm` followed by `Return`
 9. Press `Q`
-A relocatable file is now in OBJ directory
+A relocatable file is now in `OBJ` directory
 ### main program
 for all following file in root directory:
 
