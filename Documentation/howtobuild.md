@@ -4,8 +4,10 @@ The build process, at least for the initial assembly, is relatively lengthy. To 
 # Source organisation
 The source code is too large to fit in a single file. It has therefore been split into several files so that it can be assembled using the linker integrated into Merlin.  
 Furthermore, the approach also aims to provide code that can be largely used in other projects as "configurable" libraries. This has led to an increase in the number of files and the complexity of the source code (I am sorry for that).  
-
-1. Build tools
+## source code tree
+* The root directory of the source code contains the main files.  
+* LIB directory contains the source code for the "unconfigured" libraries.  
+* LIBSRC directory contains the configured libraries. Each file includes one of the files from LIB.  
 
 To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive.
 
