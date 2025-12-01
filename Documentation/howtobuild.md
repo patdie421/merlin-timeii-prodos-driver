@@ -33,7 +33,7 @@ This files must be create only if is the linker is used. Following an exemple of
 ]E_STRCAT1  EQU 1
 * note: by default sub-routines are disabled in .H.S file
           USE LIB/STR ; library to build
-
+```
 
 # build process
 To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive. That's the image I use:  
