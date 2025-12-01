@@ -3,7 +3,7 @@ This tutorial assumes you know how to use disk images and Prodos files with a re
 The build process, at least for the initial assembly, is relatively lengthy. To simplify it, I used a hard drive image that already contained the necessary tools (and many others...). Since the source code is modular, only partial assemblies are required once the initial assembly is complete.  
 # Source organisation
 The source code is too large to fit in a single file. It has therefore been split into several files so that it can be assembled using the linker integrated into **Merlin-8 2.58**.  
-Furthermore, the approach also aims to provide code that can be largely used in other projects as "configurable" libraries. This has led to an increase in the number of files and the complexity of the source code (I am sorry for that).  
+Furthermore, the approach also aims to provide code that can be largely used in other projects as "configurable" libraries. This has led to an increase in the number of files and the complexity of the source code (I am sorry for that, I'm a classic C developper I can't to thins simple).  
 ## source code tree
 * The root directory of the source code contains the main files.  
 * LIB directory contains the source code for the "unconfigured" libraries.  
@@ -46,3 +46,8 @@ The driver is not build by the linker.
 Follow this step to: build
 1. Start Merlin (Prosel "Development" page)
 2. Change prefix to `/PRODOS8HD/TIMEIISRC` (at the menu, press `P` key, type `/PRODOS8HD/TIMEIISRC` followed by `Return` key (2 times)
+3. Load the file TIMEII.SETUP.S (at the menu, press `L`, type `TIMEII.SETUP` followed by return)
+4. Go in edit/asm mode (press 'E')
+5. At the prompt (`:`) type `asm` followed by return
+6. press `Q`
+
