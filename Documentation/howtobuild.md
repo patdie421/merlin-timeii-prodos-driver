@@ -94,7 +94,7 @@ A relocatable file is now in `OBJ` directory.
 14. At the prompt (`:`) type `new` followed by `Return`
 15. type `link $2000 "TIMEIISETUP"` followed by `Return`
 16. Press `Q`
-17. At the main menu, save object file (press `O`) and type `TIMEII.SETUP`
+17. At the main menu, save object file (press `O`) and type `TIMEII.SETUP` followed by `Return`
 
 
 
