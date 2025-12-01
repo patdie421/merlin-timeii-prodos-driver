@@ -2,7 +2,7 @@
 This tutorial assumes you know how to use disk images and Prodos files with a real Apple II (IIe or IIc) or an emulator. I use… for macOS or Apple2TS (https://github.com/ct6502/apple2ts) in a web browser.  
 The build process, at least for the initial assembly, is relatively lengthy. To simplify it, I used a hard drive image that already contained the necessary tools (and many others...). Since the source code is modular, only partial assemblies are required once the initial assembly is complete.  
 # Source organisation
-The source code is too large to fit in a single file. It has therefore been split into several files so that it can be assembled using the linker integrated into Merlin.  
+The source code is too large to fit in a single file. It has therefore been split into several files so that it can be assembled using the linker integrated into Merlin-8 2.58.  
 Furthermore, the approach also aims to provide code that can be largely used in other projects as "configurable" libraries. This has led to an increase in the number of files and the complexity of the source code (I am sorry for that).  
 ## source code tree
 * The root directory of the source code contains the main files.  
@@ -44,5 +44,5 @@ Copy all file from `timeii.0.1.src.po` image into this directory.
 ## build the driver file (timeii.system)
 The driver is not build by the linker.  
 Follow this step to: build
-1. Start merlin  
-2. Change prefix to `/PRODOS8HD/TIMEIISRC` (at the menu, press `P` key, type `/PRODOS8HD/TIMEIISRC`)
+1. Start Merlin (Prosel "Development" page)
+2. Change prefix to `/PRODOS8HD/TIMEIISRC` (at the menu, press `P` key, type `/PRODOS8HD/TIMEIISRC` followed by `Return` key (2 times)
