@@ -1,5 +1,5 @@
 # Before starting
-This tutorial assumes you know how to use disk images and Prodos files with a real Apple II (IIe or IIc) or an emulator. I use [Virtual \]\[](https://www.virtualii.com/) for macOS or Apple2TS (https://github.com/ct6502/apple2ts) in a web browser.  
+This tutorial assumes you know how to use disk images and Prodos files with a real Apple II (IIe or IIc) or an emulator (I use [Virtual \]\[](https://www.virtualii.com/) for macOS or Apple2TS (https://github.com/ct6502/apple2ts) in a web browser).  
 The build process, at least for the initial assembly, is relatively lengthy. To simplify it, I used a hard drive image that already contained the necessary tools (and many others...). Since the source code is modular, only partial assemblies are required once the initial assembly is complete.  
 # Source organisation
 The source code is too large to fit in a single file. It has therefore been split into several files so that it can be assembled using the linker integrated into **Merlin-8 2.58**.  
