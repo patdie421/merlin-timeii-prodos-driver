@@ -10,7 +10,7 @@ Furthermore, the approach also aims to provide code that can be largely used in 
 * The LIBSRC directory contains the configured libraries. Each file (.O.S extension) includes one or more of the files from the LIB directory. Only that .O.S file needs to be created/modified and assembled.  
 ## Libraries organisation (in LIB directory)
 Each library consists of 3 files:  
-* The source file (.S), contains the code of sub-routines. This files must be included (USE) if you do not use the linker. If the linker is used the file must not be included.
+* The source file (.S), contains the code of all sub-routines. This files must be included (USE) if you do not use the linker. If the linker is used the file must not be included.
 * The definitions associated with the library (.H.S), contains constants and macro needed to use the libraries. If the linker is not used, this file must be included (USE) before the .S inclusion of the library. Note: some libraries have only .H.S definitions (macro and/or constants).  
 * The library entry points (.E.S) for the linker. Need to be include to use the library if you use the linker.
 A librarie is configured by setting macro variables after .H.S inclusion and before including the .S file.
@@ -19,10 +19,10 @@ This files must be create only if is the linker is used. Following an exemple of
 ```          LST OFF ; verbose off 
           REL ; geneate relocatable code 
           DSK OBJ/STR.L ; result output in OBJ directory 
-          USE LIB/MONITOR.H ; include needed aditional definitions
+          USE LIB/MONITOR.H ; include needed by .S file
           USE LIB/MEM.H
-* Enable/disable sub-routines to build. See associated .H.S file for switches available.
-* can help to reduce final binary footprint.
+* Enable/disable sub-routines. See associated .H.S file for switches available.
+* disabling unused sub-routines help reducing final binary footprint.
 ]E_STRPRINT  EQU 1  
 ]E_STRCMP1  EQU 1  
 ]E_STRCMPE1  EQU 0  
