@@ -9,7 +9,7 @@ But because I have no native debugger and because I haven't use assembler since 
 # My inspiration?
 A bad copy of the documentation (see resources), an image of the DOS 3.3 disk (basic programs to use the card) and the PRODOS DRIVERS project (https://github.com/a2stuff/prodos-drivers). I took several portions of code directly from this project, in particular the system programs chaining code (.system).  
 # How to use it?
-Boot the TIMEII.EXE.X.X disk, choose the slot where the card is plugged in and select option 3.  
+Boot the TIMEII.EXE.X.Y disk, choose the slot where the card is plugged in and select option 3.  
 For a manual install you can:
 - For a fresh initialized disk (hard or floppy) bootable with PRODOS (prodos file on the disk), copy the TIMEII.INST program from TIME.EXE.X.X disk on the root directory of the volume and rename it as TIMEII.SYSTEM.  
 - For a existing disk, copy TIMEII.INST to the root directory, rename it as TIMEII.SYSTEM and then move the program at the begining of the catalog list. For that you can use CAT.DOCTOR (available in PRODOS 2.4.3: https://releases.prodos8.com/ProDOS_2_4_3.po)  
