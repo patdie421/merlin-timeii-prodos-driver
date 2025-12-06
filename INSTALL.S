@@ -403,9 +403,6 @@ INSTDRV   ENT
 :CONT1
           STRADD SYSTEMSTR
 
-; *** copy tmpstr to mestr ***
-          STRCPY TMPSTR;MESTR;#2
-
           LDA #<TMPSTR
           STA FILECPY+3
           LDA #>TMPSTR
