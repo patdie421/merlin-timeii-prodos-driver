@@ -372,19 +372,19 @@ INSTDRV   ENT
           STA TMPSTR     ; source
           STA TMPSTR2    ; dest
 
-          STRCPY MYPATH  ;TMPSTR;#2
+          STRCPY MYPATH;TMPSTR;#2
           INC TMPSTR
           LDA #'/'
           LDY TMPSTR
           STA TMPSTR,Y
-          STRCAT TMPSTR  ;INSTSRCSTR
+          STRCAT TMPSTR;INSTSRCSTR
 
           STRCPY PATHNAME;TMPSTR2;#2
           INC TMPSTR2
           LDA #'/'
           LDY TMPSTR2
           STA TMPSTR2,Y
-          STRCAT TMPSTR2 ;TIMEIISTR
+          STRCAT TMPSTR2;TIMEIISTR
 
           LDA INSTTYPE
           CMP #"S"
@@ -402,7 +402,7 @@ INSTDRV   ENT
           STY TMPSTR2
 :CONT1
           STRADD SYSTEMSTR
-
+; *** todo: copy tmpstr to mestr ***
           LDA #<TMPSTR
           STA FILECPY+3
           LDA #>TMPSTR
@@ -514,7 +514,7 @@ FINDMECB
           STA SYSFENTS+1,Y
           INC NBFOUND
 
-          STRCMP MESTR   ;FILENAME
+          STRCMP MESTR;FILENAME
           BCS :EXITKO
           JMP :EXITOK
 :EXITKO
@@ -853,5 +853,5 @@ CLOSEP2   D_CLOSE 00
 * QUITP D_QUIT
 TIMEIISTR STR 'TIMEII'
 SYSTEMSTR STR '.SYSTEM'
-MESTR     STR 'TIMEII.SYSTEM'
+MESTR     STR 'TIMEII.SYSTEM',00,00
 INSTSRCSTR STR 'TIMEII.INST'
