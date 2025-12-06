@@ -52,13 +52,13 @@ PHXY      MAC
           TXA
           PHA
           TYA
-          PLA
+          PHA
           <<<
 
 PLYX      MAC
           PLA
           TAY
-          PHA
+          PLA
           TAX
           <<<
 
