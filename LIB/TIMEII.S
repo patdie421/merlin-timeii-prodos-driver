@@ -150,6 +150,26 @@ SETIILEAP ENT
           FIN
 
 
+          DO ]E_CLRIILEAP
+********************************
+CLRIILEAP ENT
+*
+* toggle leap bit of DATTEN register
+* in: X = SLOT * 16
+* in: Y = TIMEII register
+* A is modified
+*
+********************************
+          HLDLINE
+          LDY #DATTEN
+          RDREG
+          AND #%11111011
+          JSR FWRREG1
+:EXIT     RLSLINE
+          RTS
+          FIN
+
+
           DO ]E_GETIILEAP
 ********************************
 GETIILEAP ENT
