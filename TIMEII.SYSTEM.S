@@ -55,7 +55,7 @@ START                    ; main proc
           BEQ CONTINUE
           JMP NEXTSYS
 CONTINUE
-          JSR GETSFN     ; get slot from name
+          JSR GETSFN     ; GET Slot From Name
           BCS FINDSLOT   ; no slot in filename go autodetect
 
           STA SLOT
