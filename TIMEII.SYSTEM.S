@@ -659,7 +659,6 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           TYA            ; start reading tens
           STA BASE_A,X
           LDA BASE_A,X
-          STA _TEN
 
 * check "tens" register having flags
           CPY #HOUTEN
@@ -667,18 +666,20 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           CPY #DATTEN
           BNE :NEXT3
 :NEXT2                   ; remove HOUTEN and DATTEN flags
-          AND #%0011
+          AND #%00000011
 :NEXT3
+          STA _TEN
+ 
 * Combine units and tens in 1 byte
-* S =  TMP2 x 10 + TMP1 = TMP2 x 2x2x2 + TMP2 + TMP2 + TMP1
+* S =  _TEN x 10 + _UNI = _TEN x 2x2x2 + _TEN + _TEN + _UNI
                          ; LDA TMP2
-          ASL            ; TMP2 x 2
-          ASL            ; TMP2 x 2
-          ASL            ; TMP2 x 2
+          ASL            ; _TEN x 2
+          ASL            ; _TEN x 2
+          ASL            ; _TEN x 2
           CLC
-          ADC _TEN       ; + TMP2
-          ADC _TEN       ; + TMP2
-          ADC _UNI       ; + TMP1
+          ADC _TEN       ; + _TEN
+          ADC _TEN       ; + _TEN
+          ADC _UNI       ; + _UNI
           PHA            ; To stack
 
 * an other register to read ?
