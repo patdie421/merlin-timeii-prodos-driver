@@ -402,7 +402,10 @@ INSTDRV   ENT
           STY TMPSTR2
 :CONT1
           STRADD SYSTEMSTR
-; *** todo: copy tmpstr to mestr ***
+
+; *** copy tmpstr to mestr ***
+          STRCPY TMPSTR;MESTR;#2
+
           LDA #<TMPSTR
           STA FILECPY+3
           LDA #>TMPSTR
