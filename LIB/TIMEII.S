@@ -134,7 +134,7 @@ TGLIILEAP ENT
 ********************************
 SETIILEAP ENT
 *
-* toggle leap bit of DATTEN register
+* set leap bit of DATTEN register
 * in: X = SLOT * 16
 * in: Y = TIMEII register
 * A is modified
@@ -154,7 +154,7 @@ SETIILEAP ENT
 ********************************
 CLRIILEAP ENT
 *
-* toggle leap bit of DATTEN register
+* clear leap bit of DATTEN register
 * in: X = SLOT * 16
 * in: Y = TIMEII register
 * A is modified
