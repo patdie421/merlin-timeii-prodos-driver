@@ -201,7 +201,8 @@ STRCPY1   ENT
           PLA
           AND #%01111111
           JMP :C21
-:O3       PLA
+:O3
+          PLA
 
 :C21      STA ($ED),Y
           INY
