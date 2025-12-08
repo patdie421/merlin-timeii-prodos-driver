@@ -420,12 +420,13 @@ INSTDRV   ENT
           BCC :NEXT2
           RTS
 :NEXT2    JSR FINDUPTOME
+          LDA MEFOUND
+          BEQ :EXIT
           JSR BUBBLEUP   ; move up ME
           JSR WRVOLDIR   ; write to disk
-          BCC :EXIT
           RTS
 :EXIT
-          CLC
+          SEC
           RTS
 INSTTYPE  ENT
           HEX 00
@@ -482,12 +483,15 @@ CATALOG
 FINDUPTOME
           LDA #0
           STA NBFOUND
+          STA MEFOUND
           LDA #<FINDMECB ; set callback for file_i
           STA CALLBACK+1
           LDA #>FINDMECB
           STA CALLBACK+2
           JSR FILE_ITER  ; do iteration
           RTS
+MEFOUND   ENT
+          HEX 00
 NBFOUND   ENT
           HEX 00         ; number of entry in SYSFENTS
                          ; SYSFENTS DS 51*2 ; Maximum 51 files in root dir
@@ -521,6 +525,8 @@ FINDMECB
           CLC            ; next file
           RTS
 :EXITOK
+          LDA #FF
+          STA MEFOUND
           SEC            ; break itreration
           RTS
 
