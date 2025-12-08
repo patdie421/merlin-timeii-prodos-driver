@@ -25,4 +25,5 @@ For a manual install you can:
 - ~~update leap year flag of the card at startup (base on year stored by the card and century calculation with "Day Of Week" number). This will work greate for date between 1900 and 2399 (year 2400+ users, email me, I will help you work around the issue ...)~~ - done 
 - ~~setup program to set date/time (with automatic leap year and day of week calculation) and install the driver on boot disk~~ - done
 - ~~installation on volume and reorder the catalog to put the driver a the first ".system" position~~ - done
-- add the driver in PRODOS DRIVER project (or a fork)  
+- add the driver in PRODOS DRIVER project (or a fork)
+- bug correction  
