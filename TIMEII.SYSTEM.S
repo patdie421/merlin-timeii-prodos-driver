@@ -411,7 +411,7 @@ EXENXTSYS                ; exec next sys prog
           STY PATHNAME
 
 OPENDIR
-          MLI_CALL OPEN  ;OPENP
+          MLI_CALL OPEN;OPENP
           BCC :OK2
           LDX "B"
           JMP MLIERROR
@@ -420,7 +420,7 @@ OPENDIR
           STA CLOSEP+CL_REF
           STA READP+RD_REF
 READDIR
-          MLI_CALL READ  ;READP
+          MLI_CALL READ;READP
           BCC :OK3
           LDX "C"
           JMP MLIERROR
@@ -593,8 +593,8 @@ MLIERROR
           LDA ERRCOMP
           JSR COUT
           JSR CROUT
-QUITPRG   MLI_CALL CLOSE ;CLOSEP
-QUITPRG1  MLI_CALL QUIT  ;QUITP
+QUITPRG   MLI_CALL CLOSE;CLOSEP
+QUITPRG1  MLI_CALL QUIT;QUITP
           BRK
 ERRCOMP   HEX 00
 
@@ -775,16 +775,16 @@ SYSEXEC
           LDA #>SYSSIZE
           STA READP+RD_RCNT+1
 
-          MLI_CALL OPEN  ;OPENP
+          MLI_CALL OPEN;OPENP
           BCS :ERR
 
           LDA OPENP+OP_REF
           STA READP+RD_REF
           STA CLOSEP+CL_REF
 
-          MLI_CALL READ  ;READP
+          MLI_CALL READ;READP
           PHP
-          MLI_CALL CLOSE ;CLOSEP
+          MLI_CALL CLOSE;CLOSEP
           PLP
           BCS :ERR
 
@@ -797,13 +797,13 @@ SYSEXEC
           LDA :ERRCOMP
           JSR COUT
           JSR CROUT
-          MLI_CALL QUIT  ;QUITP
+          MLI_CALL QUIT;QUITP
           BRK
 :ERRCOMP  HEX 00
 
 SLOT      HEX 00
 OPENP     D_OPEN PATHNAME;OPNBUFF
 CLOSEP    D_CLOSE 00
-READP     D_READ 00      ;BUFF;$2000
+READP     D_READ 00;BUFF;$2000
 QUITP     D_QUIT
 _ERELOC   EQU *
