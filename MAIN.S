@@ -94,7 +94,7 @@ DISPSLOT  ENT
 
 GETSLOT
           LDA #0
-          BOX #7         ;#6;#26;#6;GSLOTTTL
+          BOX #7;#6;#26;#6;GSLOTTTL
           JSR CROUT
           STRPRNT  GSLOTSTR
           LDA CH
@@ -123,7 +123,7 @@ GETSLOT
 
 
 QUIT1
-          MLI_CALL QUIT  ;QUITP
+          MLI_CALL QUIT;QUITP
           BRK            ; on "QUIT" error goto to monitor
 QUITP     D_QUIT
 
