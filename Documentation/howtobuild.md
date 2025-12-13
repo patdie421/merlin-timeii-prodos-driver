@@ -44,7 +44,7 @@ Start your Apple II with this image, create a src directory (`/PRODOS8HD/TIMEIIS
 Copy all file from `timeii.0.1.src.po` image into this directory. Please keep the directory structure.  
 ## build the driver file (timeii.system)
 The driver is not build by the linker.  
-Follow this step to: build
+Follow this step to build:
 1. Start Merlin (Prosel "Development" menu page)
 2. Change prefix to `/PRODOS8HD/TIMEIISRC` (at the menu, press `P` key, type `/PRODOS8HD/TIMEIISRC` followed by `Return` key 2 times)
 3. Load the file `TIMEII.SYSTEM.S` (at the menu, press `L`, type `TIMEII.SETUP` followed by `Return`)
