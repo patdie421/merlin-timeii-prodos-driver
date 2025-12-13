@@ -6,6 +6,7 @@
 
           DO ]E_GET1NUM
 GET1NUM   ENT            ; Get one digit
+* PHXY
           STX :XSAV
           STY :YSAV
 :GCHAR                   ; JSR BELL
@@ -14,19 +15,22 @@ GET1NUM   ENT            ; Get one digit
           BNE :NEXT1
 :ERREXIT  LDA #0
           SEC            ; cary as error flag
+* PLYX
+          LDX :XSAV
+          LDY :YSAV
           RTS            ; exit with error
 :NEXT1    CMP #"0"       ; #$B0
           BCC :GCHAR     ; <
           CMP #"9"+1     ; #$BA
           BCS :GCHAR     ; >=
 :EXIT     JSR COUT
+* PLYX
           LDX :XSAV
           LDY :YSAV
           CLC            ; no error
           RTS
 :XSAV     DFB $00        ; local data reserved in code
 :YSAV     DFB $00
-:ASAV     DFB $00
           FIN
 
           DO ]E_GETNUMS
@@ -408,4 +412,12 @@ _LCHARS   EQU $EB
 :CURSOR   HEX 00
 :SAV_ED   HEX 00,00
 :SAV_EB   HEX 00,00
+          FIN
+
+
+          DO ]E_CROUT2
+CROUT2    ENT
+          JSR CROUT
+          JSR CROUT
+          RTS
           FIN

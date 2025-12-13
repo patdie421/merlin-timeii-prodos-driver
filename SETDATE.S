@@ -23,7 +23,7 @@
 
 
 SETDATE   ENT
-          BOX #1;#6;#38;#13;DATISTR
+          BOX #1         ;#6;#38;#13;DATISTR
           JSR CROUT
           JSR GETDATI
           BCS :EXIT      ; ctrl-c ?
@@ -32,13 +32,8 @@ SETDATE   ENT
           JSR DISPDATI
           STRPRNT  CRRCTSTR
 :LOOP     JSR GETKEY
-          CMP #$E1       ; "a"   ; Check whether
-          BMI :COMP      ;       ; character is
-          CMP #$FB       ; "z"+1 ; lower case.
-          BPL :COMP
-          SEC
-          SBC #$20       ; to upper
-:COMP     CMP #"Y"
+          AND #%11011111
+          CMP #"Y"
           BEQ :SETDATE
           CMP #"N"
           BEQ :EXIT
@@ -119,8 +114,7 @@ GETDATI
           BNE :CONVERT   ; number to data
           BCC :GETNUM
           RTS            ; abord forms
-***
-*
+
 *  convert result (str to hex val) and store in VALL/VALH
 :CONVERT  CMP #2         ; a <= char count from GETNUMS
           BEQ :CONV2D    ; 4 digits (year)
@@ -265,8 +259,6 @@ GETDATI
           LDA AVAL
 
           JMP :OTHERS
-*
-***
 :DONE
           JSR CROUT
           LDX :SAVX      ; restore x
@@ -299,10 +291,7 @@ DISPDATI
           BEQ :EXIT
           CPX #$1F
           BCS :CHAR
-:VAL
           PHXY
-* STX :SAVX
-* STY :SAVY
           LDA DATE,X
           JSR HEXTODIGI
           CLC
@@ -313,8 +302,6 @@ DISPDATI
           ADC #"0"
           JSR COUT
           PLYX
-* LDY :SAVY
-* LDX :SAVX
           JMP :NEXT
 :CHAR
           TXA
@@ -324,8 +311,6 @@ DISPDATI
           JMP :LOOP
 :EXIT
           RTS
-*:SAVX HEX 00
-*:SAVY HEX 00
 :FDATE    DFB _CEN,_YEA,"-",_MON,"-",_DAY," ",_HOU,":",_MIN,":",_SEC
           DFB $8D,$8D,$FF
 
@@ -338,9 +323,14 @@ YOURSTR   STR "YOUR DATE: "
 CRRCTSTR  STR "CONFIRM DATE ADJUSTMENT (Y/N)? "
 DATESTR   STR "CURRENT DATE: "
 
+
 *
 * data for GETDATI "forms"
 *
+          HEX 00         ; don't know why be without a byte
+                         ; set before data GETDATI routine
+                         ; did'nt work properly ...
+                         ; probably an assembler or link bug
 DATISTR   STR " DATE/TIME SETTING "
 
 HOUR
@@ -392,3 +382,4 @@ DAYSSTR
 :THUSTR   ASC "THU",00
 :FRISTR   ASC "FRI",00
 :SATSTR   ASC "SAT",00
+          NOP

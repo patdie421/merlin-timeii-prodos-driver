@@ -193,7 +193,7 @@ FILECPY   ENT
           STA OPENP1+OP_PATH
           LDA :SRCPTR+1
           STA OPENP1+OP_PATH+1
-          MLI_CALL OPEN;OPENP1
+          MLI_CALL OPEN  ;OPENP1
           BCC :OK1
           LDX "G"
           JMP :ERREXIT
@@ -235,7 +235,7 @@ FILECPY   ENT
           JMP :ERREXIT
 :OK2
 * open dest
-          MLI_CALL OPEN;OPENP2
+          MLI_CALL OPEN  ;OPENP2
           BCC :OK3
           LDX "I"
           JMP :ERREXIT
@@ -247,7 +247,7 @@ FILECPY   ENT
 * copy loop
           LDY #0
 :LOOP
-          MLI_CALL READ;READP
+          MLI_CALL READ  ;READP
           BCC :OK4
           LDX "J"
           JMP :EOFORERR
@@ -260,7 +260,7 @@ FILECPY   ENT
           STA WRITEP+WR_TCNT
           STA WRITEP+WR_TCNT+1
 
-          MLI_CALL WRITE;WRITEP
+          MLI_CALL WRITE ;WRITEP
           BCC :OK5
           LDX "C"
           JMP :ERREXIT
@@ -275,8 +275,8 @@ FILECPY   ENT
           JMP :ERREXIT
 :EXIT
 * close dest
-          MLI_CALL CLOSE;CLOSEP1
-          MLI_CALL CLOSE;CLOSEP2
+          MLI_CALL CLOSE ;CLOSEP1
+          MLI_CALL CLOSE ;CLOSEP2
           RTS
 * errors
 :ERREXIT
@@ -285,7 +285,7 @@ FILECPY   ENT
           PHA
           LDA #0         ; close all opened files
           STA CLOSEP2+CL_REF
-          MLI_CALL CLOSE;CLOSEP2
+          MLI_CALL CLOSE ;CLOSEP2
           PLA
           TAX
           PLA
@@ -372,19 +372,19 @@ INSTDRV   ENT
           STA TMPSTR     ; source
           STA TMPSTR2    ; dest
 
-          STRCPY MYPATH;TMPSTR;#2
+          STRCPY MYPATH  ;TMPSTR;#2
           INC TMPSTR
           LDA #'/'
           LDY TMPSTR
           STA TMPSTR,Y
-          STRCAT TMPSTR;INSTSRCSTR
+          STRCAT TMPSTR  ;INSTSRCSTR
 
           STRCPY PATHNAME;TMPSTR2;#2
           INC TMPSTR2
           LDA #'/'
           LDY TMPSTR2
           STA TMPSTR2,Y
-          STRCAT TMPSTR2;TIMEIISTR
+          STRCAT TMPSTR2 ;TIMEIISTR
 
           LDA INSTTYPE
           CMP #"S"
@@ -420,13 +420,12 @@ INSTDRV   ENT
           BCC :NEXT2
           RTS
 :NEXT2    JSR FINDUPTOME
-          LDA MEFOUND
-          BEQ :EXIT
           JSR BUBBLEUP   ; move up ME
           JSR WRVOLDIR   ; write to disk
+          BCC :EXIT
           RTS
 :EXIT
-          SEC
+          CLC
           RTS
 INSTTYPE  ENT
           HEX 00
@@ -483,15 +482,12 @@ CATALOG
 FINDUPTOME
           LDA #0
           STA NBFOUND
-          STA MEFOUND
           LDA #<FINDMECB ; set callback for file_i
           STA CALLBACK+1
           LDA #>FINDMECB
           STA CALLBACK+2
           JSR FILE_ITER  ; do iteration
           RTS
-MEFOUND   ENT
-          HEX 00
 NBFOUND   ENT
           HEX 00         ; number of entry in SYSFENTS
                          ; SYSFENTS DS 51*2 ; Maximum 51 files in root dir
@@ -526,8 +522,6 @@ FINDMECB
           CLC            ; next file
           RTS
 :EXITOK
-          LDA #FF
-          STA MEFOUND
           SEC            ; break itreration
           RTS
 
@@ -574,15 +568,16 @@ GETVOLS   ENT
 
 PRINTVOLS ENT
           LDA #0
-          STA :COUNTER
           STA KEY
+          STA :COUNTER
+          BEQ :FIRSTL    ; zero did'nt need x16 code ...
 :LOOP1
           LDA :COUNTER
           ASL
           ASL
           ASL
           ASL
-          TAX
+:FIRSTL   TAX
           LDA RWBUFF,X
           BEQ :EXIT
           AND #%00001111
@@ -636,7 +631,7 @@ LOADVOL   ENT
           STA OPENP1+OP_PATH
           LDA #>PATHNAME
           STA OPENP1+OP_PATH+1
-          MLI_CALL OPEN;OPENP1
+          MLI_CALL OPEN  ;OPENP1
           BCC :OK2
           LDX #"B"
           JMP MLIERROR
@@ -657,7 +652,7 @@ LOADVOL   ENT
           LDA #>BLKSZ
           STA READP+RD_RCNT+1
 :RDBLK                   ; read loop
-          MLI_CALL READ;READP
+          MLI_CALL READ  ;READP
           BCC :OK3
           LDX "C"
           JMP :EOFORERR
@@ -846,19 +841,19 @@ ERRCOMP   ENT
           HEX 00
 
 
-ONLINEP   D_ONLINE 00;RWBUFF
+ONLINEP   D_ONLINE 00    ;RWBUFF
 PREFIXP   D_GETPRFX PREFIX
 DESTROYP  D_DESTROY $0000
-CREATEP   D_CREATE $0000;$FF;$2000
+CREATEP   D_CREATE $0000 ;$FF;$2000
 OPENP1    D_OPEN PATHNAME;FBUFF1
-OPENP2    D_OPEN $0000;FBUFF2
-READP     D_READ 00;RWBUFF;RWBUFFSZ
-WRITEP    D_WRITE 00;RWBUFF;RWBUFFSZ
-WRITEBKP  D_WRITEBK 00;RWBUFF;$0000
+OPENP2    D_OPEN $0000   ;FBUFF2
+READP     D_READ 00      ;RWBUFF;RWBUFFSZ
+WRITEP    D_WRITE 00     ;RWBUFF;RWBUFFSZ
+WRITEBKP  D_WRITEBK 00   ;RWBUFF;$0000
 CLOSEP1   D_CLOSE 00
 CLOSEP2   D_CLOSE 00
 * QUITP D_QUIT
 TIMEIISTR STR 'TIMEII'
 SYSTEMSTR STR '.SYSTEM'
-MESTR     STR 'TIMEII.SYSTEM',00,00
+* MESTR STR 'TIMEII.SYSTEM'
 INSTSRCSTR STR 'TIMEII.INST'

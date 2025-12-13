@@ -1,6 +1,7 @@
           LST OFF
 
-           DSK BIN/TIMEII.SYSTEM
+                         ;  DSK BIN/TIMEII.SYSTEM
+           DSK TIMEII.INST
 
           TYP $FF
 
@@ -55,7 +56,7 @@ START                    ; main proc
           BEQ CONTINUE
           JMP NEXTSYS
 CONTINUE
-          JSR GETSFN     ; GET Slot From Name
+          JSR GETSFN     ; get slot from name
           BCS FINDSLOT   ; no slot in filename go autodetect
 
           STA SLOT
@@ -604,8 +605,9 @@ ERRCOMP   HEX 00
 ]E_PRNIIDATE  EQU 0
 ]E_FINDSLOT  EQU 0
 ]E_GETIILEAP  EQU 1
-]E_SETIILEAP  EQU 0
-]E_TGLIILEAP  EQU 1
+]E_CLRIILEAP  EQU 1
+]E_SETIILEAP  EQU 1
+]E_TGLIILEAP  EQU 0
 ]E_FORCE24II  EQU 1
           USE LIB/TIMEII
 
@@ -659,6 +661,7 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           TYA            ; start reading tens
           STA BASE_A,X
           LDA BASE_A,X
+                         ; STA _TEN
 
 * check "tens" register having flags
           CPY #HOUTEN
@@ -669,7 +672,6 @@ SM01      LDX #MM        ; self modified MM <- SLOT * 16
           AND #%00000011
 :NEXT3
           STA _TEN
- 
 * Combine units and tens in 1 byte
 * S =  _TEN x 10 + _UNI = _TEN x 2x2x2 + _TEN + _TEN + _UNI
                          ; LDA TMP2

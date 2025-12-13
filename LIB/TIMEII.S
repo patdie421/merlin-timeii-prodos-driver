@@ -1,9 +1,14 @@
 ]E_FWRREG EQU 0
 ]E_REGS   EQU 0
-          DO ]E_SETIIDATE+]E_TGLIILEAP+]E_FORCE24II
+          DO ]E_SETIIDATE+]E_FORCE24II
 ]E_FWRREG EQU 1
 ]E_REGS   EQU 1
           FIN
+          DO ]E_TGLIILEAP+]E_CLRIILEAP+]E_SETIILEAP
+]E_FWRREG EQU 1
+]E_REGS   EQU 1
+          FIN
+
 
 ]TIMEIIDBG EQU 1
 
@@ -16,7 +21,7 @@
 * POKE BASE_A, R
 * POKE BASE_B, V+16
 * POKE BASE_A, R+16
-* POKE BASE_A, R
+* POKE BASE_A, V
 *
 
 HLDLINE   MAC
@@ -69,14 +74,14 @@ FWRREG1   ENT
 * POKE BASE_A, REG
 * POKE BASE_B, VAL+16
 * POKE BASE_A, REG+16
-* POKE BASE_A, REG
+* POKE BASE_A, VAL
 *
 ********************************
-          PHA            ; save value to stack because
+          STA :VAL       ; save value to stack because
           TYA            ; we need A for bit manipulation
           AND #%00001111 ; reg num must be < 16
           STA BASE_A,X   ; select register (REG)
-          PLA            ; now we need value
+          LDA :VAL       ; now we need value
           AND #%00001111 ; value has only 4 bits
           ORA #%00010000 ; bit 5 up to store data
           STA BASE_B,X   ; store data (VAL)
@@ -85,8 +90,9 @@ FWRREG1   ENT
           ORA #%00010000 ; +16 register and flag raised
           STA BASE_A,X   ; and store it (REG)
           AND #%00001111 ;
-          STA BASE_A,X   ; (REG)
+          STA BASE_A,X   ; (VAL)
           RTS
+:VAL      HEX 00
 
 
 ********************************
@@ -134,7 +140,7 @@ TGLIILEAP ENT
 ********************************
 SETIILEAP ENT
 *
-* set leap bit of DATTEN register
+* SET timeII LEAP bit of DATTEN register
 * in: X = SLOT * 16
 * in: Y = TIMEII register
 * A is modified
@@ -154,7 +160,7 @@ SETIILEAP ENT
 ********************************
 CLRIILEAP ENT
 *
-* clear leap bit of DATTEN register
+* CLeaR timeII LEAP bit of DATTEN register
 * in: X = SLOT * 16
 * in: Y = TIMEII register
 * A is modified
@@ -163,7 +169,7 @@ CLRIILEAP ENT
           HLDLINE
           LDY #DATTEN
           RDREG
-          AND #%11111011
+          AND #%11111011 ; tc bit
           JSR FWRREG1
 :EXIT     RLSLINE
           RTS
@@ -217,7 +223,6 @@ SETIIDATE1 ENT           ; second entry (X = SLOT)
           ASL
           TAX
 SETIIDATE2 ENT           ; third entry (X = SLOT * 16)
-          HLDLINE
 * self code modification
           LDA DATIDATE
           STA :DATE1+1
@@ -229,21 +234,21 @@ SETIIDATE2 ENT           ; third entry (X = SLOT * 16)
           STA :DATE3+2
 *
           LDY #1
+
+          HLDLINE
 :LOOP
 :DATE1    LDA $0000,Y
           JSR :SETII2REG
           INY
           CPY #7
           BNE :LOOP
-
 * finaly write Day of Week
-                         ; LDY #_DOW
-          LDY #2
-                         ; LDA DATE+_DOW
 :DATE2    LDA $0000,Y
           LDY #0
           JSR FWRREG2
+
 * release line
+:EXIT
           RLSLINE
           RTS
 
@@ -531,6 +536,7 @@ PRNIIDATE ENT
           DEY
           LDA TIMEII,Y
           JSR PRINTDEC
+
           JSR CROUT
           JSR CROUT
           RTS

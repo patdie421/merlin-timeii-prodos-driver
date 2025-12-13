@@ -56,8 +56,8 @@ MEMCPY2   ENT
           LDY #0
 MCP2PARS  ENT
 :LOOP
-:_SRC     LDA $FFFF,Y    ; self modified
-:_DST     STA $FFFF,Y    ; self modified
+:_SRC     LDA $FFFF,Y    ; self modified code
+:_DST     STA $FFFF,Y    ; self modified code
           INY
           DEX
           BNE :LOOP

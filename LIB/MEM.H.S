@@ -13,6 +13,11 @@ SWAPMEM_A EQU 3
 SWAPMEM_B EQU 5
 SWAPMEM_CNT EQU 7
 
+
+*
+* set mem lib memory buffer
+* ]1 : address of a 256b buffer
+*
 MEMINIT   MAC
           TXA
           PHP
@@ -27,7 +32,10 @@ MEMINIT   MAC
           TAX
           <<<
 
-
+*
+* save A,X and Y to stack
+* (use PLYXA to restore)
+*
 PHAXY     MAC
           PHA
 
@@ -38,6 +46,11 @@ PHAXY     MAC
           PHA
           <<<
 
+
+*
+* restore Y,X and A from stack
+* (use to restore PHAXY)
+*
 PLYXA     MAC
           PLA
           TAY
@@ -48,6 +61,11 @@ PLYXA     MAC
           PLA
           <<<
 
+
+*
+* save X and Y to stack
+* (use PLYX to restore)
+*
 PHXY      MAC
           TXA
           PHA
@@ -55,12 +73,23 @@ PHXY      MAC
           PHA
           <<<
 
+
+*
+* restore Y and X from stack
+* (used to restore PHXY)
+*
 PLYX      MAC
           PLA
           TAY
           PLA
           TAX
           <<<
+
+
+*
+* save Zero Page Pointer (2 bytes) to the stack
+* (use  PLZPP to restore)
+*
 
 PHZPP     MAC
           LDA ]1
@@ -69,6 +98,10 @@ PHZPP     MAC
           PHA
           <<<
 
+
+*
+* restore Zero Page Pointer (2 bytes) from the stack
+* (used to restore PHZPP)
 PLZPP     MAC
           PLA
           STA ]1+1

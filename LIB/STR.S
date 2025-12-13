@@ -1,33 +1,33 @@
           DO ]E_STRPRINT
 STRPRINT  ENT
-          JMP STRPRINT1
+          JMP :STRPRINT
           HEX 00
           HEX 00
-STRPRINT1 ENT
-          TYA
-          PHA
-          LDY #0
+:STRPRINT
+          PHAXY          ; save A,X and Y to stack
           PHZPP $ED
 
-          LDA STRPRINT+3
+          LDY #0         ; string offset
+
+          LDA STRPRINT+3 ; point to string
           STA $ED
           LDA STRPRINT+4
           STA $ED+1
-          LDA ($ED),Y
-          BEQ :EXIT
-          TAX
-          INY
+
+          LDA ($ED),Y    ; get string size
+          BEQ :EXIT      ; if 0 exit
+          TAX            ; string counter
+          INY            ; to first char
 :LOOP
           LDA ($ED),Y
-          ORA #%10000000
+          ORA #%10000000 ; to Apple "normal" char
           JSR COUT
           INY
           DEX
           BNE :LOOP
 :EXIT
           PLZPP $ED
-          PLA
-          TAY
+          PLYXA
           RTS
           FIN
 
@@ -155,64 +155,6 @@ STREWITH1 ENT
           RTS
 :LSTR1    HEX 00
 :LSTR2    HEX 00
-          FIN
-
-
-          DO ]E_STRCPY2
-]E_STRCPY1 EQU 0
-STRCPY1   ENT
-          JMP :STRCPY1
-:S1       HEX 00,00
-:S2       HEX 00,00
-:OPT      HEX 00
-:STRCPY1
-          PHZPP $EB
-          PHZPP $ED
-
-          LDA :S1
-          STA $EB
-          LDA :S1+1
-          STA $EB+1
-
-          LDA :S2
-          STA $ED
-          LDA :S2+1
-          STA $ED+1
-          LDY #0
-:LOOP
-:C11      LDA ($EB),Y
-          CPY #0
-          BNE :NEXT
-          TAX
-          INX
-          JMP :C21
-:NEXT
-          PHA
-          LDA :OPT
-:O1
-          CMP #1
-          BNE :O2
-          PLA
-          ORA #%10000000
-          JMP :C21
-:O2
-          CMP #2
-          BNE :O3
-          PLA
-          AND #%01111111
-          JMP :C21
-:O3
-          PLA
-
-:C21      STA ($ED),Y
-          INY
-          DEX
-          BNE :LOOP
-
-          PLZPP $ED
-          PLZPP $EB
-
-          RTS
           FIN
 
 

@@ -28,12 +28,6 @@ LOOP
           <<<
 
 
-CROUT2
-          JSR CROUT
-          JSR CROUT
-          RTS
-
-
 KPRESS
           STRPRNT KPRESS_S
           JSR GETKEY
@@ -60,6 +54,7 @@ PRNTWAIT
           LDA #12
           STA CV
           STRCENTER WAIT_S;40
+PRNTWAIT2
           JSR VTAB
           JSR SETINV
           STRPRNTL WAIT_S
@@ -122,11 +117,11 @@ MENUINST  ENT
 
 
 CHPREF
-          STRCPY MYPATH;TMPSTR;#1
-          BOX #3;#7;#34;#5;:NEWPREFT
-          GETSTRW TMPSTR;#63;LCHARS
+          STRCPY MYPATH  ;TMPSTR;#1
+          BOX #3         ;#7;#34;#5;:NEWPREFT
+          GETSTRW TMPSTR ;#63;LCHARS
           BCS :EXIT
-          STRCPY TMPSTR;MYPATH;#2
+          STRCPY TMPSTR  ;MYPATH;#2
 :EXIT
           JSR RWINDOW2
           RTS
@@ -143,7 +138,7 @@ DOINST    ENT
           BNE :KO1
           JMP :NEXT2
 :KO1
-          BOX #3;#7;#34;#7;:ARINSTT
+          BOX #3         ;#7;#34;#7;:ARINSTT
           STRCENTER :ARINST1;32
           STRPRNTL :ARINST1
           STRCENTER :ARINST2;32
@@ -154,7 +149,7 @@ DOINST    ENT
           SEC
           JMP :EXIT
 :NEXT2
-          BOX #4;#6;#32;#7;:GENORSLTT_S
+          BOX #4         ;#6;#32;#7;:GENORSLTT_S
           STRCENTER :GENORSLT1_S;30
           STRPRNTL :GENORSLT1_S
           STRCENTER :GENORSLT2_S;30
@@ -180,7 +175,7 @@ DOINST    ENT
           SEC
           RTS
 :SUCCESS
-          BOX #6;#7;#28;#6;SUCCES_S
+          BOX #6         ;#7;#28;#6;SUCCES_S
           STRCENTER :SUCCMSG;26
           STRPRNT :SUCCMSG
           JSR CROUT2
@@ -208,7 +203,7 @@ DODEL
 :NEXT2    JSR CNTDRV     ; count driver files on volume
           LDA DELFOUND
           BNE :NEXT
-          BOX #6;#7;#28;#6;:NOTFNDT
+          BOX #6         ;#7;#28;#6;:NOTFNDT
           STRCENTER :NOTFND;26
           STRPRNT :NOTFND
           JSR CROUT2
@@ -219,7 +214,7 @@ DODEL
           CLC
           ADC #7
           STA :HBOXSZ
-          BOX #4;#6;#32;:HBOXSZ;CONFIRM_S
+          BOX #4         ;#6;#32;:HBOXSZ;CONFIRM_S
           STRPRNT :WLBEDEL
           JSR CROUT2
           JSR LSTDRV
@@ -245,7 +240,7 @@ DODEL
           SEC
           RTS
 :SUCCES
-          BOX #6;#7;#28;#6;SUCCES_S
+          BOX #6         ;#7;#28;#6;SUCCES_S
           STRCENTER :SUCCMSG;26
           STRPRNT :SUCCMSG
           JSR CROUT2
@@ -262,7 +257,7 @@ DODEL
 
 
 ERROR
-          BOX #6;#7;#28;#6;ERROR_S
+          BOX #6         ;#7;#28;#6;ERROR_S
           STRCENTER :ERRMSG;22
           STRPRNT :ERRMSG
           LDA ERRNO
@@ -281,7 +276,7 @@ ERROR
 CHKVOL
           LDA PATHNAME
           BNE :NEXT1
-          BOX #4;#7;#32;#6;INFO_S
+          BOX #4         ;#7;#32;#6;INFO_S
           STRCENTER NOVOL;30
           STRPRNTL NOVOL
           STRCENTER KPRESS_S;30
@@ -294,23 +289,19 @@ CHKVOL
 
 
 BOXSEL
-          BOX #3;#2;#34;#20;:MENUSEL_S
-:SCAN     JSR GETVOLS
+          BOX #3         ;#2;#34;#21;:MENUSEL_S
+:SCAN
+          JSR HOME
+          LDA #12
+          STA CV
+          STRCENTER WAIT_S;34
+          JSR PRNTWAIT2
+          JSR GETVOLS
           JSR HOME
           JSR PRINTVOLS  ; print volumes + char index
-          STA :TMP
-          LDA #13
-          SEC
-          SBC :TMP
-          TAY
-:LOOP
-          TYA
-          PHA
-          JSR CROUT
-          PLA
-          TAY
-          DEY
-          BNE :LOOP
+          LDA #18
+          STA CV
+          JSR VTAB
           STRPRNTL :RSCAN_S
           STRPRNT :QMENU_S
           JSR CROUT2
