@@ -15,7 +15,7 @@ Each library consists of 3 files:
 * The library entry points (.E.S) for the linker. Need to be include to use the library if you use the linker.
 A librarie is configured by setting macro variables after .H.S inclusion and before including the .S file.
 ## Files in LIBCFG
-This files must be create only if is the linker is used. Following an exemple of file :
+This files must be create only if the linker is used. Following an exemple of file :
 ```          LST OFF ; verbose off 
           REL ; geneate relocatable code 
           DSK OBJ/STR.L ; result output in OBJ directory 
