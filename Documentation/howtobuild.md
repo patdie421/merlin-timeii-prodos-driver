@@ -41,7 +41,7 @@ Because there's no scripting solution for Merlin, you'll have to follow all this
 To build the driver and setup tools you need a copy of Merlin if possible installed on a hard drive. That's the image I use:  
 [PRODOS8HD image](https://mirrors.apple2.org.za/ftp.apple.asimov.net/images/productivity/misc/71-PRODOS8HD.170612.2mg)  
 Start your Apple II with this image, create a src directory (`/PRODOS8HD/TIMEIISRC` for example).  
-Copy all file from `timeii.0.1.src.po` image into this directory.  
+Copy all file from `timeii.0.1.src.po` image into this directory. Please keep the directory structure.  
 ## build the driver file (timeii.system)
 The driver is not build by the linker.  
 Follow this step to: build
