@@ -193,7 +193,7 @@ FILECPY   ENT
           STA OPENP1+OP_PATH
           LDA :SRCPTR+1
           STA OPENP1+OP_PATH+1
-          MLI_CALL OPEN  ;OPENP1
+          MLI_CALL OPEN;OPENP1
           BCC :OK1
           LDX "G"
           JMP :ERREXIT
@@ -235,7 +235,7 @@ FILECPY   ENT
           JMP :ERREXIT
 :OK2
 * open dest
-          MLI_CALL OPEN  ;OPENP2
+          MLI_CALL OPEN;OPENP2
           BCC :OK3
           LDX "I"
           JMP :ERREXIT
@@ -247,7 +247,7 @@ FILECPY   ENT
 * copy loop
           LDY #0
 :LOOP
-          MLI_CALL READ  ;READP
+          MLI_CALL READ;READP
           BCC :OK4
           LDX "J"
           JMP :EOFORERR
@@ -260,7 +260,7 @@ FILECPY   ENT
           STA WRITEP+WR_TCNT
           STA WRITEP+WR_TCNT+1
 
-          MLI_CALL WRITE ;WRITEP
+          MLI_CALL WRITE;WRITEP
           BCC :OK5
           LDX "C"
           JMP :ERREXIT
@@ -275,8 +275,8 @@ FILECPY   ENT
           JMP :ERREXIT
 :EXIT
 * close dest
-          MLI_CALL CLOSE ;CLOSEP1
-          MLI_CALL CLOSE ;CLOSEP2
+          MLI_CALL CLOSE;CLOSEP1
+          MLI_CALL CLOSE;CLOSEP2
           RTS
 * errors
 :ERREXIT
@@ -285,7 +285,7 @@ FILECPY   ENT
           PHA
           LDA #0         ; close all opened files
           STA CLOSEP2+CL_REF
-          MLI_CALL CLOSE ;CLOSEP2
+          MLI_CALL CLOSE;CLOSEP2
           PLA
           TAX
           PLA
@@ -372,19 +372,19 @@ INSTDRV   ENT
           STA TMPSTR     ; source
           STA TMPSTR2    ; dest
 
-          STRCPY MYPATH  ;TMPSTR;#2
+          STRCPY MYPATH;TMPSTR;#2
           INC TMPSTR
           LDA #'/'
           LDY TMPSTR
           STA TMPSTR,Y
-          STRCAT TMPSTR  ;INSTSRCSTR
+          STRCAT TMPSTR;INSTSRCSTR
 
           STRCPY PATHNAME;TMPSTR2;#2
           INC TMPSTR2
           LDA #'/'
           LDY TMPSTR2
           STA TMPSTR2,Y
-          STRCAT TMPSTR2 ;TIMEIISTR
+          STRCAT TMPSTR2;TIMEIISTR
 
           LDA INSTTYPE
           CMP #"S"
@@ -690,7 +690,7 @@ LOADVOL   ENT
           JMP MLIERROR
 
 :EXIT
-          MLI_CALL CLOSE ;CLOSEP1
+          MLI_CALL CLOSE;CLOSEP1
           RTS
 ENTLGH    HEX 00         ; entry length
 ENTBLK    HEX 00         ; nb entry per block
@@ -841,19 +841,17 @@ ERRCOMP   ENT
           HEX 00
 
 
-ONLINEP   D_ONLINE 00    ;RWBUFF
+ONLINEP   D_ONLINE 00;RWBUFF
 PREFIXP   D_GETPRFX PREFIX
 DESTROYP  D_DESTROY $0000
-CREATEP   D_CREATE $0000 ;$FF;$2000
+CREATEP   D_CREATE $0000;$FF;$2000
 OPENP1    D_OPEN PATHNAME;FBUFF1
-OPENP2    D_OPEN $0000   ;FBUFF2
-READP     D_READ 00      ;RWBUFF;RWBUFFSZ
-WRITEP    D_WRITE 00     ;RWBUFF;RWBUFFSZ
-WRITEBKP  D_WRITEBK 00   ;RWBUFF;$0000
+OPENP2    D_OPEN $0000;FBUFF2
+READP     D_READ 00;RWBUFF;RWBUFFSZ
+WRITEP    D_WRITE 00;RWBUFF;RWBUFFSZ
+WRITEBKP  D_WRITEBK 00;RWBUFF;$0000
 CLOSEP1   D_CLOSE 00
 CLOSEP2   D_CLOSE 00
-* QUITP D_QUIT
 TIMEIISTR STR 'TIMEII'
 SYSTEMSTR STR '.SYSTEM'
-* MESTR STR 'TIMEII.SYSTEM'
 INSTSRCSTR STR 'TIMEII.INST'
