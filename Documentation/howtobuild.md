@@ -59,8 +59,7 @@ The `TIMEII.SYSTEM` file is now in the `/PRODOS8HD/TIMEIISRC` directory.
 3. Load the file `TIMEIISETUP.S` (at the menu, press `L`, type `TIMEIISETUP` followed by `<Return>` key)
 4. Go in edit/asm mode (press `E` key)
 5. At the prompt (`:`) type `ASM` followed by `<Return>` key
-6. press `Q` followed by `<Return>` key
-A linker file 
+6. press `Q` followed by `<Return>` key.  
 A `TIMEIISETUP` file containing linker directives is generated
 ### libraries
 for all following files in `LIBCFG` apply step 7 to 10:
