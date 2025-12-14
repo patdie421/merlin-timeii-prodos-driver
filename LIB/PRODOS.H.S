@@ -28,7 +28,7 @@ D_QUIT    MAC
           <<<
 
 
-GP_BUFF_  EQU 01
+GP_BUFF   EQU 01
 D_GETPRFX MAC
           HEX 01
           DFB <]1
