@@ -26,4 +26,4 @@ For a manual install you can:
 - ~~setup program to set date/time (with automatic leap year and day of week calculation) and install the driver on boot disk~~ - done
 - ~~installation on volume and reorder the catalog to put the driver a the first ".system" position~~ - done
 - add the driver in PRODOS DRIVER project (or a fork)
-- bug correction  
+- bug correction - work in progress (see issues)
