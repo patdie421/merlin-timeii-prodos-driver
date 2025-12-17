@@ -545,7 +545,6 @@ PRNIIDATE ENT
 
           DO ]E_FINDSLOT
 ********************************
-*
 FINDSLOT  ENT
 *
 * Find first slot with TIMEII card
@@ -576,7 +575,6 @@ LOOP
 
           DO ]E_FORCE24II
 ********************************
-*
 FORCE24II ENT
 *
 ********************************
