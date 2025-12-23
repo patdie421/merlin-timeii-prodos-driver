@@ -368,10 +368,10 @@ MONTH
 YEAR
 :MIN      DFB 00,19      ; 1583 first full year of
                          ; gregorian calandar.
-:MAX      DFB 99,23
+:MAX      DFB 99,22
 :FLAG     DFB %00000010  ; year flag =>  4 digits
 :LABEL    ASC "    YEAR: ",00
-:FORMAT   ASC "[    ] (1583 - 2399)",00
+:FORMAT   ASC "[    ] (1900 - 2299)",00
 TABL      DW YEAR,MONTH,DAY,HOUR,MINU,SECO,00
 
 DAYSSTR
