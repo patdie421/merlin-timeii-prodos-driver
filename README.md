@@ -22,7 +22,7 @@ For a manual install you can:
 - improve autodetection of the card  
 - ~~slot selection based on program name (nameSz.system => selects slot z instead of auto-detection) - work in progress~~ - done  
 - ~~update 12/24H flag of the card to force 24H format if time is set in 12H format (time is converted)~~ - done
-- ~~update leap year flag of the card at startup (base on year stored by the card and century calculation with "Day Of Week" number). This will work greate for date between 1900 and 2399 (year 2400+ users, email me, I will help you work around the issue ...)~~ - done 
+- ~~update leap year flag of the card at startup (base on year stored by the card and century calculation with "Day Of Week" number). This will work greate for date between 1900 and 2299 (year 2300+ users, email me, I will help you work around the issue ...)~~ - done 
 - ~~setup program to set date/time (with automatic leap year and day of week calculation) and install the driver on boot disk~~ - done
 - ~~installation on volume and reorder the catalog to put the driver a the first ".system" position~~ - done
 - add the driver in PRODOS DRIVER project (or a fork)
