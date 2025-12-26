@@ -10,8 +10,8 @@
 
           USE LIB/INOUTDATA.H
           USE LIB/INOUTDATA.E
-          USE LIB/DATETIME.E
           USE LIB/DATETIME.H
+          USE LIB/DATETIME.E
           USE LIB/STR.H
           USE LIB/STR.E
           USE LIB/TIMEII.H
