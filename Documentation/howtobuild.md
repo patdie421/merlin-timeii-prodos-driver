@@ -7,7 +7,7 @@ Furthermore, the approach also aims to provide code that can be largely used in 
 ## source code tree
 * The root directory of the source code contains the main files.  
 * LIB directory contains the source code for the "unconfigured" libraries.  
-* The LIBSRC directory contains the configured libraries. Each file (.O.S extension) includes one or more of the files from the LIB directory. Only that .O.S file needs to be created/modified and assembled.  
+* The LIBCFG directory contains the configured libraries. Each file (.O.S extension) includes one or more of the files from the LIB directory. Only that .O.S file needs to be created/modified and assembled.  
 ## Libraries organisation (in LIB directory)
 Each library consists of 3 files:  
 * The source file (.S), contains the code of all sub-routines. This files must be included (USE) if you do not use the linker. If the linker is used the file must not be included.
