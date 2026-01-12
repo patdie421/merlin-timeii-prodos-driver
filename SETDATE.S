@@ -327,10 +327,10 @@ DATESTR   STR "CURRENT DATE: "
 *
 * data for GETDATI "forms"
 *
-          HEX 00         ; don't know why be without a byte
+          HEX 00         ; don't know why but without a byte
                          ; set before data GETDATI routine
                          ; did'nt work properly ...
-                         ; probably an assembler or link bug
+                         ; probably an assembler or linker bug
 DATISTR   STR " DATE/TIME SETTING "
 
 HOUR
