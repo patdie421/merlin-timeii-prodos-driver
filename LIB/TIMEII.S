@@ -215,6 +215,7 @@ SETIIDATE ENT
 * ep: SETIIDATE2
 *   in: X = solt x 16
 ********************************
+_DATI_    EQU $0000
           LDA IISLOT     ; slot * 16 -> X
 SETIIDATE1 ENT           ; second entry (X = SLOT)
           ASL
@@ -237,13 +238,13 @@ SETIIDATE2 ENT           ; third entry (X = SLOT * 16)
 
           HLDLINE
 :LOOP
-:DATE1    LDA $0000,Y
+:DATE1    LDA _DATI_,Y ; modified by code
           JSR :SETII2REG
           INY
           CPY #7
           BNE :LOOP
 * finaly write Day of Week
-:DATE2    LDA $0000,Y
+:DATE2    LDA _DATI_,Y ; modified by code
           LDY #0
           JSR FWRREG2
 
@@ -277,8 +278,8 @@ SETIIDATE2 ENT           ; third entry (X = SLOT * 16)
 * write Units
           LDA :UNI
           JSR FWRREG2
-          INY
 
+          INY
           LDA :TEN
 * write Tens, but ...
 * we have to update some tens before writing data
@@ -288,17 +289,24 @@ SETIIDATE2 ENT           ; third entry (X = SLOT * 16)
           JMP :WRTEN
 :IINEXT   CPY #7         ; date tens => set leap flag
           BNE :WRTEN
-          STA :SAVA
-          TYA
-          PHA
-          LDA :SAVA
-                         ; ORA DATE+_LEA ; set leap flag (cf GETDATI)
-          LDY #_LEA
-:DATE3    ORA $0000,Y    ; set leap flag (cf GETDATI)
-          STA :SAVA
-          PLA
-          TAY
-          LDA :SAVA
+          LDY #_LEA      ; leap value index in DATI
+:DATE3    ORA _DATI_,Y   ; modified by code
+          LDY #7
+;
+;:IINEXT   CPY #7         ; date tens => set leap flag
+;          BNE :WRTEN
+;          STA :SAVA
+;          TYA
+;          PHA
+;          LDA :SAVA
+;                         ; ORA DATE+_LEA ; set leap flag (cf GETDATI)
+;          LDY #_LEA
+;:DATE3    ORA $0000,Y    ; set leap flag (cf GETDATI), modified by code
+;          STA :SAVA
+;          PLA
+;          TAY
+;          LDA :SAVA
+;
 :WRTEN
           JSR FWRREG2
           LDX :SAVX
