@@ -32,11 +32,14 @@ INIT      ENT
 
 MAIN
 * get slot at startup
+          ; prepare display
           JSR HOME
           STRCENTER TITLESTR;40
           STRPRNT TITLESTR
           JSR CROUT2
+          ; ask for slot #
           JSR GETSLOT
+          ; configure slot
           INITII SLOT    ; configure TIMEII
 
 MENU
@@ -44,19 +47,21 @@ MENU
           JSR HOME
           JSR DISPSLOT   ; display slot
           JSR GETIIDATE  ; get date/time TIMEII from card
-          STRPRNT DATESTR : display date
+          ; display date
+          STRPRNT DATESTR
           JSR PRNIIDATE  ; print "RAW" date
           JSR ISIIDATE   ; check date "can be" correct
-          BCC :MENU1
-          LDY #$7F       ; if not display flashing warning
+          BCC :MENU1     ; date is OK, go to menu
+          LDY #$7F       ; date is KO, flashing warning
           JSR SETIFLG    ; flash on
           STRPRNT INVALSTR ; display invalid date
           JSR SETNORM    ; flash off
           JSR CROUT2
 :MENU1
-          STRPRNT MENUSTR
+          STRPRNT MENUSTR ; display menu
+          ; select menu entry and go to entries
 :GETKEY
-          JSR GETKEY
+          JSR GETKEY     ; wait key
 :1
           CMP #"1"       ; set slot
           BNE :2
@@ -69,12 +74,12 @@ MENU
           JSR SETDATE    ; from SETDATE.S
           JMP MENU
 :3
-          CMP #"3"
+          CMP #"3"       ; install driver
           BNE :4
           JSR INSTALLDRV ; from INSTGUI.S
           JMP MENU
 :4
-          CMP #"4"
+          CMP #"4"       ; quit program
           BNE :GETKEY
           JMP QUIT1
 :NEXT
@@ -94,12 +99,12 @@ DISPSLOT  ENT
 
 GETSLOT
           LDA #0
-          BOX #7;#6;#26;#6;GSLOTTTL
+          BOX #7;#6;#26;#6;GSLOTTTL ; open windows
           JSR CROUT
           STRPRNT  GSLOTSTR
           LDA CH
           STA :SAVCH
-:GET1NUM  JSR GET1NUM
+:GET1NUM  JSR GET1NUM    ; (from INOUTDATA)
 :EXIT     BCC :NEXT      ; ctrl-c
           RTS
 :NEXT
@@ -125,7 +130,7 @@ GETSLOT
 QUIT1
           MLI_CALL QUIT;QUITP
           BRK            ; on "QUIT" error goto to monitor
-QUITP     D_QUIT
+QUITP     D_QUIT         ; (from PRODOS)
 
 
 *
@@ -133,7 +138,7 @@ QUITP     D_QUIT
 *
 SLOT      ENT
           HEX 00
-DATE      ENT
+DATE      ENT ; date in DATI format
           HEX 00,00,00,00,00,00,00,00,00
 
 GSLOTTTL  STR " TIMEII CARD SLOT? "
