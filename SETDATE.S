@@ -23,7 +23,7 @@
 
 
 SETDATE   ENT
-          BOX #1         ;#6;#38;#13;DATISTR
+          BOX #1;#6;#38;#13;DATISTR
           JSR CROUT
           JSR GETDATI
           BCS :EXIT      ; ctrl-c ?
@@ -51,10 +51,10 @@ GETDATI
           JSR HOME
           LDX #0
           STX :IDX
-:LOOP     LDY #5
-          LDA TABL,X
+:LOOP     LDY #5         ; 
+          LDA TABL,X     ; TABL : table of ptr to form template
           BNE :CONT
-          JMP :EXIT
+          JMP :EXIT      ; exit function GETDATI
 :CONT     STA PTR
           LDA TABL+1,X
           STA PTR+1
@@ -334,9 +334,9 @@ DATESTR   STR "CURRENT DATE: "
 DATISTR   STR " DATE/TIME SETTING "
 
 HOUR
-:MIN      DFB 0,0
-:MAX      DFB 23,0       ; 23 max
-:FLAG     DFB 0
+:MIN      DFB 0,0        ; 0 min value
+:MAX      DFB 23,0       ; 23 max value
+:FLAG     DFB 0          ; standard
 :LABEL    ASC "   HOURS: ",00
 :FORMAT   ASC "[  ] (0 - 23)",00
 MINU
@@ -352,23 +352,22 @@ SECO
 :LABEL    ASC "SECONDES: ",00
 :FORMAT   ASC "[  ] (0 - 59)",00
 DAY
-:MIN      DFB 1,0
-:MAX      DFB 31,0
+:MIN      DFB 1,0        ; 1 min value
+:MAX      DFB 31,0       ; 31 max value but is recalculate fx(month)
 :FLAG     DFB %00000001  ; max is external table
 :LABEL    ASC "     DAY: ",00
 :FORMAT   ASC "[  ] (1 - "
-SNUMDAY   ASC "XX"
+SNUMDAY   ASC "XX"       ; updated fx(month)
           ASC ")",00
 MONTH
 :MIN      DFB 1,0
 :MAX      DFB 12,0
-:FLAG     DFB %00000100
+:FLAG     DFB %00000100  ; 
 :LABEL    ASC "   MONTH: ",00
 :FORMAT   ASC "[  ] (1 - 12)",00
 YEAR
-:MIN      DFB 00,19      ; 1583 first full year of
-                         ; gregorian calandar.
-:MAX      DFB 99,22
+:MIN      DFB 00,19      ; 1900 first year available
+:MAX      DFB 99,22      ; 2299 last year available
 :FLAG     DFB %00000010  ; year flag =>  4 digits
 :LABEL    ASC "    YEAR: ",00
 :FORMAT   ASC "[    ] (1900 - 2299)",00
