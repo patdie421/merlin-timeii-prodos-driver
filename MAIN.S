@@ -130,7 +130,7 @@ GETSLOT
 QUIT1
           MLI_CALL QUIT;QUITP
           BRK            ; on "QUIT" error goto to monitor
-QUITP     D_QUIT         ; (from PRODOS)
+QUITP     D_QUIT         ; (MACRO from PRODOS.H)
 
 
 *
