@@ -25,7 +25,7 @@ INIT      ENT
           JSR GETMYPATH  ; get launch path
 * init TIMEII.S lib: set dati structure address
           LDA #<DATE
-          STA DATIDATE   ; DATIDATE is define in TIMEII.S
+          STA DATIDATE   ; DATIDATE is define in ____
           LDA #>DATE
           STA DATIDATE+1
 
