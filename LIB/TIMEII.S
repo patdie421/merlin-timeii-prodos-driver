@@ -642,7 +642,7 @@ FORCE24II ENT
           FIN
 
 DATIDATE  ENT
-          HEX FF,FF
+          HEX FF,FF      ; pointer to DATI structure
 IISLOT    ENT
           HEX FF         ; slot of TIMEII card
 TIMEII                   ; Copy of date/time from TIMEII
