@@ -215,7 +215,7 @@ SETIIDATE ENT
 * ep: SETIIDATE2
 *   in: X = solt x 16
 ********************************
-_DATI_    EQU $0000
+_DATI_    EQU $0000      ; to identify code who will be modified
           LDA IISLOT     ; slot * 16 -> X
 SETIIDATE1 ENT           ; second entry (X = SLOT)
           ASL
@@ -233,22 +233,28 @@ SETIIDATE2 ENT           ; third entry (X = SLOT * 16)
           STA :DATE1+2
           STA :DATE2+2
           STA :DATE3+2
-*
-          LDY #1
 
-          HLDLINE
+* read leap flag
+          LDY #0
+:DATE1    LDA _DATI_,Y
+          STA :LEA
+
+* set TimeII register
+          LDY #1
+          HLDLINE      ; prepare for register update
 :LOOP
-:DATE1    LDA _DATI_,Y ; modified by code
+:DATE2    LDA _DATI_,Y ; modified by code
           JSR :SETII2REG
           INY
           CPY #7
           BNE :LOOP
+
 * finaly write Day of Week
-:DATE2    LDA _DATI_,Y ; modified by code
+:DATE3    LDA _DATI_,Y ; modified by code
           LDY #0
           JSR FWRREG2
 
-* release line
+* release line and exit
 :EXIT
           RLSLINE
           RTS
@@ -279,9 +285,9 @@ SETIIDATE2 ENT           ; third entry (X = SLOT * 16)
           LDA :UNI
           JSR FWRREG2
 
+* write Tens, but ...
           INY
           LDA :TEN
-* write Tens, but ...
 * we have to update some tens before writing data
           CPY #9         ; is hour tens => force 24H
           BNE :IINEXT
@@ -289,24 +295,7 @@ SETIIDATE2 ENT           ; third entry (X = SLOT * 16)
           JMP :WRTEN
 :IINEXT   CPY #7         ; date tens => set leap flag
           BNE :WRTEN
-          LDY #_LEA      ; leap value index in DATI
-:DATE3    ORA _DATI_,Y   ; modified by code
-          LDY #7
-;
-;:IINEXT   CPY #7         ; date tens => set leap flag
-;          BNE :WRTEN
-;          STA :SAVA
-;          TYA
-;          PHA
-;          LDA :SAVA
-;                         ; ORA DATE+_LEA ; set leap flag (cf GETDATI)
-;          LDY #_LEA
-;:DATE3    ORA $0000,Y    ; set leap flag (cf GETDATI), modified by code
-;          STA :SAVA
-;          PLA
-;          TAY
-;          LDA :SAVA
-;
+          ORA :LEA
 :WRTEN
           JSR FWRREG2
           LDX :SAVX
@@ -314,6 +303,7 @@ SETIIDATE2 ENT           ; third entry (X = SLOT * 16)
           RTS
 :UNI      HEX 00
 :TEN      HEX 00
+:LEA      HEX 00
 :SAVX     HEX 00
 :SAVY     HEX 00
 :SAVA     HEX 00
@@ -324,7 +314,7 @@ SETIIDATE2 ENT           ; third entry (X = SLOT * 16)
 REGS
 * TIMEII regs to update : must be in the same order than
 * DATE table from GETDATI and match 1 for 2
-          DFB DAYWEE,0    ; 0: 0,1
+          DFB DAYWEE,0      ; 0: 0,1
           DFB YEAUNI,YEATEN ; 1: 2,3
           DFB MONUNI,MONTEN ; 2: 4,5
 :DAT      DFB DATUNI,DATTEN ; 3: 6,7
