@@ -90,7 +90,7 @@ FWRREG1   ENT
           ORA #%00010000 ; +16 register and flag raised
           STA BASE_A,X   ; and store it (REG)
           AND #%00001111 ;
-          STA BASE_A,X   ; (VAL)
+          STA BASE_A,X   ; (REG)
           RTS
 :VAL      HEX 00
 
