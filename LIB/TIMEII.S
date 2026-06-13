@@ -21,7 +21,7 @@
 * POKE BASE_A, R
 * POKE BASE_B, V+16
 * POKE BASE_A, R+16
-* POKE BASE_A, V
+* POKE BASE_A, R
 *
 
 HLDLINE   MAC
@@ -30,7 +30,7 @@ HLDLINE   MAC
 * in: X = SLOT * 16
 * A is modified
 *
-          LDA #%00001000 ; 16 ($10)
+          LDA #%00010000 ; 16 ($10)
           STA BASE_B,X   ; Hold line high
           <<<
 
