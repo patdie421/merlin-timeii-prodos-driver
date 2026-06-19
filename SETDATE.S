@@ -51,32 +51,35 @@ GETDATI
           JSR HOME
           LDX #0
           STX :IDX
-:LOOP     LDY #5         ; 
+:LOOP     
           LDA TABL,X     ; TABL : table of ptr to form template
           BNE :CONT
           JMP :EXIT      ; exit function GETDATI
-:CONT     STA PTR
+:CONT
+          STA PTR        ; ptr to form template
           LDA TABL+1,X
           STA PTR+1
-:SLOOPL   LDA (PTR),Y    ; print label
+          LDY #5         ; offset of LABEL in form template
+:SLOOPL   LDA (PTR),Y    ; print LABEL
           BEQ :FORMAT
           JSR COUT
           INY
-          CLC
-          BCC :SLOOPL
-:FORMAT   INY            ; format str start aferter label
+          ; CLC
+          ; BCC :SLOOPL
+          BNE :SLOOPL
+:FORMAT   INY            ; format str start aferter LABEL
           LDA CH         ; Save cursor position
           PHA            ; to stack
 :SLOOPF   LDA (PTR),Y    ; print format
           BEQ :RDSTRUC
           JSR COUT
           INY
-          JMP :SLOOPF
+          BNE :SLOOPF ; JMP :SLOOPF
 :RDSTRUC
           PLA            ; restore cusror position
           STA CH         ; from stack
           INC CH         ; cursor position after "["
-          LDY #0         ; read data structure
+          LDY #0         ; read form template pos 0 (MIN)
           LDA (PTR),Y
           STA :MINL      ; min val low
           INY
@@ -103,7 +106,7 @@ GETDATI
           AND #%00000010
           BNE :4DIGITS   ; else 2DIGITS
 :2DIGITS  LDA #2         ; read 2 digits max
-          JMP :NEXT1
+          BNE :NEXT1 ; JMP :NEXT1
 :4DIGITS  LDA  #4        ; read 4 digits max
 :NEXT1
           LDX CV         ; save VTAB (for :GETNUM)
@@ -113,27 +116,44 @@ GETDATI
           JSR  GETNUMS   ; read number
           BNE :CONVERT   ; number to data
           BCC :GETNUM
-          RTS            ; abord forms
+          RTS          ; abord forms
 
 *  convert result (str to hex val) and store in VALL/VALH
 :CONVERT  CMP #2         ; a <= char count from GETNUMS
-          BEQ :CONV2D    ; 4 digits (year)
-          LDX SGETNUMB+1
-          LDY SGETNUMB
-          JSR DIGITOHEX
-          STA :VALH
-          LDX SGETNUMB+3
-          LDY SGETNUMB+2
-          JSR DIGITOHEX
-          STA :VALL
-          JMP :VALDATA
-:CONV2D                  ; only 2 digits
+          BNE :CONV4D
           LDX SGETNUMB+1
           LDY SGETNUMB
           JSR DIGITOHEX
           STA :VALL
           LDA #0
           STA :VALH
+          BEQ :VALDATA ; always branch
+:CONV4D
+          LDY SGETNUMB
+          LDX SGETNUMB+1
+          JSR DIGITOHEX
+          STA :VALH
+          LDY SGETNUMB+2
+          LDX SGETNUMB+3
+          JSR DIGITOHEX
+          STA :VALL
+;          BEQ :CONV2D    ; 4 digits (year)
+;          LDX SGETNUMB+1
+;          LDY SGETNUMB
+;          JSR DIGITOHEX
+;          STA :VALH
+;          LDX SGETNUMB+3
+;          LDY SGETNUMB+2
+;          JSR DIGITOHEX
+;          STA :VALL
+;          JMP :VALDATA
+;:CONV2D                  ; only 2 digits
+;          LDX SGETNUMB+1
+;          LDY SGETNUMB
+;          JSR DIGITOHEX
+;          STA :VALL
+;          LDA #0
+;          STA :VALH
 * validate data (compare with interval in structure)
 :VALDATA
                          ; Check if VAL >= MIN
@@ -167,8 +187,8 @@ GETDATI
 :ISYEAR
           LDA :FLAG
           AND #%00000010 ; year
-          BEQ :ISDAY
-          JMP :YEAR
+          ; BEQ :ISDAY
+          BNE :YEAR ; JMP :YEAR
 :ISDAY
           LDA :FLAG
           AND #%00000001 ; day
@@ -178,7 +198,7 @@ GETDATI
           LDA :FLAG
           AND #%00000100 ; month
           BEQ :OTHERS
-          JMP :MONTH
+          BNE :MONTH ; JMP :MONTH
 :YEAR                    ; if year we have to adjust
                          ; max month value for february
                          ; and store Century and year
@@ -192,7 +212,7 @@ GETDATI
           LDA #%000000100 ; set mask for timeii leap flag
           STA DATE+_LEA
           LDA #29        ; max day number of month
-          JMP :YEAR1     ; go update months table
+          BNE :YEAR1 ; JMP :YEAR1     ; go update months table
 :NOTLEAP  LDA #%000000000 ; no flag to set for time leap
           STA DATE+_LEA
           LDA #28
@@ -204,12 +224,6 @@ GETDATI
           STA DATE+_YEA
           INC :IDX       ; adjust index because we store
                          ; 2 values for date
-          JMP :DONE
-:OTHERS
-                         ; LDA #$FF ?
-          LDY :IDX
-          LDA :VALL
-          STA DATE,Y
           JMP :DONE
 :MONTH                   ; month value update MAX for
                          ; GETNUM
@@ -226,7 +240,7 @@ GETDATI
           TXA
           ADC #"0"
           STA SNUMDAY+1
-          JMP :OTHERS
+          BNE :OTHER ; JMP :OTHERS
 :DAY
                          ; get day of week
           LDA :VALL
@@ -252,13 +266,17 @@ GETDATI
           BEQ :DYLEXIT
           JSR COUT
           INY
-          JMP :DAYLOOP
+          BNE :DAYLOOP ; JMP :DAYLOOP
 :DYLEXIT
           LDA #">"
           JSR COUT
-          LDA AVAL
-
-          JMP :OTHERS
+          ; LDA AVAL
+          ; JMP :OTHERS
+:OTHERS
+          LDY :IDX
+          LDA :VALL
+          STA DATE,Y
+          ; JMP :DONE
 :DONE
           JSR CROUT
           LDX :SAVX      ; restore x
