@@ -34,7 +34,7 @@ INSTINIT  ENT
 
 GETMYPATH ENT
           LDX PATHNAME
-          BEQ :NOPATH
+          BEQ :NOPATH ; empty pathname string
           LDY #0
           STY MYPATH
 :LOOP1
@@ -44,7 +44,7 @@ GETMYPATH ENT
           BEQ :GETPATH
           DEX
           BNE :LOOP1
-          JMP :NOPATH
+          BEQ :NOPATH ; JMP :NOPATH
 :GETPATH
           DEX            ; remove '/' from path
           STX MYPATH
@@ -56,7 +56,7 @@ GETMYPATH ENT
           AND #%01111111
           STA MYPATH+1,Y
           INY
-          JMP :LOOP2
+          BNE :LOOP2 ; JMP :LOOP2
 :OKEXIT
           CLC
           RTS
@@ -83,7 +83,7 @@ TOREALPATH ENT
           LDA MYPATH+1,Y
           STA TMPSTR+1,Y
           INY
-          JMP :LOOP1
+          BNE :LOOP1 ; JMP :LOOP1
 :NEXT1
           DEY
           STY TMPSTR
@@ -97,7 +97,7 @@ TOREALPATH ENT
           STA MYPATH+1,Y
           INX
           INY
-          JMP :LOOP2
+          BNE :LOOP2 ; JMP :LOOP2
 :NEXT2
           STX MYPATH
           LDA TMPSTR
@@ -113,7 +113,7 @@ TOREALPATH ENT
           STA MYPATH+1,X
           INY
           INX
-          JMP :LOOP3
+          BNE :LOOP3 ; JMP :LOOP3
 :NEXT3
           INX
           STX MYPATH
@@ -263,16 +263,16 @@ FILECPY   ENT
           MLI_CALL WRITE;WRITEP
           BCC :OK5
           LDX "C"
-          JMP :ERREXIT
+          BNE :ERREXIT ; JMP :ERREXIT
 :OK5
           INY
-          JMP :LOOP
+          BNE :LOOP ; JMP :LOOP
 
 :EOFORERR
           CMP #$4C       ; eof ?
           BEQ :EXIT      ; goto close and quit
           LDX #"E"       ; an error occured
-          JMP :ERREXIT
+          BNE :ERREXIT ; JMP :ERREXIT
 :EXIT
 * close dest
           MLI_CALL CLOSE;CLOSEP1
@@ -322,7 +322,7 @@ BUBBLEUP
           JSR SWAPMEM1
 
           DEX
-          JMP :LOOP
+          BNE :LOOP ; JMP :LOOP
 :EXIT
           RTS
 
@@ -432,10 +432,10 @@ INSTTYPE  ENT
 
 CNTDRV    ENT
           LDA #$FE
-          JMP DELDRV1
+          BNE DELDRV1 ; JMP DELDRV1
 LSTDRV    ENT
           LDA #$FF
-          JMP DELDRV1
+          BNE DELDRV1 ; JMP DELDRV1
 DELDRV    ENT
           LDA #$00
 DELDRV1   STA DELFLAG
@@ -516,8 +516,9 @@ FINDMECB
 
 * STRCMP MESTR;FILENAME
           STRSWITH FILENAME;TIMEIISTR
-          BCS :EXITKO
-          JMP :EXITOK
+          BCC :EXITOK
+          ; BCS :EXITKO
+          ; JMP :EXITOK
 :EXITKO
           CLC            ; next file
           RTS
@@ -545,7 +546,7 @@ TOPTHNME  ENT            ; copy selection to PATHNAME
           STA PATHNAME+2,Y
           INY
           INX
-          JMP :LOOP
+          BNE :LOOP ; JMP :LOOP
 :EXIT
           LDA DRVSLT
           AND #%11110000
@@ -613,7 +614,7 @@ PRINTVOLS ENT
           JSR CROUT
 :NEXT
           INC :COUNTER
-          JMP :LOOP1
+          BNE :LOOP1 ; JMP :LOOP1
 :EXIT
           LDA :LEN
           RTS
@@ -655,7 +656,7 @@ LOADVOL   ENT
           MLI_CALL READ  ;READP
           BCC :OK3
           LDX "C"
-          JMP :EOFORERR
+          BNE :EOFORERR ; JMP :EOFORERR
 * next buffer block address
 :OK3
           INC BLKCNT
