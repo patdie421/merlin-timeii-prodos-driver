@@ -71,7 +71,7 @@ DIGITOHEX ENT
           ASL
           CLC
           ADC :TENS
-          ADC  :TENS
+          ADC :TENS
           ADC :UNIT
           RTS
 :TENS     HEX 00
