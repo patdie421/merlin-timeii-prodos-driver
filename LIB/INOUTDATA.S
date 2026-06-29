@@ -53,13 +53,13 @@ GETNUMS ENT
  BCC :INIT2
  LDA #8 ; force to 8 chars
 :INIT2 STA :AVAL ; keep max car
- LDX $24 ; curent pos
+ LDX $24 ; CH, curent pos
  LDY :AVAL
  LDA #"_"
 :LOOP0 JSR COUT
  DEY
  BNE :LOOP0
- STX $24
+ STX $24 ; CH
  LDY #0
 :GCHAR ; JSR BELL
 :GCHAR1 STY :BVAL
