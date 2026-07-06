@@ -710,6 +710,11 @@ FLCNT HEX 00 ; file_count
 BLKCNT HEX 00 ; block coun
 
 
+* Iteration over all file entries in R/W BUFFER
+* for each entry :
+* - copy file name in FILENAME
+* - copy type in FILETYPE
+* - JSR to Callback
 FILE_ITER
  LDA #1
  STA :COUNTER
