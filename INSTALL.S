@@ -822,12 +822,14 @@ ENTADDR HEX 00,00
 CALLBACK JMP _CALLBACK ; to modify to change callback
 
 _CALLBACK ; default callback
+ DO 0 ; DO 1 to debug
  LDA FILETYPE
  JSR PRBYTE
  LDA #" "
  JSR COUT
  STRPRNTL FILENAME
  CLC ; continue
+ FIN
  RTS
 
 
