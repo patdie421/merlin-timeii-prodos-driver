@@ -719,7 +719,7 @@ FILE_ITER
  LDA #>RWBUFF
  STA PTR+1
 * init file entry ptr
-* poin to first file entry (af volume dir struct)
+* point to first file entry (volume dir struct)
  LDA #<RWBUFF+VD_S_SIZE
  STA PTR2
  LDA #>RWBUFF+VD_S_SIZE
