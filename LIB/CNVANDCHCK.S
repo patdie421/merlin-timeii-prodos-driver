@@ -17,9 +17,10 @@ HEXTODIGI ENT
  BNE :LOOP ; JMP :LOOP
 :DONE TAX
  RTS
- FIN
 
- DO 0 ; deterministic version
+ ELSE
+
+ ; deterministic version
 * first divid by 10
  STA AVAL ; save A
   ; first A / 10
