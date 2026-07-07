@@ -2,20 +2,19 @@
 *
 * DATE / TIME utils
 *
-FRSTCENT EQU 19
+FRSTCENT EQU 19 ; first century available
 
+ DO ]E_GETDAYOFW
+GETDAYOFW ENT ; calculate day of week
 *
 * Calculate day of week
-*
+* inputs
+* CCYY/MM/DD
 * Outputs:
 *   A : day of week (0 = sunday, 1 = monday, ...)
 *
- DO ]E_GETDAYOFW
-GETDAYOFW ENT ; calculate day of week
  CLC
  BCC :START
-* inputs
-* CCYY/MM/DD
 :DD HEX 00 ; DAY
 :MM HEX 00 ; MONTH
 :CC HEX 00 ; CENTURY
@@ -60,7 +59,7 @@ GETDAYOFW ENT ; calculate day of week
  LDA :CC
 
  ASL ; x 2
- ASL  ; x 2
+ ASL ; x 2
  STA :CC5
  LDA #0
  ROL  ; carry add to next byte
@@ -114,6 +113,8 @@ GETDAYOFW ENT ; calculate day of week
 :RES HEX 00,00 ; 2 bytes
  FIN
 
+ DO ]E_ISBXTILE
+ISBXTILE ENT
 *
 * Check if year (CCYY) is leap
 *
@@ -123,8 +124,6 @@ GETDAYOFW ENT ; calculate day of week
 * Outputs:
 *   Cary flag : 0 not leap, 1 leap
 *
- DO ]E_ISBXTILE
-ISBXTILE ENT
  TYA
  BEQ :CHECKC ; when YY = 0 year can be leap
    ; or not. need, GO checking
@@ -147,6 +146,7 @@ ISBXTILE ENT
 
 
  DO ]E_GETCENT
+GETCENT ENT
 *
 * find century from date :DD/:MM/:YY and :DOW (Day Of Week)
 * loop xx (in X) from 19 (1900) to 23 (2300)
@@ -160,7 +160,6 @@ ISBXTILE ENT
 * out: Y = 0 not leap / Y = FF leap
 * modified: X,Y
 *
-GETCENT ENT
  CLC
  BCC :START
 :DD HEX 00 ; _DD: DAY
