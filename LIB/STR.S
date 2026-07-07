@@ -60,7 +60,7 @@ STRCMP1 ENT
 :NEXT DEY
  BNE :LOOP
  CLC ; equal
- JMP :EXIT
+ BCC :EXIT
 :NOTEQU
  SEC  ; not equal
 :EXIT
