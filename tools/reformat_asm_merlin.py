@@ -10,9 +10,9 @@ parser.add_argument("-f", "--file", dest="filename", help="file to re-indent", m
 
 args = parser.parse_args()
 
-ftab=10 # tab to instruction column
-ctab=32 # tab to comment column
-isize=7 # instruction max len
+ftab=12 # tab to instruction column
+ctab=36 # tab to comment column
+isize=8 # instruction max len
 
 try:
 #   with open(args.filename, "r", encoding="utf-8") as file:
@@ -23,30 +23,31 @@ try:
          if line[0]==" " or line[0]=="\t":
             l=l+" ".ljust(ftab-1) # add "tabs"
          elif line[0]=="*":
-            for e in a: # get file line and print
-               l=l+str(e)+" "
-            print(l.rstrip())
+            print(line.rstrip())
             continue
          else:
             if line[0][0]==";":
-               l=l+" ".ljust(ctab-1)
+               l=l+" ".ljust(ctab)
                for e in a:
                   l=l+str(e)+" "
                print(l.rstrip())
                continue
             else:
-               l=l+a[0].ljust(ftab-1)
+               l=l+a[0].ljust(ftab-2)+" "
                a.pop(0)
       if a: # nexts words
          i=0
          for e in a:
             i_s=1
             if i==0:
-               i_s=isize-len(e)
+               i_s=isize-len(e)-(len(l)+1-ftab)
             if e[0]!=";":
                l=l+str(e)+" ".ljust(i_s)
             else:
-               l=l+" ".ljust(ctab-len(l)-1)+"; "
+               if len(l)>=ctab:
+                  l=l+"; "
+               else:
+                  l=l+" ".ljust(ctab-len(l)-1)+"; "
             i=i+1
       print(l.rstrip())
 except(FileNotFoundError):

@@ -1,507 +1,507 @@
-]_TEST   EQU    0
-         DO     ]_TEST
-         USE    INCLUDES.H
-         USE    MONITOR.H
-         USE    MEM.H
-         FIN
+]_TEST     EQU     0
+           DO      ]_TEST
+           USE     INCLUDES.H
+           USE     MONITOR.H
+           USE     MEM.H
+           FIN
 
-_XSAV_   DFB    $00
-_YSAV_   DFB    $00
+_XSAV_     DFB     $00
+_YSAV_     DFB     $00
 
 
-         DO     ]E_GET1NUM
-GET1NUM  ENT                   ; Get one digit
-         STX    _XSAV_
-         STY    _YSAV_
-:GCHAR                         ; JSR BELL
+           DO      ]E_GET1NUM
+GET1NUM    ENT                     ; Get one digit
+           STX     _XSAV_
+           STY     _YSAV_
+:GCHAR                             ; JSR BELL
 :GCHAR1
-         DO     ]E_MYGETKEY
-         JSR    MYGETKEY1
-         ELSE
-         JSR    GETKEY
-         FIN
-         CMP    #$83           ; ctrl-c
-         BNE    :NEXT1
-:ERREXIT LDA    #0
-         SEC                   ; cary as error flag
-         LDX    _XSAV_
-         LDY    _YSAV_
-         RTS                   ; exit with error
-:NEXT1   CMP    #"0"           ; #$B0
-         BCC    :GCHAR         ; <
-         CMP    #"9"+1         ; #$BA
-         BCS    :GCHAR         ; >=
-:EXIT    JSR    COUT
-         LDX    _XSAV_
-         LDY    _YSAV_
-         CLC                   ; no error
-         RTS
+           DO      ]E_MYGETKEY
+           JSR     MYGETKEY1
+           ELSE
+           JSR     GETKEY
+           FIN
+           CMP     #$83            ; ctrl-c
+           BNE     :NEXT1
+:ERREXIT   LDA     #0
+           SEC                     ; cary as error flag
+           LDX     _XSAV_
+           LDY     _YSAV_
+           RTS                     ; exit with error
+:NEXT1     CMP     #"0"            ; #$B0
+           BCC     :GCHAR          ; <
+           CMP     #"9"+1          ; #$BA
+           BCS     :GCHAR          ; >=
+:EXIT      JSR     COUT
+           LDX     _XSAV_
+           LDY     _YSAV_
+           CLC                     ; no error
+           RTS
 * :XSAV DFB $00 ; local data reserved in code
 * :YSAV DFB $00
-         FIN
+           FIN
 
 
-         DO     ]E_GETNUMS
-GETNUMS  ENT
-         STX    _XSAV_
-         STY    _YSAV_
-         CMP    #$0
-         BNE    :INIT1
-         SEC
-         RTS
+           DO      ]E_GETNUMS
+GETNUMS    ENT
+           STX     _XSAV_
+           STY     _YSAV_
+           CMP     #$0
+           BNE     :INIT1
+           SEC
+           RTS
 :INIT1
-         CMP    #9             ; max 8 cars
-         BCC    :INIT2
-         LDA    #8             ; force to 8 chars
-:INIT2   STA    :AVAL          ; keep max car
-         LDX    $24            ; curent pos
-         LDY    :AVAL
-         LDA    #"_"
-:LOOP0   JSR    COUT
-         DEY
-         BNE    :LOOP0
-         STX    $24
-         LDY    #0
-:GCHAR                         ; JSR BELL
-:GCHAR1  STY    :BVAL
-         DO     ]E_MYGETKEY
-         JSR    MYGETKEY1
-         ELSE
-         JSR    GETKEY
-         FIN
-         LDY    :BVAL
-         CMP    #$83           ; ctrl-c
-         BNE    :NEXT1
-:ERREXIT LDA    #$0
-         SEC                   ; error
-         RTS                   ; exit with error
-:NEXT1   CMP    #$8D           ; return
-         BEQ    :EXIT          ; normal exit
-         CMP    #$88           ; left arrow
-         BEQ    :BSPACE
-         CMP    #$FF           ; backspace
-         BNE    :NEXT
-         LDA    #$88
+           CMP     #9              ; max 8 cars
+           BCC     :INIT2
+           LDA     #8              ; force to 8 chars
+:INIT2     STA     :AVAL           ; keep max car
+           LDX     $24             ; curent pos
+           LDY     :AVAL
+           LDA     #"_"
+:LOOP0     JSR     COUT
+           DEY
+           BNE     :LOOP0
+           STX     $24
+           LDY     #0
+:GCHAR                             ; JSR BELL
+:GCHAR1    STY     :BVAL
+           DO      ]E_MYGETKEY
+           JSR     MYGETKEY1
+           ELSE
+           JSR     GETKEY
+           FIN
+           LDY     :BVAL
+           CMP     #$83            ; ctrl-c
+           BNE     :NEXT1
+:ERREXIT   LDA     #$0
+           SEC                     ; error
+           RTS                     ; exit with error
+:NEXT1     CMP     #$8D            ; return
+           BEQ     :EXIT           ; normal exit
+           CMP     #$88            ; left arrow
+           BEQ     :BSPACE
+           CMP     #$FF            ; backspace
+           BNE     :NEXT
+           LDA     #$88
 :BSPACE
-         CPY    #$0
-         BEQ    :GCHAR
-         DEY
-         JSR    COUT
-         LDA    #"_"
-         JSR    COUT
-         LDA    #$88
-         JSR    COUT
-         CLC
-         BCC    :GCHAR1
-:NEXT    CPY    :AVAL
-         BEQ    :GCHAR
-         CMP    #"0"           ; #$B0
-         BCC    :GCHAR         ; <
-         CMP    #"9"+1         ; #$BA
-         BCS    :GCHAR         ; >=
-         JSR    COUT
+           CPY     #$0
+           BEQ     :GCHAR
+           DEY
+           JSR     COUT
+           LDA     #"_"
+           JSR     COUT
+           LDA     #$88
+           JSR     COUT
+           CLC
+           BCC     :GCHAR1
+:NEXT      CPY     :AVAL
+           BEQ     :GCHAR
+           CMP     #"0"            ; #$B0
+           BCC     :GCHAR          ; <
+           CMP     #"9"+1          ; #$BA
+           BCS     :GCHAR          ; >=
+           JSR     COUT
 
-         AND    #%00001111
-         STA    SGETNUMB,Y
-         INY
-         CLC
-         BCC    :GCHAR1
+           AND     #%00001111
+           STA     SGETNUMB,Y
+           INY
+           CLC
+           BCC     :GCHAR1
 :EXIT
-         TYA                   ; a = nb car readed
-         TAX
-         STA    :NBCARS
-         AND    #%00000001
-         BEQ    :EXIT1
-:LOOP    DEY
-         LDA    SGETNUMB,Y
-         STA    SGETNUMB,X
-         DEX
-         CPY    #0
-         BNE    :LOOP
-         LDA    #0
-         STA    SGETNUMB
-         INC    :NBCARS
+           TYA                     ; a = nb car readed
+           TAX
+           STA     :NBCARS
+           AND     #%00000001
+           BEQ     :EXIT1
+:LOOP      DEY
+           LDA     SGETNUMB,Y
+           STA     SGETNUMB,X
+           DEX
+           CPY     #0
+           BNE     :LOOP
+           LDA     #0
+           STA     SGETNUMB
+           INC     :NBCARS
 :EXIT1
-         CLC                   ; no error
-         LDX    _XSAV_
-         LDY    _YSAV_
-         LDA    :NBCARS
-         RTS
-:NBCARS  DFB    $00
+           CLC                     ; no error
+           LDX     _XSAV_
+           LDY     _YSAV_
+           LDA     :NBCARS
+           RTS
+:NBCARS    DFB     $00
 *:XSAV DFB $00
 *:YSAV DFB $00
-:AVAL    HEX    00
-:BVAL    HEX    00
-SGETNUMB ENT
-         DS     8
-         FIN
+:AVAL      HEX     00
+:BVAL      HEX     00
+SGETNUMB   ENT
+           DS      8
+           FIN
 
-         DO     ]E_GETPATH
-PATHMXC  ENT
-         EQU    64
-GETPATH  ENT
-         STX    _XSAV_
-         STY    _YSAV_
+           DO      ]E_GETPATH
+PATHMXC    ENT
+           EQU     64
+GETPATH    ENT
+           STX     _XSAV_
+           STY     _YSAV_
 
-         CMP    #PATHMXC
-         BCC    :NEXT
-         LDA    #PATHMXC
-:NEXT    STA    :AVAL
-:GCHAR                         ; JSR BELL
-:GCHAR1  STY    :BVAL
-         DO     ]E_MYGETKEY
-         JSR    MYGETKEY1
-         ELSE
-         JSR    GETKEY
-         FIN
-         LDY    :BVAL
-         CMP    #$83           ; ctrl-c
-         BNE    :NEXT1
-:ERREXIT LDA    #$0
-         SEC                   ; error
-         RTS                   ; exit with error
-:NEXT1   CMP    #$8D           ; return
-         BEQ    :EXIT          ; normal exit
-         CMP    #$88           ; left arrow
-         BEQ    :BSPACE
-         CMP    #$FF           ; backspace
-         BNE    :NEXT2
-         LDA    #$88
+           CMP     #PATHMXC
+           BCC     :NEXT
+           LDA     #PATHMXC
+:NEXT      STA     :AVAL
+:GCHAR                             ; JSR BELL
+:GCHAR1    STY     :BVAL
+           DO      ]E_MYGETKEY
+           JSR     MYGETKEY1
+           ELSE
+           JSR     GETKEY
+           FIN
+           LDY     :BVAL
+           CMP     #$83            ; ctrl-c
+           BNE     :NEXT1
+:ERREXIT   LDA     #$0
+           SEC                     ; error
+           RTS                     ; exit with error
+:NEXT1     CMP     #$8D            ; return
+           BEQ     :EXIT           ; normal exit
+           CMP     #$88            ; left arrow
+           BEQ     :BSPACE
+           CMP     #$FF            ; backspace
+           BNE     :NEXT2
+           LDA     #$88
 :BSPACE
-         CPY    #$0
-         BEQ    :GCHAR
-         DEY
-         JSR    COUT
-         LDA    #" "
-         JSR    COUT
-         LDA    #$88
-         JSR    COUT
-         CLC
-         BCC    :GCHAR1
-:NEXT2   CPY    :AVAL
-         BEQ    :GCHAR
-:NUM     CMP    #"."           ; ".","/" are valid chars
-         BCC    :GCHAR
-         CMP    #"9"+1
-         BCS    :ALPHUP
-         BCC    :OK            ; JMP :OK
-:ALPHUP  CMP    #"A"
-         BCC    :GCHAR
-         CMP    #"Z"+1
-         BCS    :ALPHLO
-         BCC    :OK            ; JMP :OK
-:ALPHLO  CMP    #"a"
-         BCC    :GCHAR
-         CMP    #"z"+1
-         BCS    :OTHERS
-         BCC    :OK            ; JMP :OK
+           CPY     #$0
+           BEQ     :GCHAR
+           DEY
+           JSR     COUT
+           LDA     #" "
+           JSR     COUT
+           LDA     #$88
+           JSR     COUT
+           CLC
+           BCC     :GCHAR1
+:NEXT2     CPY     :AVAL
+           BEQ     :GCHAR
+:NUM       CMP     #"."            ; ".","/" are valid chars
+           BCC     :GCHAR
+           CMP     #"9"+1
+           BCS     :ALPHUP
+           BCC     :OK             ; JMP :OK
+:ALPHUP    CMP     #"A"
+           BCC     :GCHAR
+           CMP     #"Z"+1
+           BCS     :ALPHLO
+           BCC     :OK             ; JMP :OK
+:ALPHLO    CMP     #"a"
+           BCC     :GCHAR
+           CMP     #"z"+1
+           BCS     :OTHERS
+           BCC     :OK             ; JMP :OK
 :OTHERS
-         JMP    :GCHAR
-:OK      JSR    COUT
-         STA    PATHSTR,Y
-         INY
-         CLC
-         BCC    :GCHAR1
+           JMP     :GCHAR
+:OK        JSR     COUT
+           STA     PATHSTR,Y
+           INY
+           CLC
+           BCC     :GCHAR1
 :EXIT
-         LDA    #0
-         STA    PATHSTR,Y
-         TYA                   ; a = nb car readed
-         STA    PATHNBC
-         CLC                   ; no error
-         LDX    _XSAV_
-         LDY    _YSAV_
-         RTS
+           LDA     #0
+           STA     PATHSTR,Y
+           TYA                     ; a = nb car readed
+           STA     PATHNBC
+           CLC                     ; no error
+           LDX     _XSAV_
+           LDY     _YSAV_
+           RTS
 *:XSAV DFB $00
 *:YSAV DFB $00
-:BVAL    HEX    00
-:AVAL    HEX    00
-PATHNBC  DFB    $00
-PATHSTR  DS     PATHMXC+1      ; path string buffer
-                               ; max prodos 64 bytes + zero
-         FIN
+:BVAL      HEX     00
+:AVAL      HEX     00
+PATHNBC    DFB     $00
+PATHSTR    DS      PATHMXC+1       ; path string buffer
+                                   ; max prodos 64 bytes + zero
+           FIN
 
-         DO     ]E_PRINTDEC
-PRINTDEC ENT
-         STX    _XSAV_
-         STY    _YSAV_
-         STA    :ASAV
-         STA    :BIN
-         SED
-         LDA    #$0
-         STA    :BCD
-         LDX    #8
-:CNVBIT  ASL    :BIN
-         LDA    :BCD
-         ADC    :BCD
-         STA    :BCD
-         DEX
-         BNE    :CNVBIT
-         CLD
+           DO      ]E_PRINTDEC
+PRINTDEC   ENT
+           STX     _XSAV_
+           STY     _YSAV_
+           STA     :ASAV
+           STA     :BIN
+           SED
+           LDA     #$0
+           STA     :BCD
+           LDX     #8
+:CNVBIT    ASL     :BIN
+           LDA     :BCD
+           ADC     :BCD
+           STA     :BCD
+           DEX
+           BNE     :CNVBIT
+           CLD
 
-         LDA    :BCD
-         JSR    PRBYTE
+           LDA     :BCD
+           JSR     PRBYTE
 
-         LDA    :ASAV
-         LDX    _XSAV_
-         LDY    _YSAV_
-         RTS
+           LDA     :ASAV
+           LDX     _XSAV_
+           LDY     _YSAV_
+           RTS
 *:XSAV DFB $00
 *:YSAV DFB $00
-:ASAV    DFB    $00
-:BIN     DFB    $00
-:BCD     DFB    $00
-         FIN
+:ASAV      DFB     $00
+:BIN       DFB     $00
+:BCD       DFB     $00
+           FIN
 
 
-         DO     ]E_PRINT0
+           DO      ]E_PRINT0
 *
 * print a zero terminated string
-* string address is after JSR instruction
+*   string address is after JSR instruction
 *
-]PTR     EQU    $EB
-]STRPTR  EQU    $ED
-PRINT0   ENT
-         STX    _XSAV_
-         STY    _YSAV_
-         STA    :ASAV
+]PTR       EQU     $EB
+]STRPTR    EQU     $ED
+PRINT0     ENT
+           STX     _XSAV_
+           STY     _YSAV_
+           STA     :ASAV
 * pull return address form stack
-         PLA                   ; get low
-         STA    ]PTR
-         PLA                   ; get high
-         STA    ]PTR+1
+           PLA                     ; get low
+           STA     ]PTR
+           PLA                     ; get high
+           STA     ]PTR+1
 * string address is in 2 next bytes after JSR
-         INC    ]PTR
-         BNE    :NEXT
-         INC    ]PTR+1
+           INC     ]PTR
+           BNE     :NEXT
+           INC     ]PTR+1
 * make pointer on string
-:NEXT    LDY    #1
-         LDA    (]PTR),Y
-         STA    ]STRPTR+1
-         DEY                   ; Y=0
-         LDA    (]PTR),Y
-         STA    ]STRPTR
+:NEXT      LDY     #1
+           LDA     (]PTR),Y
+           STA     ]STRPTR+1
+           DEY                     ; Y=0
+           LDA     (]PTR),Y
+           STA     ]STRPTR
 * now we can print eatch char on the zero terminated string
 * note at this point Y=0
 :LOOP
-         LDA    (]STRPTR),Y
-         BEQ    :EXIT          ; 0 of end of string
-         ORA    #%10000000
-         JSR    COUT
-         INY
-         CLC                   ; relative
-         BCC    :LOOP          ; jump
+           LDA     (]STRPTR),Y
+           BEQ     :EXIT           ; 0 of end of string
+           ORA     #%10000000
+           JSR     COUT
+           INY
+           CLC                     ; relative
+           BCC     :LOOP           ; jump
 
-:EXIT    CLC                   ; prepare for add
-         LDA    ]PTR           ; low address byte
+:EXIT      CLC                     ; prepare for add
+           LDA     ]PTR            ; low address byte
 
-         ADC    #$1            ; address after ptr + 1
-                               ; address should by "stack pop"
-                               ; +2 but rts add 1 to
-                               ; address (see 6502 docs)
-         TAX                   ; save low
+           ADC     #$1             ; address after ptr + 1
+                                   ; address should by "stack pop"
+                                   ; +2 but rts add 1 to
+                                   ; address (see 6502 docs)
+           TAX                     ; save low
 
-         LDA    ]PTR+1         ; high address byte
-         ADC    #$0            ; to add carry only
-         PHA                   ; push high first
+           LDA     ]PTR+1          ; high address byte
+           ADC     #$0             ; to add carry only
+           PHA                     ; push high first
 
-         TXA                   ; retrieve low
-         PHA                   ; push low
+           TXA                     ; retrieve low
+           PHA                     ; push low
 
-         LDA    :ASAV          ; restore all register
-         LDY    _YSAV_
-         LDX    _XSAV_
-         RTS
+           LDA     :ASAV           ; restore all register
+           LDY     _YSAV_
+           LDX     _XSAV_
+           RTS
 
 *:XSAV DFB $00 ; local data reserved in code
 *:YSAV DFB $00
-:ASAV    DFB    $00
-         FIN
+:ASAV      DFB     $00
+           FIN
 
 
-         DO     ]E_GETSTRW1
-GETSTRW1 ENT                   ; x;y;h;l;strbuff;max
-_ADDRP   EQU    $ED
-_LCHARS  EQU    $EB
-         JMP    :START
-:ADDRP   HEX    00,00
-:MAXCHRS HEX    00
-:LCHARS  HEX    00,00
+           DO      ]E_GETSTRW1
+GETSTRW1   ENT                     ; x;y;h;l;strbuff;max
+_ADDRP     EQU     $ED
+_LCHARS    EQU     $EB
+           JMP     :START
+:ADDRP     HEX     00,00
+:MAXCHRS   HEX     00
+:LCHARS    HEX     00,00
 :START
-         JSR    HOME
+           JSR     HOME
 :GETSTR
-         LDA    $ED
-         STA    :SAV_ED
-         LDA    $ED+1
-         STA    :SAV_ED+1
-         LDA    $EB
-         STA    :SAV_EB
-         LDA    $EB+1
-         STA    :SAV_EB+1
+           LDA     $ED
+           STA     :SAV_ED
+           LDA     $ED+1
+           STA     :SAV_ED+1
+           LDA     $EB
+           STA     :SAV_EB
+           LDA     $EB+1
+           STA     :SAV_EB+1
 
-         LDA    :ADDRP
-         STA    _ADDRP
-         LDA    :ADDRP+1
-         STA    _ADDRP+1
-         LDA    :LCHARS
-         STA    _LCHARS
-         LDA    :LCHARS+1
-         STA    _LCHARS+1
+           LDA     :ADDRP
+           STA     _ADDRP
+           LDA     :ADDRP+1
+           STA     _ADDRP+1
+           LDA     :LCHARS
+           STA     _LCHARS
+           LDA     :LCHARS+1
+           STA     _LCHARS+1
 
-         LDY    #0
-         LDA    (_ADDRP),Y
-         STA    :CURSOR
-                               ; CMP #0
-         BEQ    :LOOP
-         INY
+           LDY     #0
+           LDA     (_ADDRP),Y
+           STA     :CURSOR
+                                    ; CMP #0
+           BEQ     :LOOP
+           INY
 :PRNT
-         LDA    (_ADDRP),Y
-         JSR    COUT
-         CPY    :CURSOR
-         BEQ    :LOOP
-         INY
-         BNE    :PRNT          ; JMP :PRNT
+           LDA     (_ADDRP),Y
+           JSR     COUT
+           CPY     :CURSOR
+           BEQ     :LOOP
+           INY
+           BNE     :PRNT           ; JMP :PRNT
 :LOOP
-                               ; JSR GETKEY
-                               ; JSR RDKEY
-         JSR    MYGETKEY1
-         LDY    #0
-         A_EQU  #$8D;:OKEXIT
-         A_EQU  #$1B;:OKEXIT
-         A_EQU  #$88;:BSKEY
-         A_EQU  #$FF;:BS_FF
-         A_EQU  #$9B;:KOEXIT1
-         A_EQU  #$83;:KOEXIT2
-         A_ISINP _LCHARS;:CHAROK
-         A_UBTW #"a";#"z";:CHARMOK
-         A_UBTW #"A";#"Z";:CHAROK
-         A_UBTW #"0";#"9";:CHAROK
-         JMP    :LOOP
+                                    ; JSR GETKEY
+                                    ; JSR RDKEY
+           JSR     MYGETKEY1
+           LDY     #0
+           A_EQU   #$8D;:OKEXIT
+           A_EQU   #$1B;:OKEXIT
+           A_EQU   #$88;:BSKEY
+           A_EQU   #$FF;:BS_FF
+           A_EQU   #$9B;:KOEXIT1
+           A_EQU   #$83;:KOEXIT2
+           A_ISINP _LCHARS;:CHAROK
+           A_UBTW  #"a";#"z";:CHARMOK
+           A_UBTW  #"A";#"Z";:CHAROK
+           A_UBTW  #"0";#"9";:CHAROK
+           JMP     :LOOP
 :BS_FF
-         LDA    #$88
+           LDA     #$88
 :BSKEY
-         LDY    :CURSOR
-         BEQ    :LOOP
-         TAY
-         JSR    COUT
-         LDA    #" "
-         JSR    COUT
-         TYA
-         JSR    COUT
-         DEC    :CURSOR
-         JMP    :LOOP
+           LDY     :CURSOR
+           BEQ     :LOOP
+           TAY
+           JSR     COUT
+           LDA     #" "
+           JSR     COUT
+           TYA
+           JSR     COUT
+           DEC     :CURSOR
+           JMP     :LOOP
 :CHARMOK
-         AND    #$DF
+           AND     #$DF
 :CHAROK
-         LDY    :CURSOR
-         CPY    :MAXCHRS
-         BEQ    :LOOP
-         INY
-         STA    (_ADDRP),Y
-         JSR    COUT
-         INC    :CURSOR
-         JMP    :LOOP
+           LDY     :CURSOR
+           CPY     :MAXCHRS
+           BEQ     :LOOP
+           INY
+           STA     (_ADDRP),Y
+           JSR     COUT
+           INC     :CURSOR
+           JMP     :LOOP
 :OKEXIT
-         LDA    :CURSOR
-         LDY    #0
-         STA    (_ADDRP),Y
-         CLC
-         BCC    :EXIT          ; JMP :EXIT
+           LDA     :CURSOR
+           LDY     #0
+           STA     (_ADDRP),Y
+           CLC
+           BCC     :EXIT           ; JMP :EXIT
 :KOEXIT1
-         LDA    #$00
-         BEQ    :KOEXIT        ; JMP :KOEXIT
+           LDA     #$00
+           BEQ     :KOEXIT         ; JMP :KOEXIT
 :KOEXIT2
-         LDA    #$FF
-:KOEXIT  SEC
+           LDA     #$FF
+:KOEXIT    SEC
 :EXIT
-         PHP
-         PHA
-         LDA    :SAV_ED
-         STA    $ED
-         LDA    :SAV_ED+1
-         STA    $ED+1
-         LDA    :SAV_EB
-         STA    $EB
-         LDA    :SAV_EB+1
-         STA    $EB+1
-         PLA
-         PLP
-         RTS
-:CURSOR  HEX    00
-:SAV_ED  HEX    00,00
-:SAV_EB  HEX    00,00
-         FIN
+           PHP
+           PHA
+           LDA     :SAV_ED
+           STA     $ED
+           LDA     :SAV_ED+1
+           STA     $ED+1
+           LDA     :SAV_EB
+           STA     $EB
+           LDA     :SAV_EB+1
+           STA     $EB+1
+           PLA
+           PLP
+           RTS
+:CURSOR    HEX     00
+:SAV_ED    HEX     00,00
+:SAV_EB    HEX     00,00
+           FIN
 
 
-         DO     ]E_CROUT2
-CROUT2   ENT
-         JSR    CROUT
-         JSR    CROUT
-         RTS
-         FIN
+           DO      ]E_CROUT2
+CROUT2     ENT
+           JSR     CROUT
+           JSR     CROUT
+           RTS
+           FIN
 
 
 ********************************
-DEFTIMINGEQU    $1E
-         DO     ]E_MYGETKEY
-MYGETKEY1ENT
-         PHXY                  ; save x and y
-         LDY    CH             ; get horizontal offset
-         LDA    (BASL),Y       ; read char a this position
-         STA    CUROFF+1       ; update code
+DEFTIMING  EQU     $1E
+           DO      ]E_MYGETKEY
+MYGETKEY1  ENT
+           PHXY                    ; save x and y
+           LDY     CH              ; get horizontal offset
+           LDA     (BASL),Y        ; read char a this position
+           STA     CUROFF+1        ; update code
 :MYGETKEY
-         JSR    MYGETKEY       ; read char and update blinking data
-         BEQ    :MYGETKEY      ; no character readed
-         STA    :SAVA          ; save A (plyx need A to work)
-         PLYX                  ; restore x and y
-         LDA    :SAVA          ; resore A
-         RTS
-:SAVA    HEX    00             ; saved A
+           JSR     MYGETKEY        ; read char and update blinking data
+           BEQ     :MYGETKEY       ; no character readed
+           STA     :SAVA           ; save A (plyx need A to work)
+           PLYX                    ; restore x and y
+           LDA     :SAVA           ; resore A
+           RTS
+:SAVA      HEX     00              ; saved A
 
-MYGETKEY ENT
-         LDX    #$0            ; X = 0 (optimazing clearing A)
-         BIT    $C000          ; 4uS - check char available
-         BPL    :NEXT          ; 3uS - no => update blinking data
-         LDA    $C000          ; read char
-         BIT    $C010          ; reset available char flag
-         TAX                   ; A to X (save A)
-         LDA    #1             ; blinking reset
-         STA    TOGGLE
-         BNE    CUROFF         ; A never 0, branch everv (jmp curoff)
+MYGETKEY   ENT
+           LDX     #$0             ; X = 0 (optimazing clearing A)
+           BIT     $C000           ; 4uS - check char available
+           BPL     :NEXT           ; 3uS - no => update blinking data
+           LDA     $C000           ; read char
+           BIT     $C010           ; reset available char flag
+           TAX                     ; A to X (save A)
+           LDA     #1              ; blinking reset
+           STA     TOGGLE
+           BNE     CUROFF          ; A never 0, branch everv (jmp curoff)
 
 :NEXT
-         DEC    COUNTER1       ; 6uS
-         BEQ    :NEXT1         ; 3uS
-         TXA                   ; A<-0
-         RTS                   ; ret A = 0 (no char readed)
-:NEXT1   DEC    COUNTER2       ; 6uS
-         BEQ    :NEXT2         ; 3uS A = 0 (no char reader)
-         TXA                   ; A<-0
-         RTS
+           DEC     COUNTER1        ; 6uS
+           BEQ     :NEXT1          ; 3uS
+           TXA                     ; A<-0
+           RTS                     ; ret A = 0 (no char readed)
+:NEXT1     DEC     COUNTER2        ; 6uS
+           BEQ     :NEXT2          ; 3uS A = 0 (no char reader)
+           TXA                     ; A<-0
+           RTS
 :NEXT2
-GKTIMING ENT                   ; reset timing for blinking cusor
-         LDA    #DEFTIMING
-         STA    COUNTER2
-         INC    TOGGLE
+GKTIMING   ENT                     ; reset timing for blinking cusor
+           LDA     #DEFTIMING
+           STA     COUNTER2
+           INC     TOGGLE
 * call back
-GKCALLBACKENT
-         JSR    GKNOPCB        ; run call back
-         LDX    #0 clear x after jsr
+GKCALLBACK ENT
+           JSR     GKNOPCB         ; run call back
+           LDX     #0 clear x after jsr
 * and counting redisplay cursor
 DISPCUR
-         LDA    #%00000001
-         AND    TOGGLE
-         BNE    CUROFF
-CURON    LDA    #$FF
-         BNE    DISPCUR1       ; A never 0, branch ever
-CUROFF   LDA    #" "
+           LDA     #%00000001
+           AND     TOGGLE
+           BNE     CUROFF
+CURON      LDA     #$FF
+           BNE     DISPCUR1        ; A never 0, branch ever
+CUROFF     LDA     #" "
 DISPCUR1
-         LDY    CH
-         STA    (BASL),Y
-         TXA
-GKNOPCB  ENT
-         RTS
+           LDY     CH
+           STA     (BASL),Y
+           TXA
+GKNOPCB    ENT
+           RTS
 
-COUNTER1 HEX    FF
-COUNTER2 DB     DEFTIMING
-TOGGLE   HEX    01
-         FIN
+COUNTER1   HEX     FF
+COUNTER2   DB      DEFTIMING
+TOGGLE     HEX     01
+           FIN
