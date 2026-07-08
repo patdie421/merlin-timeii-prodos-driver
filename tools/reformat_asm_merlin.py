@@ -1,4 +1,4 @@
-# Simple, quick and durty Merlin ASM source code file formatter.
+# Simple, quick and dirty Merlin ASM source code file formatter.
 
 import sys
 from argparse import ArgumentParser
