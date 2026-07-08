@@ -120,8 +120,8 @@ GETSLOT
            BEQ     QUIT1
            SEC
            SBC     #"0"
-                                    ; BEQ :GETSLOT ; = 0 not allowed
-                                    ; BCC :GETSLOT ; < 0 not allowed
+                                   ; BEQ :GETSLOT ; = 0 not allowed
+                                   ; BCC :GETSLOT ; < 0 not allowed
            BEQ     :GET1NUM        ; = 0 not allowed
            BCC     :GET1NUM        ; < 0 not allowed
            CMP     #8

@@ -477,7 +477,7 @@ GETIIDATE2 ENT                     ; third entry (X = SLOT * 16)
            CPY     #DAYWEE
            BNE     :NEXT1          ; No, continue !
            LDA     #0              ; Yes, this register has no tens
-                                    ; replace by a 0
+                                   ; replace by a 0
            STA     :BVAL           ; in BVAL
            BEQ     :NEXT4          ; kind of "relative JMP"
 :NEXT1
@@ -601,7 +601,7 @@ ISIIDATE   ENT
            LDA     #$FF
            RTS
 :ERROR
-                                    ; JSR BELL
+                                   ; JSR BELL
                                    ; JSR BELL
            TYA
            SEC
@@ -619,7 +619,7 @@ PRNIIDATE  ENT
 *
 ********************************
 
-                                    ; PRINT DATESTR
+                                   ; PRINT DATESTR
            LDY     #6
            LDA     TIMEII,Y
            JSR     PRINTDEC
@@ -689,10 +689,10 @@ TOIIDATEASC ENT
            CMP     #10
            BCC     :INDEX
 
-                                    ; STY :SAV
+                                   ; STY :SAV
            LDY     :PTR
            STA     DATEIIASC,Y
-                                    ; LDY :SAV
+                                   ; LDY :SAV
            INC     :PTR
            BNE     :NEXT           ; JMP :NEXT
 
@@ -807,7 +807,7 @@ DATIDATE   ENT
 IISLOT     ENT
            HEX     FF              ; slot of TIMEII card
 TIMEII                             ; Copy of date/time from TIMEII
-                                    ; UNI + 10 x TENS
+                                   ; UNI + 10 x TENS
 DECSEC     HEX     00              ; secondes
 DECMIN     HEX     00              ; minutes
 DECHOU     HEX     00              ; hour

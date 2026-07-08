@@ -434,10 +434,10 @@ INSTDRV    ENT
 :NEXT2     JSR     FINDUPTOME
            JSR     BUBBLEUP        ; move ME up
            JSR     WRVOLDIR        ; write dir entries to disk
-                                    ; BCC :EXIT
-                                    ; RTS
-                                    ;:EXIT
-                                    ; CLC
+                                   ; BCC :EXIT
+                                   ; RTS
+                                   ;:EXIT
+                                   ; CLC
            RTS
 INSTTYPE   ENT
            HEX     00
@@ -502,7 +502,7 @@ FINDUPTOME
            RTS
 NBFOUND    ENT
            HEX     00              ; number of entry in SYSFENTS
-                                    ; SYSFENTS DS 51*2 ; Maximum 51 files in root dir
+                                   ; SYSFENTS DS 51*2 ; Maximum 51 files in root dir
 
 
 * CallBack for FILE_ITER
@@ -528,8 +528,8 @@ FINDMECB
 
 * STRCMP MESTR;FILENAME
            STRSWITH FILENAME;TIMEIISTR
-                                    ; BCS :EXITKO
-                                    ; JMP :EXITOK
+                                   ; BCS :EXITKO
+                                   ; JMP :EXITOK
            BCS     :EXITKO
 :EXITOK
            SEC                     ; break itreration
@@ -678,7 +678,7 @@ LOADVOL    ENT
            BNE     :NEXT
 * block number == 1
            LDA     RWBUFF+VD_FLCNT  ; number of file
-                                    ; BNE :OK4 ; not 0, get data
+                                   ; BNE :OK4 ; not 0, get data
                                    ; JMP :EXIT ; no file in directory
            BEQ     :EXIT
 :OK4

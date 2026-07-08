@@ -143,7 +143,7 @@ DOINST     ENT
            JSR     CROUT2
            STRCENTER KPRESS_S;32
            JSR     KPRESS
-                                    ; SEC
+                                   ; SEC
            JMP     :EXIT
 :NEXT2
            BOX     #4;#6;#32;#7;:GENORSLTT_S
@@ -232,7 +232,7 @@ DODEL
            BCC     :SUCCES
 :ERROR
            JSR     ERROR
-                                    ; SEC
+                                   ; SEC
            RTS
 :SUCCES
            BOX     #6;#7;#28;#6;SUCCES_S
@@ -241,7 +241,7 @@ DODEL
            JSR     CROUT2
            STRCENTER KPRESS_S;26
            JSR     KPRESS
-                                    ; CLC
+                                   ; CLC
 :EXIT
            RTS
 :NOTFNDT   STR     " NOT FOUND "
@@ -305,7 +305,7 @@ BOXSEL
            BCC     :NEXT
            CMP     #$FF
            BEQ     :SCAN
-                                    ; SEC
+                                   ; SEC
            BNE     :EXIT           ; JMP :EXIT
 :NEXT
            JSR     TOPTHNME        ; copy selection to PATHNAME
@@ -337,16 +337,16 @@ SELVOL
            JMP     :EXIT
 :RESCAN
            LDA     #$FF
-                                    ; SEC
+                                   ; SEC
            RTS
 :NCEXIT
            LDA     #0
-                                    ; SEC
+                                   ; SEC
            RTS                     ; exit with error
 :EXIT
            SEC
            SBC     #"A"
-                                    ; CLC ; no error
+                                   ; CLC ; no error
            RTS
 :MAXKEY    HEX     00
 

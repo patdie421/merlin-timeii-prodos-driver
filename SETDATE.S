@@ -167,7 +167,7 @@ GETDATI
            CMP     :MINH           ; MINH = high of MIN
            BCC     :FALSE1         ; if MINH < VALH then MIN < VAL
            BNE     :TRUE1          ; and if VALH <> NUM2H then
-                                    ; VAL > MIN (so VAL >= MIN)
+                                   ; VAL > MIN (so VAL >= MIN)
            LDA     :VALL           ; compare low bytes
            CMP     :MINL
            BCS     :TRUE1          ; if VALL >= MINL then VAL >= MIN
@@ -193,8 +193,8 @@ GETDATI
 :ISYEAR
            LDA     :FLAG
            AND     #%00000010      ; year
-                                    ; BEQ :ISDAY
-                                    ; JMP :YEAR
+                                   ; BEQ :ISDAY
+                                   ; JMP :YEAR
            BNE     :YEAR
 :ISDAY
            LDA     :FLAG
@@ -285,7 +285,7 @@ GETDATI
 :DYLEXIT
            LDA     #">"
            JSR     COUT
-                                    ; LDA AVAL ?
+                                   ; LDA AVAL ?
            JMP     :OTHERS
 :DONE
            JSR     CROUT
@@ -364,7 +364,7 @@ SECMSTRE   EQU     *
 * data for GETDATI "forms"
 *
            HEX     00              ; don't know why be without a byte
-                                    ; set before data GETDATI routine
+                                   ; set before data GETDATI routine
                                    ; did'nt work properly ...
                                    ; probably an assembler or link bug
 DATISTR    STR     " DATE/TIME SETTING "

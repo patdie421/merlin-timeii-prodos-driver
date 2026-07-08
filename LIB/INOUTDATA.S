@@ -350,7 +350,7 @@ _LCHARS    EQU     $EB
            LDY     #0
            LDA     (_ADDRP),Y
            STA     :CURSOR
-                                    ; CMP #0
+                                   ; CMP #0
            BEQ     :LOOP
            INY
 :PRNT
@@ -361,8 +361,8 @@ _LCHARS    EQU     $EB
            INY
            BNE     :PRNT           ; JMP :PRNT
 :LOOP
-                                    ; JSR GETKEY
-                                    ; JSR RDKEY
+                                   ; JSR GETKEY
+                                   ; JSR RDKEY
            JSR     MYGETKEY1
            LDY     #0
            A_EQU   #$8D;:OKEXIT

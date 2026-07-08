@@ -128,7 +128,7 @@ ISBXTILE   ENT
            TYA
            BEQ     :CHECKC         ; when YY = 0 year can be leap
                                    ; or not. need, GO checking
-                                    ; century
+                                   ; century
            AND     #%00000011      ; check multiple of 4
            BNE     :NO             ; shure not leap
            BCS     :YES            ; shure leap

@@ -1,6 +1,6 @@
            LST     OFF
 
-                                    ; DSK BIN/TIMEII.SYSTEM
+                                   ; DSK BIN/TIMEII.SYSTEM
            DSK     TIMEII.INST
 
            TYP     $FF
@@ -664,7 +664,7 @@ SM01       LDX     #MM             ; self modified MM <- SLOT * 16
            TYA                     ; start reading tens
            STA     BASE_A,X
            LDA     BASE_A,X
-                                    ; STA _TEN
+                                   ; STA _TEN
 
 * check "tens" register having flags
            CPY     #HOUTEN
@@ -677,7 +677,7 @@ SM01       LDX     #MM             ; self modified MM <- SLOT * 16
            STA     _TEN
 * Combine units and tens in 1 byte
 * S =  _TEN x 10 + _UNI = _TEN x 2x2x2 + _TEN + _TEN + _UNI
-                                    ; LDA TMP2
+                                   ; LDA TMP2
            ASL                     ; _TEN x 2
            ASL                     ; _TEN x 2
            ASL                     ; _TEN x 2

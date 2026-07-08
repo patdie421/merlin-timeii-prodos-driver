@@ -27,7 +27,7 @@ try:
             continue
          else:
             if line[0][0]==";":
-               l=l+" ".ljust(ctab)
+               l=l+" ".ljust(ctab-1)
                for e in a:
                   l=l+str(e)+" "
                print(l.rstrip())
