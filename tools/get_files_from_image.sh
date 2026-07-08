@@ -13,5 +13,6 @@ DEST=$3
 cat "$FILES" | while read line
 do
    echo "$line"
-   acx get -d "$DISK" $line --method=text | reformat_asm_merlin > "$DEST/$line"
+   mkdir -p "$(dirname "$DEST/$line")" > /dev/null 2>&1
+   acx get -d "$DISK" "$line" --method=text | reformat_asm_merlin > "$DEST/$line"
 done
