@@ -1,9 +1,10 @@
-# simple, quick and dirty melin asm source code file reformater
+# Simple, quick and durty Merlin ASM source code file formatter.
 
 import sys
 from argparse import ArgumentParser
 
-parser.add_argument("-f", "--file", dest="filename", help="file to reindent", required=True, metavar="FILE")
+parser = ArgumentParser(description="Re-indent Merlin 8/16 asm file")
+parser.add_argument("-f", "--file", dest="filename", help="file to re-indent", required=True, metavar="FILE")
 
 args = parser.parse_args()
 
