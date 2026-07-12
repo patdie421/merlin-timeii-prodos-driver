@@ -21,7 +21,13 @@
            USE     LIB/FORMS.E
            USE     LIB/MEM.H
 
+
+********************************
 RESETSEC   ENT
+*
+* Seconds adjustment
+*
+********************************
            BOX     #7;#9;#26;#10;RSTSSTR
            STRPRNT SECMSTR
 :LOOP      JSR     MYGETKEY1       ; JSR GETKEY
@@ -52,15 +58,22 @@ RESETSEC   ENT
            BEQ     :LOOP           ; BEQ replace JMP
 
 
+********************************
 SETDATE    ENT
-           BOX     #1;#7;#38;#13;DATISTR
+*
+* Date & Time adjustment
+* (seconds can't be set)
+*
+********************************
+           BOX     #2;#8;#36;#13;DATISTR
            JSR     GETDATI
            BCS     :EXIT           ; ctrl-c ?
            JSR     CROUT
            STRPRNT YOURSTR
            JSR     DISPDATI
            STRPRNT CRRCTSTR
-:LOOP      JSR     GETKEY          ; not JSR MYGETKEY1 to not update display
+* :LOOP JSR GETKEY ; not JSR MYGETKEY1 to not update display
+:LOOP      JSR     MYGETKEY1
            AND     #%11011111
            CMP     #"Y"
            BEQ     :SETDATE
@@ -73,7 +86,12 @@ SETDATE    ENT
            RTS
 
 
+********************************
 GETDATI
+*
+*
+*
+********************************
            JSR     HOME
            LDX     #0
            STX     :IDX
@@ -212,9 +230,9 @@ GETDATI
                                    ; and store Century and year
            LDX     :VALH
            LDY     :VALL
-           JSR     ISBXTILE        ; is date leap ?
+           JSR     ISLEAP          ; is date leap ?
            BCC     :NOTLEAP
-           LDA     #30             ; yes display a label
+           LDA     #28             ; yes display a label
            STA     CH              ; on the second part
            STRPRNT LEAPSTR         ; of the screen
            LDA     #%000000100     ; set mask for timeii leap flag
@@ -268,7 +286,7 @@ GETDATI
            JSR     GETDAYOFW       ; calculate day of week
            STA     DATE+_DOW
            STA     AVAL
-           LDA     #25
+           LDA     #24
            STA     CH
            LDA     #"<"
            JSR     COUT
@@ -312,16 +330,21 @@ GETDATI
 :SAVA      HEX     00
 
 
+********************************
 DISPDATI
+*
+* print formated date and time
+*
+********************************
            LDY     #0
-:LOOP      LDX     :FDATE,Y
-           CPX     #$FF
+:LOOP      LDX     :FDATE,Y        ; read date "format"
+           CPX     #$FF            ; end of "format"
            BEQ     :EXIT
            CPX     #$1F
            BCS     :CHAR
-           PHXY
-           LDA     DATE,X
-           JSR     HEXTODIGI
+           PHXY                    ; save x and y to stack
+           LDA     DATE,X          ; get value
+           JSR     HEXTODIGI       ; conversion for dec printing
            CLC
            TYA
            ADC     #"0"
@@ -339,16 +362,17 @@ DISPDATI
            BNE     :LOOP           ; JMP :LOOP
 :EXIT
            RTS
+* date display format template
 :FDATE     DFB     _CEN,_YEA,"-",_MON,"-",_DAY," ",_HOU,":",_MIN,":",_SEC
-           DFB     $8D,$8D,$FF
+           DFB     $8D,$8D,$FF     ; $FF = end
 
 
 *
 * Pascal string
 *
 LEAPSTR    STR     " <L>"
-YOURSTR    STR     "YOUR DATE: "
-CRRCTSTR   STR     "CONFIRM DATE ADJUSTMENT (Y/N)? "
+YOURSTR    STR     " YOUR DATE: "
+CRRCTSTR   STR     " CONFIRM DATE ADJUSTMENT (Y/N)? "
 DATESTR    STR     "CURRENT DATE: "
 RSTSSTR    STR     "SECONDS ADJUSTMENT"
 SECMSTR    DB      SECMSTRE-SECMSTRS
@@ -363,46 +387,46 @@ SECMSTRE   EQU     *
 *
 * data for GETDATI "forms"
 *
-           HEX     00              ; don't know why be without a byte
-                                   ; set before data GETDATI routine
+           HEX     00              ; don't know why but without a byte
+                                   ; set before data, GETDATI routine
                                    ; did'nt work properly ...
                                    ; probably an assembler or link bug
 DATISTR    STR     " DATE/TIME SETTING "
-
+* form struct
 HOUR
 :MIN       DFB     0,0
 :MAX       DFB     23,0            ; 23 max
 :FLAG      DFB     0
 :LABEL     ASC     " HOURS: ",00
-:FORMAT    ASC     "[ ] (0 - 23)",00
+:FORMAT    ASC     "[ ] (0-23)",00
 MINU
 :MIN       DFB     0,0
 :MAX       DFB     59,0            ; 59 max
 :FLAG      DFB     0
 :LABEL     ASC     " MINUTES: ",00
-:FORMAT    ASC     "[ ] (0 - 59)",00
+:FORMAT    ASC     "[ ] (0-59)",00
 DAY
 :MIN       DFB     1,0
 :MAX       DFB     31,0
 :FLAG      DFB     %00000001       ; max is external table
 :LABEL     ASC     " DAY: ",00
-:FORMAT    ASC     "[ ] (1 - "
-SNUMDAY    ASC     "XX"
+:FORMAT    ASC     "[ ] (1-"
+SNUMDAY    ASC     "XX"            ; max day is function of month
            ASC     ")",00
 MONTH
 :MIN       DFB     1,0
 :MAX       DFB     12,0
-:FLAG      DFB     %00000100
+:FLAG      DFB     %00000100       ; nead day adjustment for february
 :LABEL     ASC     " MONTH: ",00
-:FORMAT    ASC     "[ ] (1 - 12)",00
+:FORMAT    ASC     "[ ] (1-12)",00
 YEAR
 :MIN       DFB     00,19           ; 1900 first full year of
                                    ; gregorian calandar.
-:MAX       DFB     99,23
+:MAX       DFB     99,23           ; 2399 last valid year
 :FLAG      DFB     %00000010       ; year flag => 4 digits
 :LABEL     ASC     " YEAR: ",00
-:FORMAT    ASC     "[ ] (1900 - 2399)",00
-TABL       DW      YEAR,MONTH,DAY,HOUR,MINU,0
+:FORMAT    ASC     "[ ] (1900-2399)",00
+TABL       DW      YEAR,MONTH,DAY,HOUR,MINU,0 ; index
 DAYSSTR
 :SUNSTR    ASC     "SUN",00
 :MONSTR    ASC     "MON",00

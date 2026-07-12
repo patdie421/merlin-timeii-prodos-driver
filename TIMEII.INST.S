@@ -1,7 +1,6 @@
            LST     OFF
 
-                                   ; DSK BIN/TIMEII.SYSTEM
-           DSK     TIMEII.INST
+           DSK     BIN/TIMEII.INST
 
            TYP     $FF
 
@@ -110,10 +109,10 @@ ERREXIT
            PRINTPAS STRNLOAD
            JSR     CROUT
 :NEXTSYS
-* LDA STRKEYPR
-* JSR CENTER40
-* PRINTPAS STRKEYPR
-* JSR GETKEY
+           LDA     STRKEYPR
+           JSR     CENTER40
+           PRINTPAS STRKEYPR
+           JSR     GETKEY
            JMP     NEXTSYS         ; KO, run next .system
 
 
@@ -214,19 +213,17 @@ UPDTLEAP                           ; UPDate LEAP flag
 *
            STX     :SAVX
            STY     :SAVY
-* TAX
-* LDA LEAP
-* CMP TIMEII+_IILEA
-* BEQ :DONE ; leaps are aligned
-* TXA
+           TAX
+           LDA     LEAP
+           CMP     TIMEII+_IILEA
+           BEQ     :DONE           ; leaps are aligned
+           TXA
            ASL                     ; X = X * 16
            ASL
            ASL
            ASL
            TAX
-           LDA     LEAP
-* JSR TGLIILEAP
-           JSR     PUTIILEAP
+           JSR     TGLIILEAP
 :DONE
            LDY     :SAVY
            LDX     :SAVX
@@ -607,10 +604,8 @@ ERRCOMP    HEX     00
 ]E_PRNIIDATE EQU   0
 ]E_FINDSLOT EQU    0
 ]E_GETIILEAP EQU   1
-]E_CLRIILEAP EQU   0
 ]E_SETIILEAP EQU   0
-]E_TGLIILEAP EQU   0
-]E_PUTIILEAP EQU   1
+]E_TGLIILEAP EQU   1
 ]E_FORCE24II EQU   1
            USE     LIB/TIMEII
 
@@ -664,7 +659,7 @@ SM01       LDX     #MM             ; self modified MM <- SLOT * 16
            TYA                     ; start reading tens
            STA     BASE_A,X
            LDA     BASE_A,X
-                                   ; STA _TEN
+           STA     _TEN
 
 * check "tens" register having flags
            CPY     #HOUTEN
@@ -672,19 +667,18 @@ SM01       LDX     #MM             ; self modified MM <- SLOT * 16
            CPY     #DATTEN
            BNE     :NEXT3
 :NEXT2                             ; remove HOUTEN and DATTEN flags
-           AND     #%00000011
+           AND     #%0011
 :NEXT3
-           STA     _TEN
 * Combine units and tens in 1 byte
-* S =  _TEN x 10 + _UNI = _TEN x 2x2x2 + _TEN + _TEN + _UNI
+* S =  TMP2 x 10 + TMP1 = TMP2 x 2x2x2 + TMP2 + TMP2 + TMP1
                                    ; LDA TMP2
-           ASL                     ; _TEN x 2
-           ASL                     ; _TEN x 2
-           ASL                     ; _TEN x 2
+           ASL                     ; TMP2 x 2
+           ASL                     ; TMP2 x 2
+           ASL                     ; TMP2 x 2
            CLC
-           ADC     _TEN            ; + _TEN
-           ADC     _TEN            ; + _TEN
-           ADC     _UNI            ; + _UNI
+           ADC     _TEN            ; + TMP2
+           ADC     _TEN            ; + TMP2
+           ADC     _UNI            ; + TMP1
            PHA                     ; To stack
 
 * an other register to read ?
@@ -757,7 +751,7 @@ STRERR1    STR     "AN INCONSISTENT DATE WAS READ!"
 STRERR2    STR     "NO TIMEII CARD FOUND!"
 
 STRNLOAD   STR     "DRIVER NOT LOADED"
-* STRKEYPR STR "PRESS ANY KEY TO CONTINUE"
+STRKEYPR   STR     "PRESS ANY KEY TO CONTINUE"
 STRMLIER   STR     "MLI ERROR: "
 
 

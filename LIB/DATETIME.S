@@ -23,7 +23,7 @@ GETDAYOFW  ENT                     ; calculate day of week
 
 :START     LDX     :CC             ; check if leap year
            LDY     :YY             ; x and y contain the year
-           JSR     ISBXTILE
+           JSR     ISLEAP
            BCS     :BXTIL
 :NOTBXTIL                          ; get MONTH in standard table
            LDY     :MM
@@ -123,8 +123,8 @@ GETDAYOFW  ENT                     ; calculate day of week
 * Outputs:
 *   Cary flag : 0 not leap, 1 leap
 *
-           DO      ]E_ISBXTILE
-ISBXTILE   ENT
+           DO      ]E_ISLEAP
+ISLEAP     ENT
            TYA
            BEQ     :CHECKC         ; when YY = 0 year can be leap
                                    ; or not. need, GO checking
@@ -182,7 +182,7 @@ GETCENT    ENT
            CMP     :DOW
            BEQ     :DONE
            INX
-           CPX     #FRSTCENT+4+1
+           CPX     #FRSTCENT+4+1   ; 4=loop +1 for good comparaison
            BNE     :LOOP
            LDA     #$FF
            RTS
@@ -190,7 +190,7 @@ GETCENT    ENT
            CPY     #$FF
            BNE     :RET
            LDY     :YY
-           JSR     ISBXTILE
+           JSR     ISLEAP
            BCS     :LEAP
 :NOLEAP    LDY     #00
            BCC     :RET

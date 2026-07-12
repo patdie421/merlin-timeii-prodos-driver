@@ -1,5 +1,5 @@
 ]E_GETDAYOFW EQU   0
-]E_ISBXTILE EQU    0
+]E_ISLEAP  EQU     0
 ]E_GETCENT EQU     0
 
 * param pos. for GETDAYOFW

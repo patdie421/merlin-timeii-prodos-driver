@@ -170,7 +170,7 @@ DATESTR    STR     "CURRENT DATE: "
 MENUSTR    DB      MENUSTRE-MENUSTRS
 MENUSTRS   ASC     "(1) SELECT AN OTHER SLOT",8D
            ASC     "(2) DATE/TIME ADJUSTMENT",8D
-           ASC     "(3) ADJUST SECONDS",8D
+           ASC     "(3) SECONDS ADJUSTMENT",8D
            ASC     "(4) INSTALL PRODOS DRIVER",8D
            ASC     "(5) EXIT",8D,8D
            ASC     "CHOICE:"

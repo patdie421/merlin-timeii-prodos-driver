@@ -44,7 +44,7 @@ GETMYPATH  ENT
            STY     MYPATH
 :LOOP1                             ; find last '/' of PATHNAME
            LDA     PATHNAME,X
-           AND     #%01111111
+           AND     #%01111111      ; char to ascii
            CMP     #'/'
            BEQ     :GETPATH
            DEX

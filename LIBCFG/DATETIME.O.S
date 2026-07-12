@@ -4,6 +4,6 @@
 
            USE     LIB/DATETIME.H
 ]E_GETDAYOFW EQU   1
-]E_ISBXTILE EQU    1
+]E_ISLEAP  EQU     1
 ]E_GETCENT EQU     0
            USE     LIB/DATETIME

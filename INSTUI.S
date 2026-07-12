@@ -319,7 +319,7 @@ BOXSEL
 
 
 * select volume
-SELVOL
+SELVOL     ENT
            LDA     KEY
            CLC
            ADC     #"A"
@@ -337,16 +337,16 @@ SELVOL
            JMP     :EXIT
 :RESCAN
            LDA     #$FF
-                                   ; SEC
+           SEC
            RTS
 :NCEXIT
            LDA     #0
-                                   ; SEC
+           SEC
            RTS                     ; exit with error
 :EXIT
            SEC
            SBC     #"A"
-                                   ; CLC ; no error
+           CLC                     ; no error
            RTS
 :MAXKEY    HEX     00
 
