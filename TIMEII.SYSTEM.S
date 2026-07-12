@@ -1,7 +1,6 @@
            LST     OFF
 
-                                   ; DSK BIN/TIMEII.SYSTEM
-           DSK     TIMEII.INST
+           DSK     BIN/TIMEII.SYSTEM
 
            TYP     $FF
 
