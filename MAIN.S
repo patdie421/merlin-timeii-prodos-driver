@@ -1,4 +1,6 @@
            LST     OFF
+* TOTO
+* TITI
            REL
            DSK     OBJ/MAIN.L
 
