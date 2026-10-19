@@ -62,7 +62,7 @@ GETNUMS    ENT
            BNE     :LOOP0
            STX     $24
            LDY     #0
-:GCHAR                             ; JSR BELL
+:GCHAR     JSR     BELL
 :GCHAR1    STY     :BVAL
            DO      ]E_MYGETKEY
            JSR     MYGETKEY1
@@ -136,9 +136,164 @@ SGETNUMB   ENT
            DS      8
            FIN
 
+
+           DO      ]E_GETPATH2
+PATHMXC    EQU     64
+GETPATH2   ENT
+           STX     _XSAV_
+           STY     _YSAV_
+
+           CMP     #PATHMXC        ; max 64 chars
+           BCC     :NEXT
+           LDA     #PATHMXC        ; adjust to 64
+:NEXT      STA     :AVAL           ; sav nb max char
+:GCHAR     JSR     BELL
+:GCHAR1    STY     :BVAL           ; cursor position in string
+           DO      ]E_MYGETKEY
+           JSR     MYGETKEY1
+           ELSE
+           JSR     GETKEY
+           FIN
+
+           LDY     :BVAL           ; current cusor postion
+           CMP     #$83            ; ctrl-c
+           BNE     :NEXT1
+:ERREXIT   LDA     #$0
+           SEC                     ; error
+           RTS                     ; exit with error
+:NEXT1     CMP     #$8D            ; return
+           BEQ     :EXIT           ; normal exit
+           CMP     #$95            ; right arrow
+           BEQ     :RARROW
+           CMP     #$88            ; left arrow
+           BEQ     :LARROW
+           CMP     #$FF            ; backspace
+           BNE     :NEXT2          ; standard char
+:BSPACE
+           LDA     PATHSTR
+           BEQ     :GCHAR          ; str is empty
+           CPY     #$0
+           BEQ     :GCHAR          ; already at begining of str
+           DEY                     ; move ptr in string
+           LDA     #$88            ; move cursor
+           JSR     COUT
+
+           JSR     :SAVCUR         ; save cursor postion
+           JSR     :DELCHAR        ; remove char and shift left
+           JSR     :PRNTFROM       ; print end of string
+           JSR     :RESCUR         ; restore cursor postion
+
+           JMP     :GCHAR1
+
+:LARROW
+           CPY     #$0
+           BEQ     :GCHAR          ; already at begining of str
+           DEY                     ; move ptr in str
+* LDA #$88 ; move cursor back
+           JMP     :OUT
+           JSR     COUT
+:RARROW
+           CPY     :PATHSTR
+           BEQ     :GCHAR          ; str ptr at end of str
+           INY                     ; move ptr in str
+:OUT       JSR     COUT            ; move cursor
+           JMP     :GCHAR1
+
+:NEXT2
+           LDX     :AVAL
+           CPX     PATHSTR
+           BEQ     :GCHAR          ; str is full
+
+:NUM       CMP     #"."            ; ".","/" are valid chars
+           BCC     :GCHAR
+           CMP     #"9"+1
+           BCS     :ALPHUP
+           BCC     :OK             ; JMP :OK
+:ALPHUP    CMP     #"A"
+           BCC     :GCHAR
+           CMP     #"Z"+1
+           BCS     :ALPHLO
+           BCC     :OK             ; JMP :OK
+:ALPHLO    CMP     #"a"
+           BCC     :GCHAR
+           CMP     #"z"+1
+           BCS     :OTHERS
+           BCC     :OK             ; JMP :OK
+:OTHERS
+           JMP     :GCHAR
+:OK
+           JSR     :SAVCUR         ; save cursor
+           JSR     :INSCHAR        ; A = char, Y = pos in str
+           JSR     :PRNTFROM       ; print end of string
+           INY                     ; next pos in string
+           JSR     :RESCUR         ; restore cusor
+           LDA     #$95            ; move cursor
+           JMP     :OUT
+:EXIT
+                                   ; STA PATHNBC
+           CLC                     ; no error
+           LDX     _XSAV_
+           LDY     _YSAV_
+           RTS
+:SAVCUR
+           RTS
+:RESCUR
+           RTS
+:DELCHAR
+           DEC     PATHSTR
+           STY     :YPOS
+:DELLOOP
+           CPY     :PATHSTR
+           BEQ     :DELEXIT
+           LDA     PATHSTR+1,Y
+           STA     PATHSTR,Y
+           INY
+           JMP     :DELLOOP
+:DELEXIT
+           LDY     :YPOS
+           RTS
+:INSCHAR
+           PHA                     ; save char to insert
+           INC     PATHSTR
+           LDX     PATHSTR
+           STY     :YPOS
+:INSLOOP
+           CPX     :YPOS
+           BEQ     INSEXIT
+           LDA     PATHSTR-1,X
+           STA     PATHSTR,X
+           JMP     :INSLOOP
+:INSTEXIT
+           PLA                     ; restore char to insert
+           STA     PATHSTR,Y       ; add to string
+           INY                     ; move str ptr
+           RTS
+
+:PRNTFROM
+           TYA
+           TAX
+:PRNTLOOP
+           CPX     PATHSTR
+           BEQ     :PRNTEXIT       ; end of str
+           LDA     PATHSTR,X
+           JSR     COUT
+           INX
+           JMP     :PRNTLOOP
+:PRNTEXIT
+           RTS
+*:XSAV DFB $00
+*:YSAV DFB $00
+:YPOS      HEX     00
+:BVAL      HEX     00
+:AVAL      HEX     00
+PATHNBC
+PATHSTR    DS      PATHMXC+1       ; path string buffer
+                                   ; max prodos 64 bytes + zero
+           FIN
+
+
            DO      ]E_GETPATH
-PATHMXC    ENT
-           EQU     64
+PATHMXC    EQU     64
 GETPATH    ENT
            STX     _XSAV_
            STY     _YSAV_
@@ -219,6 +374,7 @@ PATHNBC    DFB     $00
 PATHSTR    DS      PATHMXC+1       ; path string buffer
                                    ; max prodos 64 bytes + zero
            FIN
+
 
            DO      ]E_PRINTDEC
 PRINTDEC   ENT

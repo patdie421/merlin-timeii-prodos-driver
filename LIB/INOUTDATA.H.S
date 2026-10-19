@@ -6,6 +6,8 @@
 ]E_GETSTRW1 EQU    0
 ]E_CROUT   EQU     0
 ]E_MYGETKEY EQU    0
+]E_GETPATH2 EQU    0
+
 
 PRINT      MAC
            JSR     PRINT0

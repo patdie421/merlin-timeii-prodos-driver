@@ -13,12 +13,20 @@ args = parser.parse_args()
 def raw_print(str):
    space=0xA0
    prev=None
+   comment=False
    for c in str:
-      if space != 0x20:
+      if comment==False:
          if prev==' ' and c == ';':
             space=0x20
+            comment=True
          elif c == '*':
+            comment=True
             space=0x20
+      if comment==False and (c=='"' or c=="'"):
+         if space==0xA0:
+            space=0x20
+         else:
+            space=0xA0
       if c == ' ':
          cc=space
       else:

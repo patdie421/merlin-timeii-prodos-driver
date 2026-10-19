@@ -10,8 +10,6 @@
            USE     LIB/CMP.H
            USE     LIB/STR.H
            USE     LIB/STR.E
-           USE     LIB/ASC.H
-           USE     LIB/ASC.E
            USE     LIB/FORMS.H
            USE     LIB/FORMS.E
 * USE INSTALL.H
@@ -72,7 +70,7 @@ MENUINST   ENT
            JSR     CROUT2
            STRPRNTL :DESTVOL_S     ; destination volume
            STRPRNTL PATHNAME
-           ASCPRNT :INSTASC
+           STRPRNTL :INSTSTR
            STRPRNT CHOICE_S
 :LOOP      JSR     MYGETKEY1       ; JSR GETKEY
            CMP     #"1"
@@ -104,13 +102,15 @@ MENUINST   ENT
 :MENUINST_S STR    "INSTALL DRIVER"
 :SRCPTH_S  STR     "SOURCE PREFIX: "
 :DESTVOL_S STR     "TARGET VOLUME: "
-:INSTASC   HEX     8D,8D
+:INSTSTR   DB      INSTSTRE-INSTSTRS
+INSTSTRS
+           HEX     8D,8D
            ASC     "(1) CHANGE SOURCE PREFIX",8D
            ASC     "(2) SELECT DRIVER TARGET VOLUME",8D
            ASC     "(3) INSTALL DRIVER",8D
            ASC     "(4) REMOVE DRIVER",8D
            ASC     "(5) RETURN TO MAIN MENU",8D
-           HEX     8D,00
+INSTSTRE   EQU     *
 
 
 CHPREF
@@ -168,7 +168,6 @@ DOINST     ENT
            BCC     :SUCCESS
 :ERROR
            JSR     ERROR
-                                   ; SEC
            RTS
 :SUCCESS
            BOX     #6;#7;#28;#6;SUCCES_S
