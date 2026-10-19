@@ -22,8 +22,8 @@ try:
       if a: # first word of line
          if line[0]==" " or line[0]=="\t":
             l=l+" ".ljust(ftab-1) # add "tabs"
-         elif line[0]=="*":
-            print(line.rstrip())
+         elif line[0]=="*": # start line comment
+            print(line.rstrip()) # just add line
             continue
          else:
             if line[0][0]==";":

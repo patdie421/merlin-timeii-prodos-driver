@@ -4,7 +4,7 @@ RWBUFF     EQU     $4000           ; 12kb
 FBUFF1     EQU     $8000           ; 1kb for opened file
 FBUFF2     EQU     $8400           ; 1kb for opened file
 TMPBUFF    EQU     $8800           ; 512b
-SYSFENTS   EQU     $8A00           ; 51x2b
+SYSFENTS   EQU     $8A00           ; 51x2b - table of ptr to file entry
 SWPMMTMP   EQU     $8B00           ; 128b
 PREFIX     EQU     $8C00           ; 64b
 MYPATH     EQU     $8C40           ; 64b
