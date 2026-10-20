@@ -170,7 +170,7 @@ GETMYNAME
            SEC
            RTS
 *
-MYNAME     DS      17 MAX 15 chars + 1 start + 1 zero
+MYNAME     DS      ; 17 MAX 15 chars + 1 start + 1 zero
 
 
 GETDATE
