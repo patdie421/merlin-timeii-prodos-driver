@@ -21,7 +21,6 @@ PTR        EQU     $EB
 PTR2       EQU     $ED
 
 * buffers for MLI
-OPNBUFF    EQU     $4000           ; 1KB
 BUFF       EQU     $4800           ; 8kB
 
 * System Calls
@@ -29,7 +28,8 @@ GET_TIME   EQU     $82
 
 RELOCORG   EQU     $1000           ; address for code relocated
 SYSORG     EQU     $2000           ; sys program start address
-SYSSIZE    EQU     $BF00-SYSORG    ; max prg size
+SYSSIZE    EQU     $BF00-SYSORG-$400 ; max prg size
+OPNBUFF    EQU     $BF00-$400      ; 1KB
 
 ERR1       EQU     1
 ERR2       EQU     2
