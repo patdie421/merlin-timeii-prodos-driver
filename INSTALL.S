@@ -85,7 +85,7 @@ TOREALPATH ENT
 *
 * Convert MYPATH to asbolute path :
 * MYPATH = /XX/YY => MYPATH = /XX/YY
-* MYPATH = XX/YY  => MYPATH = PREFIX/XX/YY
+* MYPATH = XX/YY  => MYPATH = /PREFIX/XX/YY
 * MYPATH = '' <empty string> => MYPATH = PREFIX
 *
 * in: PREFIX (MEMALLOC.H.S)
