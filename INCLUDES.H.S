@@ -4,7 +4,7 @@ STRPTR     EQU     $ED             ; $ED and EE
 AVAL       EQU     $CE             ; 2 tempory memory bytes
 BVAL       EQU     $CF
 
-* index of date values in DATE structure
+* index of date values in DATE structure (define in MAIN.S)
 _SEC       EQU     6
 _MIN       EQU     5
 _HOU       EQU     4
