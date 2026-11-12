@@ -26,7 +26,7 @@ BLKSZ      EQU     $200
 
 
 INSTINIT   ENT
-           MEMINIT SWPMMTMP        ; clean memory for mem swaping
+           MEMINIT SWPMMTMP        ; clean memory used for mem swaping
            JSR     GETPREFIX       ; get current prefix
            BCS     :EXIT
            JSR     TOREALPATH      ; combine prefix and mypath
@@ -39,8 +39,9 @@ INSTINIT   ENT
 GETMYPATH  ENT
 *
 * read "my path" from "command line" and store it in MYPATH
-* PATHNAME = /EX/AMPLE/CMD => MYPATH = /EX/AMPLE
-*
+* PATHNAME = "/EX/AMPLE/CMD" => MYPATH = "/EX/AMPLE"
+* PATHNAME = "EX/AMPLE/CMD" => MYATH = "EX/AMPLE"
+* PATHNAME = CMD => MYPATH = ""
 * in: PATHNAME (PRODOS.H.S)
 * out: MYPATH (MEMALLOC.H.S)
 * A,X,Y modified
@@ -62,9 +63,9 @@ GETMYPATH  ENT
            DEX                     ; pointer before last '/'
            STX     MYPATH          ; fix MYPATH size
 * copy PATHNAME to MYPATH len
-           LDY     #0              ; dest char point
+           LDY     #0              ; dest char index
 :LOOP2
-           CPY     MYPATH          ; Y = MYPATH len ?
+           CPY     MYPATH          ; Y == MYPATH len ?
            BEQ     :OKEXIT         ; yes, copy done
            LDA     PATHNAME+1,Y
            AND     #%01111111      ; to ascii
@@ -92,9 +93,9 @@ TOREALPATH ENT
 * A,X,Y modified
 *
 ********************************
-           LDA     #0              ; init vars
+           LDA     #0              ; init vars, A=0
            TAY                     ; and Y=0
-           STA     TMPSTR          ; empty TMPSTR
+           STA     TMPSTR          ; 0 (A) => empty TMPSTR
 * MYPATH = ''
            CMP     MYPATH          ; is MYPATH 0 length string
            BEQ     :COPYPRFX       ; empty path => MYPATH = PREFIX
@@ -127,13 +128,12 @@ TOREALPATH ENT
            BNE     :LOOP2          ; JMP :LOOP2
 :NEXT2
            STX     MYPATH
+ * Append TMPSTR to MYPATH if needed
            LDA     TMPSTR
            BEQ     :EXIT           ; TMPSTR empty string MYPATH is good
-* append '/' to MYPATH
-           LDA     #'/'
-           STA     MYPATH+1,X
+           LDA     #'/'            ; Append '/'
+           STA     MYPATH+1,X      ;  to MYPATH
            INX
-* append TMPSTR to MYPATH
            LDY     #0
 :LOOP3
            CPY     TMPSTR
@@ -180,6 +180,7 @@ FILEDEL
 * in: PATHNAME (PRODOS.H.S) : path of file to delete (basename)
 *     (PATHNAME is modified during operation but restored
 *     before exit)
+* in: DELFLAG 
 * A,X,Y modified
 *
 ********************************
@@ -204,7 +205,7 @@ FILEDEL
            BNE     :LOOP
            STX     PATHNAME        ; update PATHNAME length
 * real file deletion or simulation ?
-           LDA     DELFLAG         ; test delete option
+           LDA     DELFLAG         ; test delete option (see FILEDEL)
            BNE     :NOTDEL         ; not zero, no deletion
 * MLI call to delete file
            LDA     #<PATHNAME      ; DEFLAG = 0 => real deletion
@@ -233,6 +234,7 @@ FILECPY    ENT
 * in: :SRCPTR - address of source filename (FILECPY+3)
 * in: :DSTPTR - address of destination filename (FILECPY+5)
 * A,X,Y modified
+* see MACRO
 *
 ********************************
            JMP     :FILECPY
