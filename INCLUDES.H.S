@@ -15,5 +15,4 @@ _CEN       EQU     0               ; centuries
 _DOW       EQU     7               ; days of week
 _LEA       EQU     8               ; leap flags
 
-DSLOTPOS   EQU     $9              ; position of slot value
-                                   ; driver file
+; DSLOTPOS   EQU     $9            ; position of slot value in driver file
