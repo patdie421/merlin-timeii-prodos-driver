@@ -411,7 +411,7 @@ GETVOLS    ENT
 
 ********************************
 PRINTVOLS  ENT
-*
+* [ to move in INSTGUI.S ]
 * print (using COUNT) volumes list.
 * name of volume is prefixed by a letter in parentheses
 *
