@@ -663,7 +663,7 @@ INSTDRV    ENT
            BCS     :EXIT
            JSR     LOADVOL         ; reload file list from directory
            BCS     :EXIT
-           JSR     FINDUPTOME      ; find position in directory entry
+           JSR     FINDUPTOME      ; find my position in directory entry
            JSR     BUBBLEUP        ; move ME up
            JSR     WRVOLDIR        ; write dir entries to disk
 :EXIT      RTS
@@ -757,7 +757,7 @@ NBFOUND    ENT                     ; number of entry in SYSFENTS
 ********************************
 FINDMECB
 *
-* Find up to me callback used with FILE_ITER
+* "Find up to me" callback used with FILE_ITER
 * list all files with SYSTEM type and ".SYSTEM" extension
 * who are before "me" in directory entries
 * and store it in SYSFENTS and update NBFOUND accordingly
