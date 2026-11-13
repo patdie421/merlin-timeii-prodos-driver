@@ -27,11 +27,17 @@ GET_TIME   EQU     $82
 RELOCORG   EQU     $1000           ; address for code relocated
 SYSORG     EQU     $2000           ; sys program start address
 * buffers for MLI
-OPNBUFFS   EQU     $400
+*  buffer sizes
+OPNBUFFS   EQU     $400            ; 1KB
 BUFFS      EQU     $2000           ; 8KB
-OPNBUFF    EQU     $BF00-OPNBUFFS  ; 1KB
-BUFF       EQU     $BF00-OPNBUFFS-BUFFS ; MLI buffer for READ(dir) and ONLINE
-SYSSIZE    EQU     $BF00-SYSORG-OPNBUFFS ; max prg size
+* buffer addresses
+; OPNBUFF    EQU     $BF00-OPNBUFFS
+OPNBUFF    EQU     RELOCORG-OPNBUFFS ; open buffer before relocated code
+; BUFF       EQU     $BF00-OPNBUFFS-BUFFS ; MLI buffer for READ(dir) and ONLINE
+BUFF       EQU     $BF00-BUFFS ; MLI buffer for READ(dir) and ONLINE
+* max system program size
+; SYSSIZE    EQU     $BF00-SYSORG-OPNBUFFS ; max prg size
+SYSSIZE    EQU     $BF00-SYSORG    ; max prg size (39Ko)
 
 ERR1       EQU     1
 ERR2       EQU     2
