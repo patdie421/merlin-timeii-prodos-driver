@@ -21,7 +21,7 @@ PTR        EQU     $EB
 PTR2       EQU     $ED
 
 * buffers for MLI
-BUFF       EQU     $4800           ; buffer for MLI ONLINE (256o max)
+BUFF       EQU     $4800           ; ???
 
 * System Calls
 GET_TIME   EQU     $82
