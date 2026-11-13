@@ -614,7 +614,6 @@ MYGETKEY1  ENT
 :SAVA      HEX     00              ; saved A
 
 MYGETKEY   ENT
-           LDX     #$0             ; X = 0 (optimazing clearing A)
            BIT     $C000           ; 4uS - check char available
            BPL     :NEXT           ; 3uS - no => update blinking data
            LDA     $C000           ; read char
@@ -627,11 +626,11 @@ MYGETKEY   ENT
 :NEXT
            DEC     COUNTER1        ; 6uS
            BEQ     :NEXT1          ; 3uS
-           TXA                     ; A<-0
-           RTS                     ; ret A = 0 (no char readed)
+           LDA     #0              ; ret A = 0 (no char readed)
+           RTS
 :NEXT1     DEC     COUNTER2        ; 6uS
-           BEQ     :NEXT2          ; 3uS A = 0 (no char reader)
-           TXA                     ; A<-0
+           BEQ     :NEXT2          ; 3uS
+           LDA     #0              ; ret A = 0 (no char readed)
            RTS
 :NEXT2
 GKTIMING   ENT                     ; reset timing for blinking cusor
