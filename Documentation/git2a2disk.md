@@ -10,13 +10,12 @@ $ acx create -d disk2.po --prodos --size=140kb
 ```
 ## Copy files to disk images(s)
 ### 800kb
-$ tools/put_files_to_image.ksh -d disk.po disk/files.lst ""
+$ tools/put_files_to_image.ksh disk.po disk/files.lst ""
 ### 140kb
 ```
-$ tools/put_files_to_image.ksh -d disk1.po disk/files.d1.lst ""
-$ tools/put_files_to_image.ksh -d disk2.po disk/files.d2.lst ""
-```
-## Existing hd image
+$ tools/put_files_to_image.ksh disk1.po disk/files.d1.lst ""
+$ tools/put_files_to_image.ksh disk2.po disk/files.d2.lst ""
+```## Existing hd image
 To copy files in DEV directory
 ```
 $ tools/put_files_to_image.ksh -d hdimage.po disk/files.lst "DEV/"
