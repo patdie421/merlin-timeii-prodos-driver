@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # simple, quick and dirty merlin asm file compressor (remove blank chars)
-# generate directly an apple text (bit 7 high if needed)  
+# generate directly an apple text (bit 7 high if needed)
 import sys
 import fileinput
 from argparse import ArgumentParser
@@ -41,7 +41,8 @@ try:
       a=line.split()
       l=""
       if a:
-         if line[0].startswith("*"):
+#         if line[0].startswith("*"):
+         if line[0]=="*":
             raw_print(line.rstrip())
             continue
          if line[0]==" " or line[0]=="\t":
