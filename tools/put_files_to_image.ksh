@@ -13,5 +13,7 @@ DEST=$3
 cat "$FILES" | while read line
 do
    echo "$line"
-   acx put -d "$DISK" "$line" --method=text ...
+   cat $line | compress_asm_merlin_raw.py > "/tmp/$FILENAME.raw"
+   acx put -f -d "$DISKIMAGE" --raw -t txt -n "$FILENAME" "/tmp/$FILENAME.raw"
+   rm /tmp/$FILENAME.raw
 done
