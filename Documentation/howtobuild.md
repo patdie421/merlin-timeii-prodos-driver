@@ -98,6 +98,6 @@ A relocatable file is now in `OBJ` directory.
 19. At the main menu, save object file (press `O` key) and type `TIMEII.SETUP` followed by `<Return>` key
 A `TIMEII.SETUP` file is now available in root directory
 ### change file type
-Use a tool to change the type of `TIMEII.SETUP`: `TYPE=$FF` and `SUBTYPE=$2000`
+Use a disk tool to change the type of `TIMEII.SETUP`: `TYPE=$FF` and `SUBTYPE=$2000`
 
 
