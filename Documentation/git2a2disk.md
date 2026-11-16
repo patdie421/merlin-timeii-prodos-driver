@@ -1,3 +1,5 @@
+## Clone
+git clone 
 ## Create disk image(s)
 ### 800kb
 ```
