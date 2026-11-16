@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# simple, quick and dirty melin asm file compressor (remove blank chars)
+# simple, quick and dirty merlin asm file compressor (remove blank chars)
 # generate directly an apple text (bit 7 high if needed)  
 import sys
 import fileinput
