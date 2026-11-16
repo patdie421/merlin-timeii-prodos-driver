@@ -12,4 +12,5 @@ acx create -d disk2.po --prodos --size=140kb
 ### 800kb or more
 
 ### 140kb
-put_files_to_image.ksh
+put_files_to_image.ksh <disk-image> <list-of-files> <dest>
+put_files_to_image.ksh -d disk1.po disks/list1.txt ""
