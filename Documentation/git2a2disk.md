@@ -19,8 +19,10 @@ $ acx create -d disk2.po --prodos --size=140kb
 ```
 ## Copy files to disk images(s)
 ### 800kb
+```
 $ cd <merlin-timeii-prodos-driver>
 $ tools/put_files_to_image.ksh disk.po disk/files.lst ""
+```
 ### 140kb
 ```
 $ cd <merlin-timeii-prodos-driver>
