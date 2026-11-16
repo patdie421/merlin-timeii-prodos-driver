@@ -1,9 +1,16 @@
 ## Clone
-git clone 
+```
+$ git clone https://github.com/patdie421/merlin-timeii-prodos-driver
+```
+## pull last version
+```
+$ cd <merlin-timeii-prodos-driver>
+$ git pull
+```
 ## Create disk image(s)
 ### 800kb
 ```
-acx create -d disk.po --prodos --size=800kb
+$ acx create -d disk.po --prodos --size=800kb
 ```
 ### 140kb
 ```
