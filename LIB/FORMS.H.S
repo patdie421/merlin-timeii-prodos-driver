@@ -2,7 +2,7 @@ BOX_X      EQU     3
 BOX_Y      EQU     4
 BOX_L      EQU     5
 BOX_H      EQU     6
-BOX_T      EQU     7
+BOX_T      EQU     7 ; title string (16 bits)
 BOX        MAC
            LDA     ]1
            STA     BOX2+BOX_X
