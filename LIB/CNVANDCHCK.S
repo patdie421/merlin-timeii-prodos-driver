@@ -7,7 +7,8 @@
 *   X : units
            DO      ]E_HEXTODIGI
 HEXTODIGI  ENT
-           DO      1               ; loop version
+* Loop version
+           DO      1               ; loop version enabled
            LDY     #0
 :LOOP
            CMP     #10
@@ -18,10 +19,11 @@ HEXTODIGI  ENT
 :DONE      TAX
            RTS
            FIN                     ; end loop version
-           DO      0               ; deterministic version
-* first divid by 10
+
+* deterministic version
+           DO      0               ; deterministic version disabled
            STA     AVAL            ; save A
-                                   ; first A / 10
+* first divid A by 10 => tens (Y)
            LSR
            STA     BVAL
            LSR
@@ -35,7 +37,7 @@ HEXTODIGI  ENT
            ROR
            LSR
            LSR
-           STA     BVAL            ; BVAL = A / 10
+           STA     BVAL            ; now BVAL = org A / 10
            TAY                     ; Y = Tens
 * tens x 10
            ASL
@@ -44,8 +46,8 @@ HEXTODIGI  ENT
            CLC
            ADC     BVAL
            ADC     BVAL
-           STA     BVAL            ; BVAL = Tens x 10
-* org A - BVAL => unit
+           STA     BVAL            ; now BVAL = Tens x 10
+* org A - BVAL => unit (X)
            LDA     AVAL
            SEC
            SBC     BVAL
@@ -60,16 +62,16 @@ HEXTODIGI  ENT
 *   X : units
            DO      ]E_DIGITOHEX
 DIGITOHEX  ENT
-           STX     :UNIT
-           STY     :TENS
-           TYA
+           STX     :UNIT           ; save unit
+           STY     :TENS           ; save tens
+           TYA                     ; tens * 10
            ASL
            ASL
            ASL
            CLC
            ADC     :TENS
            ADC     :TENS
-           ADC     :UNIT
+           ADC     :UNIT           ; add unit to tens * 10
            RTS
 :TENS      HEX     00
 :UNIT      HEX     00
