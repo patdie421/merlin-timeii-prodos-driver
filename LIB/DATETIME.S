@@ -14,7 +14,7 @@ FRSTCENT   EQU     19
 GETDAYOFW  ENT                     ; calculate day of week
            CLC
            BCC     :START
-* inputs
+* inputs:
 * CCYY/MM/DD
 :DD        HEX     00              ; DAY
 :MM        HEX     00              ; MONTH
