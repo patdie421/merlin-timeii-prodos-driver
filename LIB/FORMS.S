@@ -17,7 +17,7 @@ BOX2       ENT
 :Y         HEX     00
 :L         HEX     00
 :H         HEX     00
-:T         HEX     00,00
+:T         HEX     00,00  ; title string (ptr)
 :BOX2
 ]E_BOX1    EQU     1
            LDA     :X
