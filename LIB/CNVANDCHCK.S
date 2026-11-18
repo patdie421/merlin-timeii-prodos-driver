@@ -7,7 +7,7 @@
 *   X : units
            DO      ]E_HEXTODIGI
 HEXTODIGI  ENT
-           DO      1
+           DO      1               ; loop version
            LDY     #0
 :LOOP
            CMP     #10
@@ -17,8 +17,7 @@ HEXTODIGI  ENT
            BNE     :LOOP           ; JMP :LOOP
 :DONE      TAX
            RTS
-           FIN
-
+           FIN                     ; end loop version
            DO      0               ; deterministic version
 * first divid by 10
            STA     AVAL            ; save A
@@ -52,7 +51,7 @@ HEXTODIGI  ENT
            SBC     BVAL
            TAX                     ; X = Units
            RTS
-           FIN
+           FIN                     ; deterministic loop version
 
 
 * DIGITOHEX
