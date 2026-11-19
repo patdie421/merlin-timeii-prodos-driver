@@ -46,7 +46,7 @@ STRPRINT   ENT
 ********************************
 STRCMP1    ENT
 *
-* compare (equal only) 2 Pascal string
+* compare (equal only) 2 Pascal strings
 *
 * in: STRCMP1+3, STRCMP1+4 - first string address
 * in: STRCMP1+5, STRCMP1+6 - second string address
