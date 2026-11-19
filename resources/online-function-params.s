@@ -91,10 +91,3 @@ print_pascal:
 
     ; 7. Retour à l'appelant (RTS ajoute +1 à ptr_inline et saute après la chaîne)
     rts
-
-; ============================================================================
-; Routine factice d'affichage
-; ============================================================================
-print_char:
-    ; Sur C64 : JSR $FFD2 (Note : $FFD2 préserve X et Y)
-    rts
