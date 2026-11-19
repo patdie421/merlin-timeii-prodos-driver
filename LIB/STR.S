@@ -1,5 +1,15 @@
            DO      ]E_STRPRINT
+********************************
 STRPRINT   ENT
+*
+* print a Pascal string
+* 
+* in: STRPRINT+3, STRPRINT+4 - string address
+* out: -
+* A,X,Y backuped on stack and restored
+* zero page $ED/$EE backuped on stack and restored
+*
+********************************
            JMP     :STRPRINT
            HEX     00
            HEX     00
@@ -33,7 +43,19 @@ STRPRINT   ENT
 
 
            DO      ]E_STRCMP1
+********************************
 STRCMP1    ENT
+*
+* compare (equal only) 2 Pascal string
+*
+* in: STRCMP1+3, STRCMP1+4 - first string address
+* in: STRCMP1+5, STRCMP1+6 - second string address
+* out: Carry flag - clear => equal, set => not equal
+* A,X,Y backuped on stack and restored
+*
+* self modified code
+*
+********************************
            JMP     :STRCMP1
 :STR1      HEX     00,00
 :STR2      HEX     00,00
