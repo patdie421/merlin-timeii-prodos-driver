@@ -51,7 +51,7 @@ print_pascal:
 @loop:
     iny                 ; Y passe à 2 (1er caractère), puis 3, 4...
     lda (ptr_inline),y  ; Lit le caractère
-    jsr print_char      ; Affiche le caractère (doit préserver X et Y !)
+    jsr COUT            ; Affiche le caractère (doit préserver X et Y !)
     dex                 ; Décrémente le compteur de caractères
     bne @loop           ; Continue tant que X != 0
 
@@ -91,3 +91,217 @@ print_pascal:
 
     ; 7. Retour à l'appelant (RTS ajoute +1 à ptr_inline et saute après la chaîne)
     rts
+
+
+
+
+
+* ============================================================================
+* Déclarations Page Zéro et routines système (Exemple Apple II)
+* ============================================================================
+PTR      EQU   $06          ; Pointeur 16 bits libre en Page Zéro ($06-$07)
+COUT     EQU   $FDED        ; Routine ROM Apple II d'affichage d'un caractère
+
+PRINTS   EQU   1
+PRINTA   EQU   2
+CMPA     EQU   3
+         ORG   $0800        ; Adresse de début du programme
+
+* ============================================================================
+* Exemple d'appel
+* ============================================================================
+MAIN     JSR   STRPAS       ; Appel de la fonction d'affichage en ligne
+         HEX   PRINTS
+         STR   "BONJOUR LE MONDE!" ; Génère : $11, "BONJOUR LE MONDE!"
+MAIN     JSR   STRPAS       ; Appel de la fonction d'affichage en ligne
+         HEX   PRINTA
+         DB    STRDEMO
+         LDA   #$42         ; L'exécution reprendra pile ici après le RTS !
+         RTS                ; Retour au système (BASIC / ProDOS)
+
+* ============================================================================
+* Fonction : PRTPAS
+* Description : Affiche une chaîne Pascal en ligne (générée par STR).
+*               Restaure la pile et tous les registres à l'identique.
+* ============================================================================
+PRTPAS   PHA                ; Sauvegarde A (+5)
+         TXA
+         PHA                ; Sauvegarde X (+4)
+         TYA
+         PHA                ; Sauvegarde Y (+3)
+         LDA   PTR
+         PHA                ; Sauvegarde PTR Lo (+2)
+         LDA   PTR+1
+         PHA                ; Sauvegarde PTR Hi (+1)
+
+* $0100 + X -> [Prochain octet libre]
+* $0101 + X -> ptr_inline+1 (sauvegardé)
+* $0102 + X -> ptr_inline   (sauvegardé)
+* $0103 + X -> Y            (sauvegardé)
+* $0104 + X -> X            (sauvegardé)
+* $0105 + X -> A            (sauvegardé)
+* $0106 + X -> Adresse de retour (Lo) = Adresse de l'octet de longueur - 1
+* $0107 + X -> Adresse de retour (Hi)
+
+* --- Récupération de l'adresse de retour (TSX + $0100,X) ---
+         TSX
+         LDA   $0106,X      ; Octet faible de l'adresse de retour
+         STA   PTR
+         LDA   $0107,X      ; Octet fort de l'adresse de retour
+         STA   PTR+1
+
+         LDY   #$01
+         LDA   (PTR),Y
+         CMP   #$01
+         BEQ   :PRINTS
+         CMP   #$02
+         BEQ   :PRINTA
+         CMP   #$03
+         BEQ   :CMP4
+         INY
+         JMP   :FIN
+
+
+:PRINTS
+* --- Lecture de la longueur de la chaîne ---
+         LDY   #$02         ; Y=2 pointe sur l'octet de longueur
+         JSR   :PRINT
+         JMP   :FIN
+
+:PRINTA
+         LDY   #$02
+         LDA   (PTR),Y
+         PHA
+         LDA   (PTR+1),Y
+         STA   PTR+1
+         PLA
+         STA   PTR
+         JSR   :PRINT
+         LDY   #$2
+         JSR   :FIN
+
+:PRINT
+         LDA   (PTR),Y      ; Lit la longueur N
+         BEQ   :FIN         ; Si longueur = 0, on saute directement à la fin
+         TAX                ; X = compteur de caractères restants
+* --- Boucle d'affichage ---
+:LOOP    INY                ; Passe au caractère suivant (Y=2 au 1er tour)
+         LDA   (PTR),Y      ; Lit le caractère
+         ORA   #$80         ; (Spécifique Apple II : force le bit 7 pour texte normal)
+         JSR   COUT         ; Affiche le caractère (COUT préserve X et Y sur Apple II)
+         DEX                ; Décrémente le compteur
+         BNE   :LOOP        ; Tant que X <> 0, on boucle
+         RTS
+
+* --- Mise à jour de l'adresse de retour sur la pile ---
+:FIN     TYA                ; Met l'offset Y (N+1) dans A
+         CLC
+         ADC   PTR          ; Ajoute Y à PTR Lo
+         STA   PTR
+         BCC   :NOCARRY
+         INC   PTR+1        ; Ajoute la retenue à PTR Hi si changement de page
+
+:NOCARRY TSX                ; Recharge X (pointeur de pile)
+         LDA   PTR
+         STA   $0106,X      ; Écrase l'ancien Retour Lo sur la pile
+         LDA   PTR+1
+         STA   $0107,X      ; Écrase l'ancien Retour Hi sur la pile
+
+* --- Restauration complète dans l'ordre inverse ---
+         PLA
+         STA   PTR+1        ; Restaure PTR Hi
+         PLA
+         STA   PTR          ; Restaure PTR Lo
+         PLA
+         TAY                ; Restaure Y
+         PLA
+         TAX                ; Restaure X
+         PLA                ; Restaure A
+
+         RTS                ; Retour à l'instruction qui suit la chaîne !
+
+TMP      HEX 0,0
+STRDEMO  STR "BONJOUR TOUT SEUL!"
+
+
+
+* ============================================================================
+* Déclarations Page Zéro et routines système (Exemple Apple II)
+* ============================================================================
+PTR      EQU   $06          ; Pointeur 16 bits libre en Page Zéro ($06-$07)
+COUT     EQU   $FDED        ; Routine ROM Apple II d'affichage d'un caractère
+
+         ORG   $0800        ; Adresse de début du programme
+
+* ============================================================================
+* Exemple d'appel
+* ============================================================================
+MAIN     JSR   PRTPAS       ; Appel de la fonction d'affichage en ligne
+         STR   "BONJOUR LE MONDE!" ; Génère : $11, "BONJOUR LE MONDE!"
+
+         LDA   #$42         ; L'exécution reprendra pile ici après le RTS !
+         RTS                ; Retour au système (BASIC / ProDOS)
+
+* ============================================================================
+* Fonction : PRTPAS
+* Description : Affiche une chaîne Pascal en ligne (générée par STR).
+*               Restaure la pile et tous les registres à l'identique.
+* ============================================================================
+PRTPAS   PHA                ; Sauvegarde A (+5)
+         TXA
+         PHA                ; Sauvegarde X (+4)
+         TYA
+         PHA                ; Sauvegarde Y (+3)
+         LDA   PTR
+         PHA                ; Sauvegarde PTR Lo (+2)
+         LDA   PTR+1
+         PHA                ; Sauvegarde PTR Hi (+1)
+
+* --- Récupération de l'adresse de retour (TSX + $0100,X) ---
+         TSX
+         LDA   $0106,X      ; Octet faible de l'adresse de retour
+         STA   PTR
+         LDA   $0107,X      ; Octet fort de l'adresse de retour
+         STA   PTR+1
+
+* --- Lecture de la longueur de la chaîne ---
+         LDY   #$01         ; Y=1 pointe sur l'octet de longueur
+         LDA   (PTR),Y      ; Lit la longueur N
+         BEQ   :FIN         ; Si longueur = 0, on saute directement à la fin
+         TAX                ; X = compteur de caractères restants
+
+* --- Boucle d'affichage ---
+:LOOP    INY                ; Passe au caractère suivant (Y=2 au 1er tour)
+         LDA   (PTR),Y      ; Lit le caractère
+         ORA   #$80         ; (Spécifique Apple II : force le bit 7 pour texte normal)
+         JSR   COUT         ; Affiche le caractère (COUT préserve X et Y sur Apple II)
+         DEX                ; Décrémente le compteur
+         BNE   :LOOP        ; Tant que X <> 0, on boucle
+
+* --- Mise à jour de l'adresse de retour sur la pile ---
+:FIN     TYA                ; Met l'offset Y (N+1) dans A
+         CLC
+         ADC   PTR          ; Ajoute Y à PTR Lo
+         STA   PTR
+         BCC   :NOCARRY
+         INC   PTR+1        ; Ajoute la retenue à PTR Hi si changement de page
+
+:NOCARRY TSX                ; Recharge X (pointeur de pile)
+         LDA   PTR
+         STA   $0106,X      ; Écrase l'ancien Retour Lo sur la pile
+         LDA   PTR+1
+         STA   $0107,X      ; Écrase l'ancien Retour Hi sur la pile
+
+* --- Restauration complète dans l'ordre inverse ---
+         PLA
+         STA   PTR+1        ; Restaure PTR Hi
+         PLA
+         STA   PTR          ; Restaure PTR Lo
+         PLA
+         TAY                ; Restaure Y
+         PLA
+         TAX                ; Restaure X
+         PLA                ; Restaure A
+
+         RTS                ; Retour à l'instruction qui suit la chaîne !
+         
