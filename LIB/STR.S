@@ -93,7 +93,18 @@ STRCMP1    ENT
 
 
            DO      ]E_STRSWITH1
+********************************
 STRSWITH1  ENT
+*
+* check if string start with sub-string
+* 
+* in: STRCMP1+3, STRCMP1+4 - first string address
+* in: STRCMP1+5, STRCMP1+6 - string address to find
+* out: -
+* A,X,Y mofified
+* zero page $ED/$EE backuped on stack and restored
+*
+********************************
            JMP     :STRSWITH1
 :STRING    HEX     00,00
 :START     HEX     00,00
@@ -133,7 +144,18 @@ STRSWITH1  ENT
 
 
            DO      ]E_STREWITH1
+********************************
 STREWITH1  ENT
+*
+* check if string end with sub-string
+* 
+* in: STRCMP1+3, STRCMP1+4 - first string address
+* in: STRCMP1+5, STRCMP1+6 - string address to find
+* out: -
+* A,X,Y mofified
+* zero page $ED/$EE backuped on stack and restored
+*
+********************************
            JMP     :STREWITH1
 :CMPES1    HEX     00,00
 :CMPES2    HEX     00,00
@@ -181,7 +203,17 @@ STREWITH1  ENT
 
 
            DO      ]E_STRCPY1
+********************************
 STRCPY1    ENT
+*
+* copy a string to an other
+* 
+* in: STRCMP1+3, STRCMP1+4 - source string address
+* in: STRCMP1+5, STRCMP1+6 - dest string address
+* out: -
+* A,X,Y mofified
+*
+********************************
            JMP     :STRCPY1
 :S1        HEX     00,00
 :S2        HEX     00,00
@@ -229,7 +261,18 @@ STRCPY1    ENT
 
 
            DO      ]E_STRCAT1
+********************************
 STRCAT1    ENT
+*
+* copy a string to an other
+* 
+* in: STRCMP1+3, STRCMP1+4 - source string address
+* in: STRCMP1+5, STRCMP1+6 - dest string address
+* out: -
+* A,X,Y mofified
+* zero page $ED/$EE backuped on stack and restored
+*
+********************************
            JMP     :STRCAT
 :DST       HEX     00,00
 :SRC       HEX     00,00
