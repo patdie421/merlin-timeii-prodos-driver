@@ -8,7 +8,7 @@ MOVEW      MAC                     ; copy source word to dest word
            LDA     ]1
            STA     ]2
            LDA     ]1+1
-           LDA     ]2+1
+           STA     ]2+1
            <<<
 
 PSHADDR    MAC                     ; push word to stack
