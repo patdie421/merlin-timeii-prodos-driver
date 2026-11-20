@@ -636,7 +636,7 @@ PRNIIDATE  ENT
            LDA     #" "
            JSR     COUT
 PRNIITIME  ENT
-           LDA     #2
+           LDY     #2
            LDA     TIMEII,Y
            JSR     PRINTDEC
            LDA     #":"
