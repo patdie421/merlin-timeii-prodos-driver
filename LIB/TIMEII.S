@@ -525,7 +525,7 @@ GETIIDATE2 ENT                     ; third entry (X = SLOT * 16)
            CPY     #DATTEN         ; tens of date
            BNE     :NEXT4
            LDA     :BVAL
-           AND     #$00001000
+           AND     #%00001000
            BEQ     :SLEAP
 :NLEAP                             ; set not leap
            LDA     #$00
