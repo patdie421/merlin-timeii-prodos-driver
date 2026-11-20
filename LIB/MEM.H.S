@@ -19,17 +19,11 @@ SWAPMEM_CNT EQU    7
 * ]1 : address of a 256b buffer
 *
 MEMINIT    MAC
-           TXA
-           PHP
-           TYA
-           PHP
+           PHAXY
            LDX     #<]1
            LDY     #>]1
            JSR     MEMINI1
-           PLA
-           TAY
-           PLA
-           TAX
+           PLAXY
            <<<
 
 *
