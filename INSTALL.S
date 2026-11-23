@@ -128,7 +128,7 @@ TOREALPATH ENT
            BNE     :LOOP2          ; JMP :LOOP2
 :NEXT2
            STX     MYPATH
- * Append TMPSTR to MYPATH if needed
+* Append TMPSTR to MYPATH if needed
            LDA     TMPSTR
            BEQ     :EXIT           ; TMPSTR empty string MYPATH is good
            LDA     #'/'            ; Append '/'
