@@ -23,7 +23,7 @@ MEMINIT    MAC
            LDX     #<]1
            LDY     #>]1
            JSR     MEMINI1
-           PLAXY
+           PLYXA
            <<<
 
 *
