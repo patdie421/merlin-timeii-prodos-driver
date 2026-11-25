@@ -81,7 +81,7 @@ A relocatable file is now in `OBJ` directory.
 for all following file in root directory apply step 11 to 14:
 ```
 INSTALL.S
-INSTGUI.S
+INSTUI.S
 MAIN.S
 SETDATE.S
 ```
