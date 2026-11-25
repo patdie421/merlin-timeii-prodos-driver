@@ -1,3 +1,9 @@
+* compatibility layer :
+*  - MEMINI1 : stub (no more temporary buffer)
+*  - SWAPMEM1 : alias of SWAPMEM2
+*  - MEMCPY2 / SWAPMEM (buffer version) : removed
+* zero page $EB-$EE used by MEMCPY and SWAPMEM2 (not reentrant)
+
            DO      ]E_MEMINI1
 MEMINI1    ENT
            RTS
