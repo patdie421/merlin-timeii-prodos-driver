@@ -8,6 +8,8 @@
            USE     LIB/ASC.H
            USE     LIB/ASC.E
 ]E_BOX1    EQU     0
-]E_BOX2    EQU     1
+]E_BOX2    EQU     0
+]E_BOX1B   EQU     0
+]E_BOX2B   EQU     1
 ]E_STATUSBAR EQU   0
            USE     LIB/FORMS
