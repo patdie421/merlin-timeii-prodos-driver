@@ -11,6 +11,51 @@ SWAPMEM_A  EQU     3
 SWAPMEM_B  EQU     5
 SWAPMEM_CNT EQU    7
 
+*
+* call MEMCPY (copy ]3 bytes from ]1 to ]2)
+* ]1 : source address
+* ]2 : destination address
+* ]3 : byte count, ex: #16 (0 = 256)
+* A modified (X,Y preserved)
+* needs ]E_MEMCPY = 1 in MEM.O.S and MEMCPY EXT
+*
+MEMCPYM    MAC
+           LDA     #<]1
+           STA     MEMCPY+MEMCPY_SRC
+           LDA     #>]1
+           STA     MEMCPY+MEMCPY_SRC+1
+           LDA     #<]2
+           STA     MEMCPY+MEMCPY_DST
+           LDA     #>]2
+           STA     MEMCPY+MEMCPY_DST+1
+           LDA     ]3
+           STA     MEMCPY+MEMCPY_CNT
+           JSR     MEMCPY
+           <<<
+
+
+*
+* call SWAPMEM1 (swap ]3 bytes between ]1 and ]2)
+* ]1 : address of zone A
+* ]2 : address of zone B
+* ]3 : byte count, ex: #39 (0 = 256)
+* A modified (X,Y preserved)
+* needs ]E_SWAPMEM1 = 1 (or ]E_SWAPMEM2) and SWAPMEM1 EXT
+*
+SWAPMEMM   MAC
+           LDA     #<]1
+           STA     SWAPMEM1+SWAPMEM_A
+           LDA     #>]1
+           STA     SWAPMEM1+SWAPMEM_A+1
+           LDA     #<]2
+           STA     SWAPMEM1+SWAPMEM_B
+           LDA     #>]2
+           STA     SWAPMEM1+SWAPMEM_B+1
+           LDA     ]3
+           STA     SWAPMEM1+SWAPMEM_CNT
+           JSR     SWAPMEM1
+           <<<
+
 
 *
 * set mem lib memory buffer
