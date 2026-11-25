@@ -24,3 +24,20 @@ BOX        MAC
            STA     BOX2+BOX_T+1
            JSR     BOX2
            <<<
+
+
+*
+* BOXI : same as BOX, constant parameters stored inline (9 bytes per call)
+* ]1..]4 : X, Y, L, H WITHOUT '#' (constants only)
+* ]5 : title string address
+* Needs ]E_BOX2 = 1 and BOX2I EXT. Called by JSR only (never JMP).
+* Profitable from 2 calls (see size table).
+*
+BOXI       MAC
+           JSR     BOX2I
+           DB      ]1
+           DB      ]2
+           DB      ]3
+           DB      ]4
+           DW      ]5
+           <<<
