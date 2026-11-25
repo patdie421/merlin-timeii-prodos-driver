@@ -91,9 +91,11 @@ MENU
            JMP     MENU
 :5
            CMP     #"5"
-           BEQ     QUIT1
-:DEFAULT
-           BNE     :GETKEY         ; JMP :GETKEY
+           BNE     :GETKEY
+QUIT1
+           MLI_CALL QUIT;QUITP
+           BRK                     ; on "QUIT" error goto to monitor
+QUITP      D_QUIT
 
 
 DISPSLOT   ENT
@@ -101,14 +103,9 @@ DISPSLOT   ENT
            STRPRNT SLOTSTR
            LDA     SLOT
            JSR     PRBYTE
-           JSR     CROUT2
-           RTS
-
-
-QUIT1
-           MLI_CALL QUIT;QUITP
-           BRK                     ; on "QUIT" error goto to monitor
-QUITP      D_QUIT
+           JMP     CROUT2 ; use the RTS from CROUT2 to return (-1 
+           ; JSR     CROUT2
+           ; RTS
 
 
 GETSLOT
