@@ -6,5 +6,4 @@
 ]E_MEMCPY  EQU     0
 ]E_SWAPMEM EQU     0
 ]E_SWAPMEM1 EQU    1
-]E_MEMCPY2 EQU     0
            USE     LIB/MEM
