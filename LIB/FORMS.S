@@ -146,3 +146,138 @@ BOX1       ENT
            JSR     COUT
            RTS
            FIN
+
+
+*
+* BOX2 : box with centered title and text window
+* in: X,Y,L,H : box position and size (H >= 4, L >= 3)
+*     T : ptr to title string (length byte first,
+*         length >= 1 and <= L)
+* call RWINDOW before (CH is relative to WNDLFT)
+* uses zero page BOXZP (2 bytes), not reentrant
+* A,X,Y modified
+*
+           DO      ]E_BOX2B
+BOXZP      EQU     $EB             ; 2 bytes, zero page (title ptr)
+BOX2       ENT
+           JMP     :BOX2
+:X         HEX     00
+:Y         HEX     00
+:L         HEX     00
+:H         HEX     00              ; :X,:Y,:L,:H same order as BOX1
+:T         HEX     00,00           ; title string (ptr)
+:BOX2
+]E_BOX1B   EQU     1
+           LDA     :T              ; title ptr -> zero page
+           STA     BOXZP
+           LDA     :T+1
+           STA     BOXZP+1
+
+           LDX     #3              ; copy :X,:Y,:L,:H (4 bytes)
+:CP        LDA     :X,X            ; relies on :X,:Y,:L,:H contiguous
+           STA     BOX1+3,X        ; BOX1 params start at +3, same order
+           DEX
+           BPL     :CP
+
+           JSR     BOX1
+
+           LDA     :Y              ; title on the top border
+           JSR     VTABZ
+           JSR     SETINV
+           LDY     #0
+           LDA     :L
+           SEC
+           SBC     (BOXZP),Y       ; L - title length
+           LSR
+           CLC
+           ADC     :X
+           STA     CH
+           LDA     (BOXZP),Y       ; title length
+           TAX
+           INY                     ; Y = 1 (first char)
+:LOOPTTL
+           LDA     (BOXZP),Y
+           JSR     COUT
+           INY
+           DEX
+           BNE     :LOOPTTL
+           JSR     SETNORM
+
+* set window
+           LDX     :X
+           INX
+           STX     WNDLFT
+
+           LDX     :Y
+           INX
+           INX
+           STX     WNDTOP
+
+           LDX     :L
+           DEX
+           DEX
+           STX     WNDWDTH
+
+           LDX     :H
+           DEX
+           DEX
+           DEX
+           TXA
+           CLC
+           ADC     WNDTOP
+           STA     WNDBTM
+* clear window
+           JMP     HOME            ; tail call: HOME's RTS returns to our caller
+           FIN
+
+
+           DO      ]E_BOX1B
+BOX1       ENT
+           JMP     :BOX
+:X         HEX     00
+:Y         HEX     00
+:L         HEX     00
+:H         HEX     00
+:BOX
+           DEC     :H
+           DEC     :H              ; H-2 middle lines (H >= 3)
+
+* print top line
+           LDX     #0              ; X = table offset : top line
+           JSR     :LINE
+
+* print middle lines
+           LDX     #3              ; middle line
+:MIDLOOP
+           INC     :Y
+           JSR     :LINE           ; X kept by :LINE (see notes)
+           DEC     :H
+           BNE     :MIDLOOP
+           INC     :Y
+
+* print bottom line
+           LDX     #6              ; bottom line, falls into :LINE
+:LINE
+           LDA     :X
+           STA     CH
+           LDA     :Y
+           JSR     VTABZ
+           LDA     :TBL,X          ; left char
+           JSR     COUT
+           LDY     :L
+           DEY
+           DEY
+:LOOP
+           LDA     :TBL+1,X        ; center char
+           JSR     COUT
+           DEY
+           BNE     :LOOP
+           LDA     :TBL+2,X        ; right char
+* COUT does the RTS
+           JMP     COUT            ; COUT ends with RTS
+
+:TBL       HEX     AE,DF,AE        ; top    . _ .
+           HEX     FC,A0,FC        ; middle | space |
+           HEX     A1,DF,A1        ; bottom ! _ !
+           FIN
+
