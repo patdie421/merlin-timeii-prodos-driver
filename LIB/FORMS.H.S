@@ -1,3 +1,9 @@
+]E_BOX1    EQU     0
+]E_BOX2    EQU     0
+]E_BOX1B   EQU     0
+]E_BOX2B   EQU     0
+]E_STATUSBAR EQU   0
+
 BOX_X      EQU     3
 BOX_Y      EQU     4
 BOX_L      EQU     5
