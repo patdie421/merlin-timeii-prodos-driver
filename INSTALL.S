@@ -96,14 +96,14 @@ TOREALPATH ENT
            LDA     #0              ; init vars, A=0
            TAY                     ; and Y=0
            STA     TMPSTR          ; 0 (A) => empty TMPSTR
-* MYPATH = ''
+* MYPATH == '' ?
            CMP     MYPATH          ; is MYPATH 0 length string
            BEQ     :COPYPRFX       ; empty path => MYPATH = PREFIX
            LDA     MYPATH+1
            CMP     #'/'            ; first char is "/" : absolute path
            BEQ     :EXIT           ; prefix not used => MYPATH is REALPATH
 
-* MYPATH = XX/YY
+* MYPATH == XX/YY ?
 :LOOP1                             ; save MYPATH to TMPSTR
            CPY     MYPATH
            BEQ     :NEXT1
@@ -161,7 +161,7 @@ GETPREFIX  ENT
            JSR     MLIERRCLR
            MLI_CALL GETPRFX;PREFIXP
            BCC     :OK
-           LDX     "O"             ; error exit code
+           LDX     #"O"             ; error exit code
            JMP     MLIERROR
 :OK
            LDA     PREFIX
@@ -249,7 +249,7 @@ FILECPY    ENT
            STA     OPENP1+OP_PATH+1
            MLI_CALL OPEN;OPENP1
            BCC     :OK1
-           LDX     "G"
+           LDX     #"G"
            JMP     :ERREXIT
 :OK1
 * prepare source MLI data
@@ -281,13 +281,13 @@ FILECPY    ENT
 * create dest
            MLI_CALL CREATE;CREATEP
            BCC     :OK2
-           LDX     "H"
+           LDX     #"H"
            JMP     :ERREXIT
 :OK2
 * open dest
            MLI_CALL OPEN;OPENP2
            BCC     :OK3
-           LDX     "I"
+           LDX     #"I"
            JMP     :ERREXIT
 :OK3
 * update MLI structure for dest file
@@ -299,7 +299,7 @@ FILECPY    ENT
 :LOOP
            MLI_CALL READ;READP
            BCC     :OK4
-           LDX     "J"
+           LDX     #"J"
            JMP     :EOFORERR
 :OK4
            LDA     READP+RD_TCNT
@@ -312,7 +312,7 @@ FILECPY    ENT
 
            MLI_CALL WRITE;WRITEP
            BCC     :OK5
-           LDX     "C"
+           LDX     #"C"
            BNE     :ERREXIT        ; JMP :ERREXIT
 :OK5
            INY
@@ -403,7 +403,7 @@ GETVOLS    ENT
            STA     ONLINEP+OL_UNI
            MLI_CALL ONLINE;ONLINEP
            BCC     :OK1
-           LDX     "A"
+           LDX     #"A"
            JMP     MLIERROR
 :OK1
            RTS
@@ -432,7 +432,7 @@ PRINTVOLS  ENT
            ASL
            ASL
            ASL
-:FIRSTL    TAX     X = :COUNTER * 16
+:FIRSTL    TAX                     ; X = :COUNTER * 16
            LDA     RWBUFF,X        ; read dev and filename length
            BEQ     :EXIT           ; null => no more volume
            AND     #%00001111      ; get Volume name length
@@ -520,7 +520,7 @@ LOADVOL    ENT
 :RDBLK                             ; read loop
            MLI_CALL READ;READP
            BCC     :OK3
-           LDX     "C"
+           LDX     #"C"
            BNE     :EOFORERR       ; JMP :EOFORERR
 * next buffer block address
 :OK3
@@ -804,7 +804,7 @@ TOPTHNME   ENT
 *
 * copy selection to PATHNAME
 *
-* in: Y
+* in: A
 * in: RWBUFF
 * out: PATHNAME
 * out: DRVSLT
