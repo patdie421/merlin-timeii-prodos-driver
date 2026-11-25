@@ -150,7 +150,12 @@ BOX1       ENT
 
            DO      ]E_BOX2B
 BOXZP      EQU     $EB             ; 2 bytes, zero page (title ptr)
-
+*
+* BOX2I : BOX2 with inline parameters (see BOXI macro)
+*   JSR BOX2I
+*   DB X,Y,L,H  DW title    (6 bytes)
+* never JMP to it. A,X,Y modified
+*
 BOX2I      ENT
            PLA                     ; return address - 1
            STA     BOXZP
@@ -254,6 +259,13 @@ BOX2       ENT
            FIN
 
 
+*
+* BOX1 : draw a box (frame only)
+* in: X,Y,L,H : position and size (H >= 3, L >= 3)
+* :Y and :H are modified during drawing (reload them before a new call)
+* call RWINDOW before (CH is relative to WNDLFT)
+* A,X,Y modified
+*
            DO      ]E_BOX1B
 BOX1       ENT
            JMP     :BOX
