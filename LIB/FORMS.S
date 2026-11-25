@@ -148,6 +148,31 @@ BOX1       ENT
            FIN
 
 
+           DO      ]E_BOX2B
+BOXZP      EQU     $EB             ; 2 bytes, zero page (title ptr)
+
+BOX2I      ENT
+           PLA                     ; return address - 1
+           STA     BOXZP
+           PLA
+           STA     BOXZP+1
+           LDY     #6              ; 6 bytes: X,Y,L,H,T(2)
+:CP        LDA     (BOXZP),Y       ; params at +1..+6
+           STA     BOX2+2,Y        ; -> BOX2+3..BOX2+8 (:X..:T+1)
+           DEY
+           BNE     :CP
+           LDA     BOXZP           ; new return address = old + 6
+           CLC                     ; (RTS will land after the data)
+           ADC     #6
+           TAX
+           LDA     BOXZP+1
+           ADC     #0
+           PHA                     ; hi first
+           TXA
+           PHA                     ; then lo
+           JMP     BOX2            ; BOX2 ends with RTS to the adjusted address
+
+
 *
 * BOX2 : box with centered title and text window
 * in: X,Y,L,H : box position and size (H >= 4, L >= 3)
@@ -157,8 +182,6 @@ BOX1       ENT
 * uses zero page BOXZP (2 bytes), not reentrant
 * A,X,Y modified
 *
-           DO      ]E_BOX2B
-BOXZP      EQU     $EB             ; 2 bytes, zero page (title ptr)
 BOX2       ENT
            JMP     :BOX2
 :X         HEX     00
@@ -280,4 +303,7 @@ BOX1       ENT
            HEX     FC,A0,FC        ; middle | space |
            HEX     A1,DF,A1        ; bottom ! _ !
            FIN
+
+
+
 
