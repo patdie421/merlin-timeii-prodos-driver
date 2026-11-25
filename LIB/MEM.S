@@ -12,7 +12,7 @@ MEMCPY     ENT
 :DST       DW      $0000           ; must stay at :SRC+2
 :CNT       HEX     00
 :MEMCPY
-           PHAXY                   ; X,Y preserved (A modified, as before)
+           PHAXY                   ; A,X,Y preserved (A modified, as before)
 
            LDX     #3              ; copy :SRC,:DST (4 bytes) to SWPZP
 :CP        LDA     :SRC,X
