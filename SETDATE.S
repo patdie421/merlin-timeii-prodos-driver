@@ -417,8 +417,7 @@ MONTH
 :LABEL     ASC     "   MONTH: ",00
 :FORMAT    ASC     "[  ] (1-12)",00
 YEAR
-:MIN       DFB     00,19           ; 1900 first full year of
-                                   ; gregorian calandar.
+:MIN       DFB     00,19           ; 1900 first full year
 :MAX       DFB     99,23           ; 2399 last valid year
 :FLAG      DFB     %00000010       ; year flag => 4 digits
 :LABEL     ASC     "    YEAR: ",00
