@@ -430,6 +430,7 @@ II30ADJ1   ENT                     ; second entry (X = SLOT)
 II30ADJ2   ENT                     ; third entry (X = SLOT * 16)
            LDA     #32
            STA     BASE_B,X
+           DO      0
 * start delay. Must be > 31.25mS
            LDA     #20             ; 2uS
            STA     :CNTR           ; 4uS
@@ -441,6 +442,11 @@ II30ADJ2   ENT                     ; third entry (X = SLOT * 16)
            BNE     :LOOP2          ; ~3uS => LOOP2 = 9uS
            DEC     :CNTR           ; 6uS
            BNE     :LOOP1          ; ~3uS
+           FIN
+           DO      1
+           LDA     #$80            ; wait 42 ms
+           JSR     WAIT
+           FIN
 * end delay.
            LDA     #0
            STA     BASE_B,X
@@ -550,7 +556,7 @@ GETIIDATE2 ENT                     ; third entry (X = SLOT * 16)
            CPY     #DATTEN         ; tens of date
            BNE     :NEXT4
            LDA     :BVAL
-           AND     #%00001000
+           AND     #%00000100
            BEQ     :SLEAP
 :NLEAP                             ; set not leap
            LDA     #$00
