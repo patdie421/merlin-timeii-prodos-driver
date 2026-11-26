@@ -10,8 +10,8 @@
 
            USE     LIB/INOUTDATA.H
            USE     LIB/INOUTDATA.E
-           USE     LIB/DATETIME.E
            USE     LIB/DATETIME.H
+           USE     LIB/DATETIME.E
            USE     LIB/STR.H
            USE     LIB/STR.E
            USE     LIB/TIMEII.H
@@ -232,7 +232,7 @@ GETDATI
            LDA     #28             ; yes display a label
            STA     CH              ; on the second part
            STRPRNT LEAPSTR         ; of the screen
-           LDA     #%000000100     ; set mask for timeii leap flag
+           LDA     #%00000100     ; set mask for timeii leap flag
            STA     DATE+_LEA
            LDA     #29             ; max day number of month
            BNE     :YEAR1          ; JMP :YEAR1 ; go update months table
