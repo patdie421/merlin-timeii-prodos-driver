@@ -266,7 +266,7 @@ GETDATI
 * update format string for month
            JSR     HEXTODIGI
            TYA
-           CLC
+                                   ; CLC
            ORA     #"0"            ; ADC     #"0"
            STA     SNUMDAY
            TXA
