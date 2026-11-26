@@ -80,7 +80,6 @@ SETDATE    ENT
            CMP     #"N"
            BEQ     :EXIT
            BNE     :LOOP           ; JMP :LOOP
-           JSR     CROUT
 :SETDATE   JSR     SETIIDATE
 :EXIT
            RTS
@@ -183,14 +182,13 @@ GETDATI
                                    ; Check if VAL >= MIN
            LDA     :VALH           ; VALH = high of VAL
            CMP     :MINH           ; MINH = high of MIN
-           BCC     :FALSE1         ; if MINH < VALH then MIN < VAL
+           BCC     :FALSE1         ; if VALH < MINH then MIN < VAL
            BNE     :TRUE1          ; and if VALH <> NUM2H then
                                    ; VAL > MIN (so VAL >= MIN)
            LDA     :VALL           ; compare low bytes
            CMP     :MINL
            BCS     :TRUE1          ; if VALL >= MINL then VAL >= MIN
 :FALSE1                            ; VAL is < MIN return to Getnum
-           LDA     :FLAG
            JMP     :GETNUM         ; no restart reading
 
 :TRUE1
@@ -204,7 +202,6 @@ GETDATI
            CMP     :VALL
            BCS     :TRUE2          ; if MAXL >= VALL then MAXL >= VALL
 :FALSE2
-           LDA     :FLAG
            JMP     :GETNUM         ; no restart reading
 :TRUE2                             ; we get a valid value
 * update some data for some type of value
@@ -391,7 +388,7 @@ SECMSTRE   EQU     *
                                    ; set before data, GETDATI routine
                                    ; did'nt work properly ...
                                    ; probably an assembler or link bug
-DATISTR    STR     " DATE/TIME SETTING "
+; DATISTR    STR     " DATE/TIME SETTING " (a sup ?)
 * form struct
 HOUR
 :MIN       DFB     0,0
