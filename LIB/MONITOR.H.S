@@ -12,6 +12,7 @@ VTABZ      EQU     $FC24
 SETINV     EQU     $FE80
 SETNORM    EQU     $FE84
 SETIFLG    EQU     $FE86
+WAIT       EQU     $FCA8
 
 * zero page
 WNDLFT     EQU     $20             ; window left (0-39)
