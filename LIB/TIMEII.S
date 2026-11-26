@@ -552,6 +552,7 @@ GETIIDATE2 ENT                     ; third entry (X = SLOT * 16)
            LSR
            STA     :BVAL
            JMP     :NEXT4          ; go combination
+           DO      0 ; code d'origine
 :NEXT2
            CPY     #DATTEN         ; tens of date
            BNE     :NEXT4
@@ -565,6 +566,18 @@ GETIIDATE2 ENT                     ; third entry (X = SLOT * 16)
            LDA     #$FF
 :STOLEAP
            STA     HEXLEA
+           FIN
+           DO      1 ; Correction IA a tester
+:NEXT2
+           CPY     #DATTEN         ; tens of date
+           BNE     :NEXT4
+           LDA     :BVAL
+           AND     #%00000100      ; tc bit : 1 = leap year
+           BEQ     :STOLEAP        ; A = 0 -> not leap
+           LDA     #$FF            ; leap
+:STOLEAP
+           STA     HEXLEA          ; $FF = leap, $00 = not leap
+           FIN
 :NEXT3                             ; remove flags from :BVAL
            LDA     :BVAL
            AND     #%0011
