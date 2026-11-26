@@ -267,10 +267,10 @@ GETDATI
            JSR     HEXTODIGI
            TYA
            CLC
-           ADC     #"0"
+           ORA     #"0"            ; ADC     #"0"
            STA     SNUMDAY
            TXA
-           ADC     #"0"
+           ORA     #"0"            ; ADC     #"0"
            STA     SNUMDAY+1
            BNE     :OTHERS         ; JMP :OTHERS
 :DAY
