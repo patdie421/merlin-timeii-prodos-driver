@@ -96,12 +96,12 @@ GETDATI
            LDX     #0
            STX     :IDX
 :LOOP      LDY     #5
-           LDA     TABL,X
+           LDA     TABL+1,X
            BNE     :CONT
            JMP     :EXIT
-:CONT      STA     PTR
-           LDA     TABL+1,X
-           STA     PTR+1
+:CONT      STA     PTR+1
+           LDA     TABL,X
+           STA     PTR
 :SLOOPL    LDA     (PTR),Y         ; print label
            BEQ     :FORMAT
            JSR     COUT
