@@ -606,7 +606,7 @@ ISIIDATE   ENT
            TYA
            SEC
            RTS
-:VALDVAL   DFB     0,60,0,60,0,24,0,7,0,100,1,13,1,32
+:VALDVAL   DFB     0,60,0,60,0,24,0,7,0,1,32,1,13,0,100
            FIN
 
            DO      ]E_PRNIIDATE
