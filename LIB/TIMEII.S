@@ -363,8 +363,9 @@ IIZEROS1   ENT                     ; second entry (X = SLOT)
            ASL
            TAX
 IIZEROS2   ENT                     ; third entry (X = SLOT * 16)
-           STY     :TENUNI
 * HLDLINE
+           DO     0
+           STY     :TENUNI
 :UNITS
            LDA     #%00000001
            AND     :TENUNI
@@ -377,11 +378,35 @@ IIZEROS2   ENT                     ; third entry (X = SLOT * 16)
            BEQ     :EXIT
            LDY     #SECTEN
            JSR     FWRREG1
+           FIN
+
+           DO      1
+           TYA                     ; 1=UNI, 2=TEN, 3=BOTH
+           LSR                     ; C = bit 0, A = bit 1
+           PHA
+           BCC     :TENS
+           LDY     #SECUNI
+           LDA     #0
+           JSR     FWRREG1
+:TENS
+           PLA
+           LSR                     ; C = bit 1
+           BCC     :EXIT
+           LDY     #SECTEN
+           LDA     #0
+           JSR     FWRREG1
+           FIN
+
 :EXIT
            RLSLINE
            RTS
-:TENUNI    HEX     00
+:EXIT
+           RLSLINE
+           RTS
 
+DO         0
+:TENUNI    HEX     00
+           FIN
 
 ********************************
 II30ADJ    ENT
