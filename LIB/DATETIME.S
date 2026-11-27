@@ -224,6 +224,7 @@ ISLEAP     ENT
 * out: Y = 0 not leap / Y = FF leap
 * modified: X,Y
 *
+           DO      0
 GETCENT    ENT
            CLC
            BCC     :START
@@ -261,4 +262,49 @@ GETCENT    ENT
 :LEAP      LDY     #$FF
 :RET       TXA
            RTS
+           FIN
+           FIN
+
+           DO      1
+GETCENT    ENT
+           CLC
+           BCC     :START
+:DD        HEX     00              ; DAY
+:MM        HEX     00              ; MONTH
+:DOW       HEX     00              ; DAY OF WEEK
+:YY        HEX     00              ; YEAR
+:START
+* copy DD,MM,(DOW),YY to GETDAYOFW params DD,MM,(CC),YY.
+* DOW lands in the CC slot : harmless, CC is set from X
+* at the start of every :LOOP turn. Loop = 11 bytes.
+           STY     :OPT            ; Y = $FF : also compute leap (Y is modified below)
+           LDX     #3
+:CP        LDA     :DD,X
+           STA     GETDAYOFW+_DD,X ; DOW lands in the CC slot, overwritten below
+           DEX
+           BPL     :CP
+           LDX     #FRSTCENT
+:LOOP
+           STX     GETDAYOFW+_CC
+           JSR     GETDAYOFW       ; X preserved
+           CMP     :DOW
+           BEQ     :DONE
+           INX
+           CPX     #FRSTCENT+5     ; centuries 19..23
+           BNE     :LOOP
+           LDA     #$FF            ; not found
+           RTS
+:DONE
+           LDA     :OPT
+           CMP     #$FF
+           BNE     :RET
+           LDY     :YY
+           JSR     ISLEAP          ; X = century
+           BCS     :LEAP
+:NOLEAP    LDY     #00
+           BCC     :RET
+:LEAP      LDY     #$FF
+:RET       TXA
+           RTS
+:OPT       HEX     00
            FIN
