@@ -42,6 +42,7 @@ STRPRINT   ENT
            FIN
 
 
+           DO      0
            DO      ]E_STRCMP1
 ********************************
 STRCMP1    ENT
@@ -90,8 +91,54 @@ STRCMP1    ENT
 
            RTS
            FIN
+           FIN
 
+           DO      1
+           DO      ]E_STRCMP1
+********************************
+STRCMP1    ENT
+*
+* compare (equal only) 2 Pascal strings, length byte included
+*
+* in: :STR1 (+3,+4) - first string address
+* in: :STR2 (+5,+6) - second string address (must stay at :STR1+2)
+* out: Carry clear => equal, set => not equal
+* length of STR1 must be <= 127
+* A,X,Y preserved, $EB-$EE saved and restored (PHZP4B/PLZP4B)
+* needs PHAXY / PLYXA / PHZP4B / PLZP4B (MEM.H)
+*
+********************************
+           JMP     :STRCMP1
+:STR1      HEX     00,00
+:STR2      HEX     00,00
+:STRCMP1
+           PHAXY
+           PHZP4B  $EB             ; save $EB-$EE
 
+           LDX     #3              ; STR1 -> $EB/$EC, STR2 -> $ED/$EE
+:CP        LDA     :STR1,X
+           STA     $EB,X
+           DEX
+           BPL     :CP
+
+           LDY     #0
+           LDA     ($EB),Y         ; length of STR1
+           TAY                     ; compare from last char down to index 0
+:LOOP      LDA     ($EB),Y
+           CMP     ($ED),Y
+           BNE     :NOTEQU
+           DEY
+           BPL     :LOOP           ; index 0 included : lengths must match
+           CLC                     ; equal
+           BCC     :EXIT           ; always taken
+:NOTEQU    SEC                     ; not equal
+:EXIT      PLZP4B  $EB             ; restore, carry preserved
+           PLYXA                   ; PLA/TAY/TAX do not touch carry
+           RTS
+           FIN
+           FIN
+
+           DO      0
            DO      ]E_STRSWITH1
 ********************************
 STRSWITH1  ENT
@@ -141,8 +188,56 @@ STRSWITH1  ENT
            PLZPP   $EB
            RTS
            FIN
+           FIN
 
+           DO      1
+           DO      ]E_STRSWITH1
+********************************
+STRSWITH1  ENT
+*
+* check if a Pascal string starts with a sub-string
+*
+* in: :STRING (+3,+4) - string address
+* in: :START  (+5,+6) - prefix address (must stay at :STRING+2)
+* out: Carry clear => string starts with prefix, set => not
+*      (empty prefix => match, prefix longer than string => not)
+* A,X,Y modified, $EB-$EE saved and restored (PHZP4B/PLZP4B)
+* needs PHZP4B / PLZP4B (MEM.H)
+*
+********************************
+           JMP     :STRSWITH1
+:STRING    HEX     00,00
+:START     HEX     00,00
+:STRSWITH1
+           PHZP4B  $EB             ; save $EB-$EE
 
+           LDX     #3              ; STRING -> $EB/$EC, START -> $ED/$EE
+:CP        LDA     :STRING,X
+           STA     $EB,X
+           DEX
+           BPL     :CP
+
+           LDY     #0
+           LDA     ($ED),Y         ; prefix length
+           TAX
+           BEQ     :OK             ; empty prefix : match
+           CMP     ($EB),Y         ; prefix length vs string length
+           BEQ     :GO
+           BCS     :EXIT           ; prefix longer than string : C=1
+:GO        SEC                     ; C=1 = mismatch, kept by INY/LDA/EOR/DEX
+:LOOP      INY
+           LDA     ($ED),Y
+           EOR     ($EB),Y
+           BNE     :EXIT           ; mismatch, C=1
+           DEX
+           BNE     :LOOP
+:OK        CLC                     ; match
+:EXIT      PLZP4B  $EB             ; restore, carry preserved
+           RTS
+           FIN
+           FIN
+
+           DO      1
            DO      ]E_STREWITH1
 ********************************
 STREWITH1  ENT
@@ -200,8 +295,64 @@ STREWITH1  ENT
 :LSTR1     HEX     00
 :LSTR2     HEX     00
            FIN
+           FIN
 
+           DO      1
+           DO      ]E_STREWITH1
+********************************
+STREWITH1  ENT
+*
+* check if a Pascal string ends with a sub-string
+*
+* in: :CMPES1 (+3,+4) - string address
+* in: :CMPES2 (+5,+6) - suffix address (must stay at :CMPES1+2)
+* out: Carry clear => string ends with suffix, set => not
+*      (empty suffix => match, suffix longer than string => not)
+* A,X,Y modified, $EB-$EE saved and restored (PHZP4B/PLZP4B)
+* needs PHZP4B / PLZP4B (MEM.H)
+*
+********************************
+           JMP     :STREWITH1
+:CMPES1    HEX     00,00
+:CMPES2    HEX     00,00
+:STREWITH1
+           PHZP4B  $EB             ; save $EB-$EE
 
+           LDX     #3              ; CMPES1 -> $EB/$EC, CMPES2 -> $ED/$EE
+:CP        LDA     :CMPES1,X
+           STA     $EB,X
+           DEX
+           BPL     :CP
+
+           LDY     #0
+           LDA     ($ED),Y         ; suffix length
+           TAX                     ; X = char counter
+           BEQ     :OK             ; empty suffix : match
+           LDA     ($EB),Y         ; string length
+           SEC
+           SBC     ($ED),Y         ; offset = string length - suffix length
+           BCC     :FAIL           ; suffix longer than string
+           CLC
+           ADC     $EB             ; $EB/$EC += offset
+           STA     $EB
+           BCC     :GO
+           INC     $EB+1
+:GO        SEC                     ; C=1 = mismatch, kept by INY/LDA/EOR/DEX
+:LOOP      INY
+           LDA     ($ED),Y         ; suffix char Y
+           EOR     ($EB),Y         ; string char at offset + Y
+           BNE     :EXIT           ; mismatch, C=1
+           DEX
+           BNE     :LOOP
+:OK        CLC                     ; match
+           BCC     :EXIT           ; always taken
+:FAIL      SEC                     ; refused
+:EXIT      PLZP4B  $EB             ; restore, carry preserved
+           RTS
+           FIN
+           FIN
+
+           DO      0
            DO      ]E_STRCPY1
 ********************************
 STRCPY1    ENT
@@ -258,8 +409,63 @@ STRCPY1    ENT
            BNE     :LOOP
            RTS
            FIN
+           FIN
+
+           DO      1
+           DO      ]E_STRCPY1
+********************************
+STRCPY1    ENT
+*
+* copy a Pascal string to another (SOURCE first, then DEST)
+*
+* in: :S1  (+3,+4) - source string address
+* in: :S2  (+5,+6) - destination address (must stay at :S1+2)
+* in: :OPT (+7)    - 0 : raw copy
+*                    1 : bit 7 forced to 1 (chars only, not the length byte)
+*                    2 : bit 7 forced to 0 (chars only, not the length byte)
+* out: -
+* The capacity of the destination buffer is NOT checked
+* A,X,Y modified, $EB-$EE saved and restored (PHZP4B/PLZP4B)
+* needs PHZP4B / PLZP4B (MEM.H)
+*
+********************************
+           JMP     :STRCPY1
+:S1        HEX     00,00
+:S2        HEX     00,00
+:OPT       HEX     00
+:STRCPY1
+           PHZP4B  $EB             ; save $EB-$EE
+
+           LDX     #3              ; S1 -> $EB/$EC, S2 -> $ED/$EE
+:CP        LDA     :S1,X
+           STA     $EB,X
+           DEX
+           BPL     :CP
+
+           LDY     #0
+           LDA     ($EB),Y         ; length byte copied as is
+           STA     ($ED),Y
+           TAY                     ; Y = length, copy from the end
+           BEQ     :EXIT           ; empty string
+           LDX     :OPT
+:LOOP      LDA     ($EB),Y
+           CPX     #1
+           BNE     :N2
+           ORA     #%10000000
+           BNE     :ST             ; always taken (result <> 0)
+:N2        CPX     #2
+           BNE     :ST
+           AND     #%01111111
+:ST        STA     ($ED),Y
+           DEY
+           BNE     :LOOP
+:EXIT      PLZP4B  $EB             ; restore
+           RTS
+           FIN
+           FIN
 
 
+           D0      0
            DO      ]E_STRCAT1
 ********************************
 STRCAT1    ENT
@@ -319,3 +525,62 @@ STRCAT1    ENT
 :PTRSRC    HEX     00
 :PTRDST    HEX     00
            FIN
+           FIN
+
+           DO     1
+           DO      ]E_STRCAT1
+********************************
+STRCAT1    ENT
+*
+* append a Pascal string (SRC) to another (DST)
+*
+* in: :DST (+3,+4) - destination string address
+* in: :SRC (+5,+6) - source string address (must stay at :DST+2)
+* out: Carry clear => done, set => refused (DST length + SRC length > 255,
+*      DST unchanged)
+* The capacity of the DST buffer is NOT checked (255 max here)
+* A,X,Y modified, $EB-$EE saved and restored (PHZP4B/PLZP4B)
+* needs PHZP4B / PLZP4B (MEM.H)
+*
+********************************
+           JMP     :STRCAT
+:DST       HEX     00,00
+:SRC       HEX     00,00
+:STRCAT
+           PHZP4B  $EB             ; save $EB-$EE
+
+           LDX     #3              ; DST -> $EB/$EC, SRC -> $ED/$EE
+:CP        LDA     :DST,X
+           STA     $EB,X
+           DEX
+           BPL     :CP
+
+           LDY     #0
+           LDA     ($ED),Y         ; n = SRC length
+           BEQ     :OK             ; empty source : nothing to do
+           TAX                     ; X = char counter
+           LDA     ($EB),Y         ; L = DST length
+           PHA
+           TXA
+           CLC
+           ADC     ($EB),Y         ; L + n
+           BCS     :OVF            ; > 255 : refused
+           STA     ($EB),Y         ; new DST length
+           PLA                     ; L (C stays 0)
+           ADC     $EB             ; $EB/$EC = DST + L
+           STA     $EB
+           BCC     :C2
+           INC     $EB+1
+:C2        INY                     ; Y = 1 .. n
+           LDA     ($ED),Y         ; SRC char Y
+           STA     ($EB),Y         ; DST index L + Y
+           DEX
+           BNE     :C2
+:OK        CLC                     ; done
+           BCC     :EXIT
+:OVF       PLA                     ; drop L (C stays 1)
+:EXIT      PLZP4B  $EB             ; restore, carry preserved
+           RTS
+           FIN
+           FIN
+
