@@ -10,6 +10,7 @@ FRSTCENT   EQU     19
 * Outputs:
 *   A : day of week (0 = sunday, 1 = monday, ...)
 *
+           DO      0
            DO      ]E_GETDAYOFW
 GETDAYOFW  ENT                     ; calculate day of week
            CLC
@@ -113,7 +114,52 @@ GETDAYOFW  ENT                     ; calculate day of week
 :CC5       HEX     00,00           ; 2 bytes
 :RES       HEX     00,00           ; 2 bytes
            FIN
+           FIN
 
+           DO      1
+           DO      ]E_GETDAYOFW
+GETDAYOFW  ENT                     ; day of week (0 = sunday)
+           CLC
+           BCC     :START
+* inputs: CCYY/MM/DD, 1 <= MM <= 12, DD <= 31
+:DD        HEX     00              ; DAY
+:MM        HEX     00              ; MONTH
+:CC        HEX     00              ; CENTURY
+:YY        HEX     00              ; YEAR
+* out: A = day of week (0..6). X preserved (= CC), Y modified
+:START
+           LDA     :CC
+           AND     #3
+           TAX                     ; X = CC mod 4
+           LDA     :YY
+           LSR
+           LSR                     ; K = YY / 4
+           CLC
+           ADC     :YY
+           ADC     :DD
+           ADC     :CENT,X         ; + century key
+           STA     :S
+           LDX     :CC             ; X = CC again (needed by GETCENT)
+           LDY     :YY
+           JSR     ISLEAP          ; C = 1 : leap year
+           LDY     :MM
+           LDA     :S
+           BCC     :N
+           CPY     #3
+           BCS     :N              ; March or later
+           ADC     #6              ; Jan/Feb of a leap year (C = 0 here)
+:N         CLC
+           ADC     :MONTH-1,Y      ; + month key (Y = 1..12)
+           SEC
+:L         SBC     #7              ; modulo 7 (A <= 171)
+           BCS     :L
+           ADC     #7
+           RTS
+:MONTH     DFB     4,0,0,3,5,1,3,6,2,4,0,2
+:CENT      DFB     2,0,5,3         ; key for CC mod 4 = 0,1,2,3
+:S         HEX     00
+           FIN
+           FIN
 *
 * Check if year (CCYY) is leap
 *
@@ -123,6 +169,7 @@ GETDAYOFW  ENT                     ; calculate day of week
 * Outputs:
 *   Cary flag : 0 not leap, 1 leap
 *
+           DO      0
            DO      ]E_ISLEAP
 ISLEAP     ENT
            TYA
@@ -144,7 +191,24 @@ ISLEAP     ENT
            CLC                     ; CARRY = 0 : not leap year
            RTS
            FIN
+           FIN
 
+           DO      1
+           DO      ]E_ISLEAP
+ISLEAP     ENT
+* in: X = CC (century), Y = YY (year). Carry not used on entry.
+* out: C = 1 leap, C = 0 not leap. A modified, X,Y preserved
+           TYA
+           BNE     :Y4             ; YY <> 0 : multiple of 4 ?
+           TXA                     ; YY = 0 : century multiple of 4 ?
+:Y4        AND     #%00000011
+           BNE     :NO
+           SEC                     ; leap
+           RTS
+:NO        CLC
+           RTS
+           FIN
+           FIN
 
            DO      ]E_GETCENT
 *
