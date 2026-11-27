@@ -4,7 +4,7 @@
            USE     LIB/MONITOR.H
            USE     LIB/MEM.H
 ]E_STRPRINT EQU    1
-]E_STRCMP1 EQU     1
+]E_STRCMP1 EQU     0
 ]E_STRCMPE1 EQU    0
 ]E_STREWITH1 EQU   1
 ]E_STRSWITH1 EQU   1
