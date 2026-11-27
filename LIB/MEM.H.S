@@ -145,3 +145,39 @@ PLZPP      MAC
            PLA
            STA     ]1
            <<<
+
+*
+* Usage  : PHZP4B $EB   (saves $EB,$EC,$ED,$EE)
+* ]1     : zero page address of 1st byte, must be <= $FC (above, zp,X wraps
+*          inside page 0 : wrong bytes, NO assembly error)
+* Regs   : A,X modified, Y untouched. Flags N,Z,C modified
+* Stack  : 4 bytes. Must be restored by PLZP4B with the SAME address
+* Notes  : X is overwritten (save it first with PHXY if needed)
+*          Uses Merlin variable ]SV (reserved name)
+*          Size : 10 bytes
+PHZP4B     MAC
+           LDX     #0
+]SV        LDA     ]1,X
+           PHA
+           INX
+           CPX     #4
+           BNE     ]SV
+           <<<
+
+
+*
+* Usage  : PLZP4B $EB   (restores $EB,$EC,$ED,$EE saved by PHZP4B $EB)
+* ]1     : same zero page address as the matching PHZP4B (<= $FC)
+* Regs   : A,X modified, Y untouched. Flags N,Z modified, carry PRESERVED
+*          (a result can be returned in C just before the RTS)
+* Stack  : pops 4 bytes (LIFO). Every exit path must go through PLZP4B
+* Notes  : A is lost (return results in C, X or Y)
+*          Uses Merlin variable ]RS (reserved name)
+*          Size : 8 bytes
+PLZP4B     MAC
+           LDX     #3
+]RS        PLA
+           STA     ]1,X
+           DEX
+           BPL     ]RS
+           <<<
