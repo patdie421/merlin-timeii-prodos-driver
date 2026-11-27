@@ -137,10 +137,12 @@ GETDATI
 
            STX     :SAVX
            JMP     :GETNUM1        ; first loop CV/CH not restored
-:GETNUM    LDA     :SAVCV          ; restore VTAB position
-           STA     CV
+:GETNUM
            LDA     :SAVCH          ; restore HTAB position
            STA     CH
+           LDA     :SAVCV          ; restore VTAB position
+           STA     CV
+           JSR     VTAB
 :GETNUM1
            LDA     :FLAG
            AND     #%00000010
