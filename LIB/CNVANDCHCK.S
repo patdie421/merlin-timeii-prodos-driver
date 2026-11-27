@@ -8,7 +8,7 @@
            DO      ]E_HEXTODIGI
 HEXTODIGI  ENT
 * Loop version
-           DO      1               ; loop version enabled
+           DO      0               ; original loop version
            LDY     #0
 :LOOP
            CMP     #10
@@ -19,6 +19,18 @@ HEXTODIGI  ENT
 :DONE      TAX
            RTS
            FIN                     ; end loop version
+
+           DO      1 ; optimized version
+HEXTODIGI  ENT
+           LDY     #$FF
+           SEC
+:LOOP      INY
+           SBC     #10
+           BCS     :LOOP
+           ADC     #10             ; carry clear here
+           TAX
+           RTS
+           FIN
 
 * deterministic version
            DO      0               ; deterministic version disabled
@@ -60,7 +72,10 @@ HEXTODIGI  ENT
 * Inputs:
 *   Y : tens
 *   X : units
+* Outpus:
+*   A : value
            DO      ]E_DIGITOHEX
+           DO      0
 DIGITOHEX  ENT
            STX     :UNIT           ; save unit
            STY     :TENS           ; save tens
@@ -75,4 +90,15 @@ DIGITOHEX  ENT
            RTS
 :TENS      HEX     00
 :UNIT      HEX     00
+           FIN
+           DO      1
+DIGITOHEX  ENT
+           TXA                     ; A = units
+           CLC
+:LOOP      DEY
+           BMI     :END            ; tens exhausted
+           ADC     #10
+           BCC     :LOOP           ; always taken (no overflow for tens <= 25)
+:END       RTS
+           FIN
            FIN
